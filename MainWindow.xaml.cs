@@ -14,11 +14,23 @@ namespace Proyecto_Isasi_Montanaro
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    using Proyecto_Isasi_Montanaro.Views;
+
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void BtnUsuarios_Click(object sender, RoutedEventArgs e)
+        {
+            MainContent.Content = new UsuariosView();
+        }
+
+        private void BtnInformes_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

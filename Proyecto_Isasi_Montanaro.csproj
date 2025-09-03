@@ -8,4 +8,62 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Assets\bi--box.png" />
+    <None Remove="Assets\ei--user.png" />
+    <None Remove="Assets\fluent--box-16-regular %281%29.png" />
+    <None Remove="Assets\fluent--box-16-regular %282%29.png" />
+    <None Remove="Assets\fluent--box-16-regular.png" />
+    <None Remove="Assets\iconoir--database-backup.png" />
+    <None Remove="Assets\lucide--box.png" />
+    <None Remove="Assets\lucide--users %281%29.png" />
+    <None Remove="Assets\lucide--users %282%29.png" />
+    <None Remove="Assets\mdi--report-line.png" />
+    <None Remove="Assets\mynaui--truck %281%29.png" />
+    <None Remove="Assets\mynaui--truck.png" />
+    <None Remove="Assets\qlementine-icons--user-24.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\bi--box.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\ei--user.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\fluent--box-16-regular (1).png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\fluent--box-16-regular (2).png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\fluent--box-16-regular.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\iconoir--database-backup.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\lucide--box.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\lucide--users (1).png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\lucide--users (2).png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\mdi--report-line.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\mynaui--truck (1).png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\mynaui--truck.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\qlementine-icons--user-24.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
 </Project>
