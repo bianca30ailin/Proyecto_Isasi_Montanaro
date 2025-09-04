@@ -61,7 +61,7 @@
                 <Button Name="BtnUsuarios" Click="BtnUsuarios_Click" Margin="20,20,20,10" Style="{StaticResource EstadoBoton}">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <Image Source="Assets/lucide--users (2).png" Width="20" Height="20" Margin="-10,0,18,0"/>
-                        <TextBlock Text="Usuarios" VerticalAlignment="Center"/>
+                        <TextBlock Text="Usuario" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
                 <Button Name="BtnBackUp" Style="{StaticResource EstadoBoton}" Margin="20,10,20,10">
