@@ -6,7 +6,7 @@
 
     <Application.Resources>
         
-             <ResourceDictionary Source="Styles.xaml"/>
+             <ResourceDictionary Source="Styles/Styles.xaml"/>
         
     </Application.Resources>   
     
