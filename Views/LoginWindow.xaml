@@ -29,7 +29,7 @@
 
         <Border Grid.Row="0" Background="#072741" CornerRadius="0,0,0,0">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Height="153">
-                <Image Source="/Assets/box/fluent--box-16-regular (2).png" Width="60" Height="60" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                <Image Source="/Assets/box/logo.png" Width="60" Height="60" HorizontalAlignment="Center" Margin="0,0,0,10"/>
                 <TextBlock Text="SISIE" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
                 <TextBlock Text="Sistema de Inventario y Gestión de envíos"
                            FontSize="16" Foreground="White"
