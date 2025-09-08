@@ -46,11 +46,11 @@ namespace Proyecto_Isasi_Montanaro.Views
                 e.Handled = true;
                 txtPassword.Focus();
             }
-            /*else if (e.Key == Key.Enter)
+            else if (e.Key == Key.Enter)
             {
                 e.Handled = true;
                 btnLogin.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            }*/
+            }
         }
 
         private void TxtPassword_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -60,12 +60,31 @@ namespace Proyecto_Isasi_Montanaro.Views
                 e.Handled = true;
                 txtUsuario.Focus();
             }
-            /*
+            
             else if (e.Key == Key.Enter)
             {
                 e.Handled = true;
                 btnLogin.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            }*/
+            }
+        }
+
+        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        {
+            // Validar campos vacíos
+            if (string.IsNullOrWhiteSpace(txtUsuario.Text) || string.IsNullOrWhiteSpace(txtPassword.Password))
+            {
+                MessageBox.Show("Por favor, complete todos los campos.",
+                                "Campos requeridos",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                return; // Salir sin abrir MainWindow
+            }
+            // Por ahora sin validación de cuentas, entra directo
+            MainWindow main = new MainWindow();
+
+            // Mostrar main y cerrar login
+            main.Show();
+            this.Close();
         }
     }
 }

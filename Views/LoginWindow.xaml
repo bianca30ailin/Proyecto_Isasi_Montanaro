@@ -67,7 +67,7 @@
 
             <Button Name="btnLogin" 
                     Content="Iniciar Sesión" 
-                    Style="{StaticResource PrimaryButton}"
+                    Style="{StaticResource PrimaryButton}" Click="btnLogin_Click"
                     />
         </StackPanel>
 
