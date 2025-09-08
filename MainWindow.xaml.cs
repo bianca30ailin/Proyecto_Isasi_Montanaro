@@ -23,39 +23,6 @@ namespace Proyecto_Isasi_Montanaro
             InitializeComponent();
         }
 
-        private void BtnUsuarios_Click(object sender, RoutedEventArgs e)
-        {
-            MainContent.Content = new UsuariosView();
-        }
-
-        private void BtnBackUp_Click(object sender, RoutedEventArgs e)
-        {
-            MainContent.Content = new BackUpView();
-        }
-
-        private void BtnInventario_Click(object sender, RoutedEventArgs e)
-        {
-            MainContent.Content = new InventarioView();
-        }
-
-        private void BtnClientes_Click(object sender, RoutedEventArgs e)
-        {
-            MainContent.Content = new ClientesView();
-        }
-        private void BtnEnvios_Click(object sender, RoutedEventArgs e)
-        {
-            MainContent.Content = new EnviosView();
-        }
-
-        private void BtnVentas_Click(object sender, RoutedEventArgs e)
-        {
-            MainContent.Content = new VentasView();
-        }
-
-        private void BtnInformes_Click(object sender, RoutedEventArgs e)
-        {
-            MainContent.Content = new InformesView();
-        }
 
         
     }
