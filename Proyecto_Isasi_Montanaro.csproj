@@ -11,6 +11,7 @@
   <ItemGroup>
     <None Remove="Assets\bi--box.png" />
     <None Remove="Assets\ci--user-02.png" />
+    <None Remove="Assets\cliente2.png" />
     <None Remove="Assets\ei--user.png" />
     <None Remove="Assets\fluent--box-16-regular %281%29.png" />
     <None Remove="Assets\fluent--box-16-regular %282%29.png" />
@@ -20,62 +21,78 @@
     <None Remove="Assets\lucide--users %281%29.png" />
     <None Remove="Assets\lucide--users %282%29.png" />
     <None Remove="Assets\mdi--report-line.png" />
+    <None Remove="Assets\mingcute--exit-line.png" />
     <None Remove="Assets\mynaui--truck %281%29.png" />
     <None Remove="Assets\mynaui--truck.png" />
     <None Remove="Assets\qlementine-icons--user-24.png" />
     <None Remove="Assets\solar--letter-linear.png" />
     <None Remove="Assets\solar--lock-outline.png" />
+    <None Remove="Assets\tdesign--user-1 %281%29.png" />
+    <None Remove="Assets\userlogin.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\bi--box.png">
+    <Resource Include="Assets\box\bi--box.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Assets\ci--user-02.png">
+    <Resource Include="Assets\user\cliente2.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Assets\ei--user.png">
+    <Resource Include="Assets\user\ei--user.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Assets\fluent--box-16-regular (1).png">
+    <Resource Include="Assets\box\fluent--box-16-regular %281%29.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Assets\fluent--box-16-regular (2).png">
+    <Resource Include="Assets\box\fluent--box-16-regular %282%29.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Assets\fluent--box-16-regular.png">
+    <Resource Include="Assets\box\fluent--box-16-regular.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Assets\iconoir--database-backup.png">
+    <Resource Include="Assets\user\icon-cliente.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Assets\lucide--box.png">
+    <Resource Include="Assets\venta\icon-venta.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Assets\lucide--users (1).png">
+    <Resource Include="Assets\data\iconoir--database-backup.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Assets\lucide--users (2).png">
+    <Resource Include="Assets\box\lucide--box.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Assets\mdi--report-line.png">
+    <Resource Include="Assets\user\lucide--users %281%29.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Assets\mynaui--truck (1).png">
+    <Resource Include="Assets\user\lucide--users %282%29.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Assets\mynaui--truck.png">
+    <Resource Include="Assets\report\mdi--report-line.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Assets\qlementine-icons--user-24.png">
+    <Resource Include="Assets\otros\mingcute--exit-line.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Assets\solar--letter-linear.png">
+    <Resource Include="Assets\envio\mynaui--truck %281%29.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Assets\solar--lock-outline.png">
+    <Resource Include="Assets\envio\mynaui--truck.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\user\qlementine-icons--user-24.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\form\solar--letter-linear.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\form\solar--lock-outline.png">
+		<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	</Resource>
+    <Resource Include="Assets\user\tdesign--user-1 %281%29.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\form\userlogin.png" />
   </ItemGroup>
 
 </Project>

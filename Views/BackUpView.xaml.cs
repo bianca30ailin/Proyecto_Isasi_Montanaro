@@ -1,4 +1,8 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -9,21 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Proyecto_Isasi_Montanaro
+namespace Proyecto_Isasi_Montanaro.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Lógica de interacción para BackUpView.xaml
     /// </summary>
-    using Proyecto_Isasi_Montanaro.Views;
-
-    public partial class MainWindow : Window
+    public partial class BackUpView : UserControl
     {
-        public MainWindow()
+        public BackUpView()
         {
             InitializeComponent();
         }
-
-
-        
     }
 }

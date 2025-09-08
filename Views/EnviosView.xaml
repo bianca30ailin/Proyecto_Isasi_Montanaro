@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Proyecto_Isasi_Montanaro.Views.UsuariosView"
+﻿<UserControl x:Class="Proyecto_Isasi_Montanaro.Views.EnviosView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Background="#F3EDF7">
-        <TextBlock Text="Vista: Usuarios" FontSize="20" 
+        <TextBlock Text="Vista: Envíos" FontSize="20" 
            />
     </Grid>
 </UserControl>

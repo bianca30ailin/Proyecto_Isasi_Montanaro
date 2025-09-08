@@ -3,11 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Proyecto_Isasi_Montanaro.ViewModels"
 
         xmlns:local="clr-namespace:Proyecto_Isasi_Montanaro"
         mc:Ignorable="d"
         Title="MainWindow" Width="1000" Height="500">
 
+        <Window.DataContext>
+            vm:MainWindowViewModel
+        </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
@@ -39,7 +43,7 @@
                            Foreground="White" VerticalAlignment="Center"
                            Margin="10,-20,0,0" Grid.Column="0">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Source="/Assets/fluent--box-16-regular (2).png" Width="25" Height="25" Margin="-5,0,10,0"/>
+                        <Image Source="/Assets/box/fluent--box-16-regular (2).png" Width="25" Height="25" Margin="5,0,10,0"/>
                         <TextBlock Text="SISIE" VerticalAlignment="Center"/>
                     </StackPanel>
                 </TextBlock>
@@ -50,69 +54,98 @@
                            HorizontalAlignment="Right" Margin="0,30,15,0"
                            Grid.Column="1">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Source="/Assets/ei--user.png" Width="20" Height="20" Margin="-10,0,5,0"/>
+                        <Image Source="/Assets/user/ei--user.png" Width="20" Height="20" Margin="-10,0,5,0"/>
                         <TextBlock Text="Admin" VerticalAlignment="Center"/>
                     </StackPanel>   
                  </TextBlock>
             </Grid>
 
             <!-- Menú blanco -->
-            <StackPanel Grid.Row="1" Background="White">
-                <Button Name="BtnUsuarios" Click="BtnUsuarios_Click" Margin="20,20,20,10" Style="{StaticResource EstadoBoton}">
+            <Grid Grid.Row="1" Background="White">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <!-- margen izquierdo al boton -->
+                    <ColumnDefinition Width="8*" />
+                    <!-- botón -->
+                    <ColumnDefinition Width="*" />
+                    <!-- margen derecho al boton -->
+                </Grid.ColumnDefinitions>
+                <!-- Filas para cada botón -->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <!-- empuja todo lo de abajo -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- solo el botón de cerrar sesión -->
+                </Grid.RowDefinitions>
+
+                <!-- Botones -->
+                <ToggleButton Name="BtnUsuarios" IsChecked="{Binding IsUsuariosActive}" Grid.Row="0" Grid.Column="1" Style="{StaticResource EstadoBoton}" Margin="0,20,0,10">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Source="Assets/lucide--users (2).png" Width="20" Height="20" Margin="-10,0,18,0"/>
-                        <TextBlock Text="Usuario" VerticalAlignment="Center"/>
+                        <Image Source="Assets/user/lucide--users (2).png" Width="20" Height="20" Margin="5,0,25,0"/>
+                        <TextBlock Text="Usuarios" VerticalAlignment="Center"/>
                     </StackPanel>
-                </Button>
-                <Button Name="BtnBackUp" Style="{StaticResource EstadoBoton}" Margin="20,10,20,10">
+                </ToggleButton>
+
+                <ToggleButton Name="BtnBackUp" IsChecked="{Binding IsBackUpActive}" Grid.Row="1" Grid.Column="1" Style="{StaticResource EstadoBoton}" Margin="0,10">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Source="/Assets/iconoir--database-backup.png" Width="20" Height="20" Margin="-10,0,20,0"/>
+                        <Image Source="/Assets/data/iconoir--database-backup.png" Width="20" Height="20" Margin="3,0,27,0"/>
                         <TextBlock Text="Back Up" VerticalAlignment="Center"/>
                     </StackPanel>
-                </Button>
+                </ToggleButton>
 
-                <Button Name="BtnInventario" Margin="20,10,20,10" Style="{StaticResource EstadoBoton}">
+                <ToggleButton Name="BtnInventario" IsChecked="{Binding IsInventarioActive}" Grid.Row="2" Grid.Column="1" Style="{StaticResource EstadoBoton}" Margin="0,10">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Source="/Assets/bi--box.png" Width="20" Height="20" Margin="-5,0,18,0"/>
+                        <Image Source="/Assets/box/bi--box.png" Width="20" Height="20" Margin="5,0,20,0"/>
                         <TextBlock Text="Inventario" VerticalAlignment="Center"/>
                     </StackPanel>
-                </Button>
-                <Button Name="BtnVentas"  Margin="20,10,20,10" Style="{StaticResource EstadoBoton}">
+                </ToggleButton>
+
+                <ToggleButton Name="BtnClientes" IsChecked="{Binding IsClientesActive}" Grid.Row="3" Grid.Column="1" Style="{StaticResource EstadoBoton}" Margin="0,10">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Source="/Assets/icon-park-outline--mall-bag (1).png" Width="20" Height="20" Margin="-15,0,25,0"/>
+                        <Image Source="/Assets/user/tdesign--user-1 (1).png" Width="20" Height="20" Margin="0,0,25,0"/>
+                        <TextBlock Text="Clientes" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </ToggleButton>
+
+                <ToggleButton Name="BtnVentas" IsChecked="{Binding IsVentasActive}" Grid.Row="4" Grid.Column="1" Style="{StaticResource EstadoBoton}" Margin="0,10">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Image Source="/Assets/venta/icon-venta.png" Width="22" Height="22" Margin="-5,0,28,0"/>
                         <TextBlock Text="Ventas" VerticalAlignment="Center"/>
                     </StackPanel>
-                </Button>
-                <Button Name="BtnEnvios"  Margin="20,10,20,10" Style="{StaticResource EstadoBoton}">
+                </ToggleButton>
+
+                <ToggleButton Name="BtnEnvios" IsChecked="{Binding IsEnviosActive}" Grid.Row="5" Grid.Column="1" Style="{StaticResource EstadoBoton}" Margin="0,10">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Source="/Assets/mynaui--truck.png" Margin="-15,0,25,0" Width="20" Height="20"/>
+                        <Image Source="/Assets/envio/mynaui--truck.png" Width="25" Height="25" Margin="-5,-2,28,-2"/>
                         <TextBlock Text="Envíos" VerticalAlignment="Center"/>
                     </StackPanel>
-                </Button>
-                <Button Name="BtnInformes" Margin="20,10,20,10" Style="{StaticResource EstadoBoton}">
+                </ToggleButton>
+
+                <ToggleButton Name="BtnInformes" IsChecked="{Binding IsInformesActive}" Grid.Row="6" Grid.Column="1" Style="{StaticResource EstadoBoton}" Margin="0,10">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Source="/Assets/mdi--report-line.png" Width="20" Height="20" Margin="-10,0,20,0"/>
+                        <Image Source="/Assets/report/mdi--report-line.png" Width="20" Height="20" Margin="5,0,28,0"/>
                         <TextBlock Text="Informes" VerticalAlignment="Center"/>
                     </StackPanel>
-                </Button>
-                <Button Name="BtnCerrarSesion" Margin="0,120,0,0" Style="{StaticResource Cerrarsesion}" >
+                </ToggleButton>
+
+                <Button  Grid.Row="8" Grid.Column="1" Style="{StaticResource Cerrarsesion}" Margin="0,10">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Source="/Assets/mdi--report-line.png" Width="20" Height="20" Margin="-10,0,20,0"/>
+                        <Image Source="/Assets/otros/mingcute--exit-line.png" Width="20" Height="20" Margin="0,0,10,0"/>
                         <TextBlock Text="Cerrar sesión" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
-
-
-
-
-
-            </StackPanel>
-
-
+            </Grid>
         </Grid>
 
         <!-- Contenido dinámico -->
-        <ContentControl Name="MainContent" Grid.Column="1" Background="#F5F5F5">
+        <ContentControl Content="{Binding VistaActual}" Grid.Column="1" Background="#F5F5F5">
             
         </ContentControl>
     </Grid>
