@@ -72,6 +72,21 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <!-- Hover: cambia color y escala -->
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#145A8A"/>
+            </Trigger>
+            <!-- Presionado: cambia color y escala -->
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#072741"/>
+                <Setter Property="RenderTransform">
+                    <Setter.Value>
+                        <ScaleTransform ScaleX="0.98" ScaleY="0.98"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <!-- Footer -->

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,11 +23,49 @@ namespace Proyecto_Isasi_Montanaro.Views
         public LoginWindow()
         {
             InitializeComponent();
+            txtUsuario.Focus(); //inicia en el input usuario
         }
 
-        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        private void TxtUsuario_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
+            // Regex: letras y números solamente
+            e.Handled = !Regex.IsMatch(e.Text, "^[a-zA-Z0-9]+$");
+        }
 
+        // Manejar teclas especiales: flecha arriba/abajo y bloquear espacio
+        private void TxtUsuario_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            // Bloquea la barra espaciadora
+            if (e.Key == Key.Space)
+            {
+                e.Handled = true;
+            }
+            // Si se presiona la flecha abajo, pasa el foco al PasswordBox
+            else if (e.Key == Key.Down)
+            {
+                e.Handled = true;
+                txtPassword.Focus();
+            }
+            /*else if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                btnLogin.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            }*/
+        }
+
+        private void TxtPassword_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Up)
+            {
+                e.Handled = true;
+                txtUsuario.Focus();
+            }
+            /*
+            else if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                btnLogin.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            }*/
         }
     }
 }

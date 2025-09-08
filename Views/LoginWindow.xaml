@@ -36,6 +36,7 @@
                            TextAlignment="Center" Margin="10,10,10,0"/>
             </StackPanel>
         </Border>
+        
         <StackPanel Grid.Row="1" Background="White" Margin="20,20,20,0">
             <!-- Usuario -->
             <StackPanel Orientation="Horizontal" Margin="0,5,0,2">
@@ -44,7 +45,11 @@
                Margin="8,0,5,0"/>
                 <TextBlock Text="Usuario" Style="{StaticResource FormLabel}"/>
             </StackPanel>
-            <TextBox Style="{StaticResource FormTextBox}"/>
+            <TextBox Name="txtUsuario"
+                 Style="{StaticResource FormTextBox}"
+                 MaxLength="8"
+                 PreviewTextInput="TxtUsuario_PreviewTextInput"
+                 PreviewKeyDown="TxtUsuario_PreviewKeyDown"/>
 
             <!-- Contraseña -->
             <StackPanel Orientation="Horizontal" Margin="0,15,0,2">
@@ -53,11 +58,17 @@
                Margin="8,0,5,0"/>
                 <TextBlock Text="Contraseña" Style="{StaticResource FormLabel}"/>
             </StackPanel>
-            <PasswordBox Style="{StaticResource FormPasswordBox}" />
+            <PasswordBox Name="txtPassword" 
+                         Style="{StaticResource FormPasswordBox}" 
+                         PreviewKeyDown="TxtPassword_PreviewKeyDown"/>
 
-            <CheckBox Content="Recordar usuario" Style="{StaticResource CustomCheckBox}"/>
-            
-            <Button Content="Iniciar Sesión" Style="{StaticResource PrimaryButton}"/>
+            <CheckBox Content="Recordar usuario" 
+                      Style="{StaticResource CustomCheckBox}"/>
+
+            <Button Name="btnLogin" 
+                    Content="Iniciar Sesión" 
+                    Style="{StaticResource PrimaryButton}"
+                    />
         </StackPanel>
 
         <TextBlock Grid.Row="3" 
