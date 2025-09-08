@@ -4,20 +4,29 @@
     <Style TargetType="ToggleButton" x:Key="EstadoBoton">
         <Setter Property="Background" Value="White"/>
         <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="BorderBrush" Value="#072741"/>
+        <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToggleButton">
-                    <Border CornerRadius="6" Background="{TemplateBinding Background}" BorderBrush="#072741" BorderThickness="1">
+                    <Border CornerRadius="6" 
+                        Background="{TemplateBinding Background}" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
         <Style.Triggers>
+            <!-- Estado activo -->
             <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Background" Value="Orange"/>
+                <Setter Property="Background" Value="#E35802"/>
                 <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderBrush" Value="#E35802"/>
+                <!-- Esto cambia el borde -->
             </Trigger>
+            <!-- Estado deshabilitado -->
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Background" Value="LightGray"/>
                 <Setter Property="Foreground" Value="DarkGray"/>

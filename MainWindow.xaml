@@ -43,7 +43,7 @@
                            Foreground="White" VerticalAlignment="Center"
                            Margin="10,-20,0,0" Grid.Column="0">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Source="/Assets/fluent--box-16-regular (2).png" Width="25" Height="25" Margin="-5,0,10,0"/>
+                        <Image Source="/Assets/fluent--box-16-regular (2).png" Width="25" Height="25" Margin="5,0,10,0"/>
                         <TextBlock Text="SISIE" VerticalAlignment="Center"/>
                     </StackPanel>
                 </TextBlock>
