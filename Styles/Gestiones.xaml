@@ -5,218 +5,244 @@
     <BooleanToVisibilityConverter x:Key="BoolToVis"/>
 
     <!-- ===== Encabezado reusable (icono + título) ===== -->
-    <Style x:Key="HeaderWithIcon" TargetType="StackPanel">
-        <Setter Property="Orientation" Value="Horizontal"/>
-        <Setter Property="Margin" Value="0,0,0,20"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-    </Style>
+        <Style x:Key="HeaderWithIcon" TargetType="StackPanel">
+            <Setter Property="Orientation" Value="Horizontal"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
 
-    <Style x:Key="HeaderIcon" TargetType="Image">
-        <Setter Property="Width" Value="28"/>
-        <Setter Property="Height" Value="28"/>
-        <Setter Property="Margin" Value="0,0,10,0"/>
-    </Style>
+        <Style x:Key="HeaderIcon" TargetType="Image">
+            <Setter Property="Width" Value="28"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+        </Style>
 
-    <Style x:Key="HeaderTitle" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="20"/>
-        <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="Foreground" Value="#001F3F"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-    </Style>
+        <Style x:Key="HeaderTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#001F3F"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
 
-
+    
+ <!-- BOTONES -->
     <!-- Botón primario -->
-    <Style x:Key="BtnPrimary" TargetType="Button">
-        <Setter Property="Background" Value="#001F3F"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Height" Value="30"/>
-        <Setter Property="MinWidth" Value="100"/>
-        <!-- tamaño mínimo -->
-        <Setter Property="Padding" Value="10,8"/>
-        <!-- espacio interno -->
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Cursor" Value="Hand"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Border Background="{TemplateBinding Background}" CornerRadius="8">
-                        <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      RecognizesAccessKey="True"/>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+        <Style x:Key="BtnPrimary" TargetType="Button">
+            <Setter Property="Background" Value="#001F3F"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="MinWidth" Value="100"/>
+            <!-- tamaño mínimo -->
+            <Setter Property="Padding" Value="10,8"/>
+            <!-- espacio interno -->
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          RecognizesAccessKey="True"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
     <!-- Botón secundario -->
-    <Style x:Key="BtnSecondary" TargetType="Button" BasedOn="{StaticResource BtnPrimary}">
-        <Setter Property="Background" Value="White"/>
-        <Setter Property="Foreground" Value="#001F3F"/>
-    </Style>
+        <Style x:Key="BtnSecondary" TargetType="Button" BasedOn="{StaticResource BtnPrimary}">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#001F3F"/>
+        </Style>
 
+    
+ <!-- CHIPS -->
     <!-- Chip base -->
-    <Style x:Key="Chip" TargetType="Button" BasedOn="{StaticResource BtnSecondary}">
-        <Setter Property="Height" Value="30"/>
-        <Setter Property="MinWidth" Value="80"/>
-        <Setter Property="Padding" Value="18,6"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Cursor" Value="Hand"/>
-        <!-- si querés pill-shaped -->
-    </Style>
+        <Style x:Key="Chip" TargetType="Button" BasedOn="{StaticResource BtnSecondary}">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="MinWidth" Value="80"/>
+            <Setter Property="Padding" Value="18,6"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <!-- si querés pill-shaped -->
+        </Style>
 
-    <!-- Específicos -->
+    <!-- Chips Específicos -->
+        <!-- Activos -->
+        <Style x:Key="ChipActivos" TargetType="Button" BasedOn="{StaticResource Chip}">
+            <Setter Property="Background" Value="#F5A623"/>
+            <!-- verde suave -->
+            <Setter Property="Foreground" Value="White"/>
+            <!-- verde oscuro -->
+        </Style>
 
-    <!-- Activos -->
-    <Style x:Key="ChipActivos" TargetType="Button" BasedOn="{StaticResource Chip}">
-        <Setter Property="Background" Value="#F5A623"/>
-        <!-- verde suave -->
-        <Setter Property="Foreground" Value="White"/>
-        <!-- verde oscuro -->
-    </Style>
+        <!-- Inactivos -->
+        <Style x:Key="ChipInactivos" TargetType="Button" BasedOn="{StaticResource Chip}">
+            <Setter Property="Background" Value="#D64545"/>
+            <!-- rojo claro -->
+            <Setter Property="Foreground" Value="White"/>
+            <!-- rojo oscuro -->
+        </Style>
 
-    <!-- Inactivos -->
-    <Style x:Key="ChipInactivos" TargetType="Button" BasedOn="{StaticResource Chip}">
-        <Setter Property="Background" Value="#D64545"/>
-        <!-- rojo claro -->
-        <Setter Property="Foreground" Value="White"/>
-        <!-- rojo oscuro -->
-    </Style>
+        <!-- Inventario -->
+        <Style x:Key="ChipInventario" TargetType="Button" BasedOn="{StaticResource Chip}">
+            <Setter Property="Background" Value="#A67C52"/>
+            <!-- rojo claro -->
+            <Setter Property="Foreground" Value="White"/>
+            <!-- rojo oscuro -->
+        </Style>
 
+        <!-- Ventas -->
+        <Style x:Key="ChipVentas" TargetType="Button" BasedOn="{StaticResource Chip}">
+            <Setter Property="Background" Value="#2BAE66"/>
+            <!-- rojo claro -->
+            <Setter Property="Foreground" Value="White"/>
+            <!-- rojo oscuro -->
+        </Style>
 
-    <!-- ===== Inputs ===== -->
-    <!-- Estilo base genérico -->
-    <Style x:Key="FormBase" TargetType="Control">
-        <Setter Property="Height" Value="32"/>
-        <Setter Property="Padding" Value="8,0"/>
-        <Setter Property="BorderBrush" Value="#D0D5DD"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Background" Value="White"/>
-        <Setter Property="Foreground" Value="#0A2A45"/>
-    </Style>
+        <!-- Envio -->
+        <Style x:Key="ChipEnvio" TargetType="Button" BasedOn="{StaticResource Chip}">
+            <Setter Property="Background" Value="#4DA3FF"/>
+            <!-- rojo claro -->
+            <Setter Property="Foreground" Value="White"/>
+            <!-- rojo oscuro -->
+        </Style>
+
+    <!-- ===== INPUTS ===== -->
+        <!-- Estilo base genérico -->
+        <Style x:Key="FormBase" TargetType="Control">
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Padding" Value="8,0"/>
+            <Setter Property="BorderBrush" Value="#D0D5DD"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#0A2A45"/>
+        </Style>
 
     <!-- Estilos específicos según el control -->
-    <Style x:Key="FormTextBox" TargetType="TextBox" BasedOn="{StaticResource FormBase}"/>
-    <Style x:Key="FormPasswordBox" TargetType="PasswordBox" BasedOn="{StaticResource FormBase}"/>
+        <Style x:Key="FormTextBox" TargetType="TextBox" BasedOn="{StaticResource FormBase}"/>
+        <Style x:Key="FormPasswordBox" TargetType="PasswordBox" BasedOn="{StaticResource FormBase}"/>
 
-    <Style x:Key="FormCombo" TargetType="ComboBox" BasedOn="{StaticResource FormBase}">
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="VerticalContentAlignment" Value="Center"/>
-    </Style>
+        <Style x:Key="FormCombo" TargetType="ComboBox" BasedOn="{StaticResource FormBase}">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
 
-    <Style x:Key="FormDate" TargetType="DatePicker" BasedOn="{StaticResource FormBase}">
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <Setter Property="VerticalContentAlignment" Value="Center"/>
-    </Style>
+        <Style x:Key="FormDate" TargetType="DatePicker" BasedOn="{StaticResource FormBase}">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
 
-    <Style TargetType="DatePickerTextBox">
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-    </Style>
+        <Style TargetType="DatePickerTextBox">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
 
     <!-- SearchBox con “placeholder” usando Tag -->
-    <Style x:Key="SearchBox" TargetType="TextBox" BasedOn="{StaticResource FormTextBox}">
-        <Setter Property="Tag" Value="Buscar..."/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="TextBox">
-                    <Grid>
-                        <!-- El contenido real del TextBox -->
-                        <ScrollViewer x:Name="PART_ContentHost"/>
+        <Style x:Key="SearchBox" TargetType="TextBox" BasedOn="{StaticResource FormTextBox}">
+            <Setter Property="Tag" Value="Buscar..."/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Grid>
+                            <!-- El contenido real del TextBox -->
+                            <ScrollViewer x:Name="PART_ContentHost"/>
 
-                        <!-- El placeholder -->
-                        <TextBlock Text="{TemplateBinding Tag}"
-                               Foreground="#9AA0A6"
-                               Margin="8,0,0,0"
-                               VerticalAlignment="Center"
-                               IsHitTestVisible="False"
-                               Visibility="{Binding Text.IsEmpty, 
-                                            RelativeSource={RelativeSource TemplatedParent}, 
-                                            Converter={StaticResource BoolToVis}}"/>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+                            <!-- El placeholder -->
+                            <TextBlock Text="{TemplateBinding Tag}"
+                                       Foreground="#9AA0A6"
+                                       Margin="8,0,0,0"
+                                       VerticalAlignment="Center"
+                                       IsHitTestVisible="False"
+                                       Visibility="{Binding Text.IsEmpty, 
+                                                    RelativeSource={RelativeSource TemplatedParent}, 
+                                                    Converter={StaticResource BoolToVis}}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
     <!-- Contenedor de filtros -->
-    <Style x:Key="FilterPanel" TargetType="Border">
-        <Setter Property="CornerRadius" Value="10"/>
-        <Setter Property="Padding" Value="12"/>
-        <Setter Property="Background" Value="White"/>
-        <Setter Property="BorderBrush" Value="#E5E7EB"/>
-        <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="Effect">
-            <Setter.Value>
-                <DropShadowEffect BlurRadius="8" ShadowDepth="0" Opacity="0.08"/>
-            </Setter.Value>
-        </Setter>
-    </Style>
+        <Style x:Key="FilterPanel" TargetType="Border">
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="8" ShadowDepth="0" Opacity="0.08"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
     <!-- Barra general de encabezado de tabla -->
-    <Style x:Key="TableHeaderBar" TargetType="Grid">
-        <Setter Property="VerticalAlignment" Value="Center"/>
-        <Setter Property="Margin" Value="10,2,10,2"/>
-    </Style>
+        <Style x:Key="TableHeaderBar" TargetType="Grid">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="10,2,10,2"/>
+        </Style>
 
     <!-- Texto del título -->
-    <Style x:Key="TableHeaderTitle" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="16"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Foreground" Value="#0A2A45"/>
-        <Setter Property="VerticalAlignment" Value="Center"/>
-    </Style>
+        <Style x:Key="TableHeaderTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#0A2A45"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
 
     <!-- Buscador -->
-    <Style x:Key="TableSearchBox" TargetType="TextBox" BasedOn="{StaticResource SearchBox}">
-        <Setter Property="Width" Value="200"/>
-        <Setter Property="Height" Value="32"/>
-        <Setter Property="Margin" Value="10,0,0,0"/>
-    </Style>
+        <Style x:Key="TableSearchBox" TargetType="TextBox" BasedOn="{StaticResource SearchBox}">
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="Margin" Value="10,0,0,0"/>
+        </Style>
 
 
+ <!-- TABLA -->
     <!-- ===== DataGrid ===== -->
-    <Style x:Key="AppDataGrid" TargetType="DataGrid">
-        <Setter Property="AutoGenerateColumns" Value="False"/>
-        <Setter Property="HeadersVisibility" Value="Column"/>
-        <Setter Property="CanUserAddRows" Value="False"/>
-        <Setter Property="GridLinesVisibility" Value="All"/>
-        <!-- 🔹 Color de líneas -->
-        <Setter Property="RowBackground" Value="White"/>
-        <!-- 🔹 Fondo fila -->
-        <Setter Property="AlternatingRowBackground" Value="White"/>
-        <!-- 🔹 Fondo alternado -->
-        <Setter Property="Background" Value="White"/>
-        <!-- 🔹 Fondo general tabla -->
-        <Setter Property="BorderBrush" Value="#E5E7EB"/>
-        <Setter Property="BorderThickness" Value="1"/>
-    </Style>
+        <Style x:Key="AppDataGrid" TargetType="DataGrid">
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="HeadersVisibility" Value="Column"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="GridLinesVisibility" Value="All"/>
+            <!-- 🔹 Color de líneas -->
+            <Setter Property="RowBackground" Value="White"/>
+            <!-- 🔹 Fondo fila -->
+            <Setter Property="AlternatingRowBackground" Value="White"/>
+            <!-- 🔹 Fondo alternado -->
+            <Setter Property="Background" Value="White"/>
+            <!-- 🔹 Fondo general tabla -->
+            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
 
     <!-- ===== Columnas: Encabezados ===== -->
-    <Style TargetType="DataGridColumnHeader">
-        <Setter Property="Background" Value="#F3F4F6"/>
-        <Setter Property="Foreground" Value="#111827"/>
-        <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Padding" Value="8,6"/>
-        <Setter Property="BorderBrush" Value="#E5E7EB"/>
-        <Setter Property="BorderThickness" Value="0,0,1,1"/>
-        <!-- 🔹 línea inferior + separador -->
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <!-- 🔹 Título centrado -->
-        <Setter Property="VerticalContentAlignment" Value="Center"/>
-    </Style>
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#F3F4F6"/>
+            <Setter Property="Foreground" Value="#111827"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <!-- 🔹 línea inferior + separador -->
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <!-- 🔹 Título centrado -->
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
 
     <!-- ===== Columnas: Celdas ===== -->
-    <Style TargetType="DataGridCell">
-        <Setter Property="Background" Value="White"/>
-        <Setter Property="BorderBrush" Value="#E5E7EB"/>
-        <Setter Property="BorderThickness" Value="0,0,1,1"/>
-        <!-- 🔹 separadores entre celdas -->
-        <Setter Property="Padding" Value="6,4"/>
-        <Setter Property="HorizontalContentAlignment" Value="Center"/>
-        <!-- 🔹 Datos centrados -->
-        <Setter Property="VerticalContentAlignment" Value="Center"/>
-    </Style>
+        <Style TargetType="DataGridCell">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <!-- 🔹 separadores entre celdas -->
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <!-- 🔹 Datos centrados -->
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
 
 </ResourceDictionary>

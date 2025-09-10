@@ -40,6 +40,7 @@
     <None Remove="Assets\otros\mingcute--exit-line.png" />
     <None Remove="Assets\qlementine-icons--user-24.png" />
     <None Remove="Assets\report\mdi--report-line.png" />
+    <None Remove="Assets\report\streamline-plump--file-report.png" />
     <None Remove="Assets\solar--letter-linear.png" />
     <None Remove="Assets\solar--lock-outline.png" />
     <None Remove="Assets\tdesign--user-1 %281%29.png" />
@@ -67,6 +68,9 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\otros\material-symbols--list-rounded.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\report\streamline-plump--file-report.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\user\ci--user-02.png">

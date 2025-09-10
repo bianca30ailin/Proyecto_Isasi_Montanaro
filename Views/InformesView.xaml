@@ -5,9 +5,146 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Proyecto_Isasi_Montanaro.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="#F3EDF7">
-        <TextBlock Text="Vista: Informes" FontSize="20" 
-           />
+             d:DesignHeight="450" d:DesignWidth="800"
+             Background="#F3EDF7">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <!-- Encabezado -->
+            <RowDefinition Height="Auto"/>
+            <!-- Botones -->
+            <RowDefinition  Height="Auto"/>
+            <!-- Filtrado -->
+            <RowDefinition Height="Auto"/>
+            <!-- Titulo tabla-->
+            <RowDefinition Height="Auto"/>
+            <!-- Tabla -->
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <!-- FILA 0: TÍTULO -->
+        <StackPanel Grid.Row="0" Style="{StaticResource HeaderWithIcon}">
+            <Image Source="/Assets/report/streamline-plump--file-report.png" Style="{StaticResource HeaderIcon}"/>
+            <TextBlock Text="Gestión de Informes" Style="{StaticResource HeaderTitle}"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Chips a la izquierda -->
+            <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left">
+                <Button Content="Inventario" Style="{StaticResource ChipInventario}" Margin="0,0,10,0"/>
+                <Button Content="Ventas" Style="{StaticResource ChipVentas}" Margin="0,0,10,0"/>
+                <Button Content="Envio" Style="{StaticResource ChipEnvio}"/>
+            </StackPanel>
+
+            <!-- Botón a la derecha -->
+            <Button Content="Nuevo Informe"
+                Style="{StaticResource BtnPrimary}"
+                Grid.Column="1"
+                HorizontalAlignment="Right"/>
+        </Grid>
+
+
+        <!-- FILA 2: FILTROS -->
+        <Border Grid.Row="2" Style="{StaticResource FilterPanel}">
+            <Grid VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <!-- Categoría más ancha -->
+                    <ColumnDefinition Width="*"/>
+                    <!-- Fecha 1 -->
+                    <ColumnDefinition Width="*"/>
+                    <!-- Fecha 2 -->
+                    <ColumnDefinition Width="Auto"/>
+                    <!-- Botón Filtrar -->
+                    <ColumnDefinition Width="Auto"/>
+                    <!-- Botón Limpiar -->
+                </Grid.ColumnDefinitions>
+
+                <!-- ComboBox Categorías -->
+                <ComboBox Grid.Column="0"
+                      Style="{StaticResource FormCombo}"
+                      Margin="0,0,10,0"
+                      SelectedIndex="0">
+                    <ComboBoxItem IsEnabled="False" Foreground="Gray">
+                        Seleccione una categoria...
+                    </ComboBoxItem>
+                </ComboBox>
+
+                <!-- DatePickers -->
+                <DatePicker Grid.Column="1" 
+                    Style="{StaticResource FormDate}" 
+                    Margin="0,0,10,0"/>
+                <DatePicker Grid.Column="2" 
+                    Style="{StaticResource FormDate}" 
+                    Margin="0,0,16,0"/>
+
+                <!-- Botones -->
+                <Button Grid.Column="3" 
+                    Content="Filtrar" 
+                    Style="{StaticResource BtnPrimary}" 
+                    Margin="0,0,8,0"
+                    MinWidth="100"/>
+
+                <Button Grid.Column="4" 
+                    Content="Limpiar" 
+                    Style="{StaticResource BtnSecondary}" 
+                    Margin="0,0,0,0"
+                    MinWidth="100"/>
+            </Grid>
+        </Border>
+
+        <!-- FILA 3: Encabezado de tabla -->
+        <Border Grid.Row="3"
+        Background="White"
+        Margin="0,10,0,4" 
+        BorderBrush="#E5E7EB"
+        BorderThickness="0,0,0,1">
+            <!-- línea sutil abajo -->
+            <Grid Style="{StaticResource TableHeaderBar}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Título -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="0">
+                    <Image Source="/Assets/otros/material-symbols--list-rounded.png" Width="20" Height="20" Margin="0,0,8,0"/>
+                    <TextBlock Text="Listado de Informes" Style="{StaticResource TableHeaderTitle}"/>
+                </StackPanel>
+
+                <!-- Buscador -->
+                <TextBox Grid.Column="1"
+             Style="{StaticResource TableSearchBox}"/>
+            </Grid>
+        </Border>
+
+        <!-- FILA 4: TABLA -->
+        <DataGrid Grid.Row="4" Style="{StaticResource AppDataGrid}" Margin="0,2,0,0"
+          ItemsSource="{Binding Productos}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Numero"    Binding="{Binding Codigo}" Width="Auto"/>
+                <DataGridTextColumn Header="Nombre"  Binding="{Binding Nombre}" Width="*"/>
+                <DataGridTextColumn Header="Tipo" Binding="{Binding Categoria}" Width="*"/>
+                <DataGridTextColumn Header="Fecha"     Binding="{Binding Stock}" Width="*"/>
+                <DataGridTextColumn Header="Estado"    Binding="{Binding Precio, StringFormat=C}" Width="Auto"/>
+                <DataGridTextColumn Header="Creado por" Binding="{Binding CreadoPor}" Width="*"/>
+                <DataGridTemplateColumn Header="Acciones">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Editar"   Style="{StaticResource BtnSecondary}" Margin="0,0,6,0"/>
+                                <Button Content="Eliminar" Style="{StaticResource BtnSecondary}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
     </Grid>
 </UserControl>
