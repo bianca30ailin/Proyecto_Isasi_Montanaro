@@ -35,6 +35,7 @@
     <None Remove="Assets\mingcute--exit-line.png" />
     <None Remove="Assets\mynaui--truck %281%29.png" />
     <None Remove="Assets\mynaui--truck.png" />
+    <None Remove="Assets\otros\material-symbols--list-rounded.png" />
     <None Remove="Assets\otros\mingcute--exit-line.png" />
     <None Remove="Assets\qlementine-icons--user-24.png" />
     <None Remove="Assets\report\mdi--report-line.png" />
@@ -54,7 +55,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Remove="Styles\Gestiones.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Assets\box\logo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\otros\material-symbols--list-rounded.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\user\ci--user-02.png">
@@ -119,6 +127,7 @@
     <Resource Include="Assets\venta\icon-venta.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Styles\Gestiones.xaml" />
   </ItemGroup>
 
 </Project>

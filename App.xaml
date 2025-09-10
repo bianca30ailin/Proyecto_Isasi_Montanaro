@@ -5,9 +5,12 @@
              StartupUri="Views/LoginWindow.xaml">
 
     <Application.Resources>
-        
-             <ResourceDictionary Source="Styles/Styles.xaml"/>
-        
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/Gestiones.xaml"/>
+                <ResourceDictionary Source="Styles/Styles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>   
     
 </Application>
