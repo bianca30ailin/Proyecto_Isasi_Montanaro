@@ -12,8 +12,8 @@
     </Style>
 
     <Style x:Key="HeaderIcon" TargetType="Image">
-        <Setter Property="Width" Value="24"/>
-        <Setter Property="Height" Value="24"/>
+        <Setter Property="Width" Value="28"/>
+        <Setter Property="Height" Value="28"/>
         <Setter Property="Margin" Value="0,0,10,0"/>
     </Style>
 
@@ -27,7 +27,7 @@
 
     <!-- Botón primario -->
     <Style x:Key="BtnPrimary" TargetType="Button">
-        <Setter Property="Background" Value="#0A2A45"/>
+        <Setter Property="Background" Value="#001F3F"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Height" Value="30"/>
         <Setter Property="MinWidth" Value="100"/>
@@ -52,8 +52,8 @@
 
     <!-- Botón secundario -->
     <Style x:Key="BtnSecondary" TargetType="Button" BasedOn="{StaticResource BtnPrimary}">
-        <Setter Property="Background" Value="#EAEAEA"/>
-        <Setter Property="Foreground" Value="#0A2A45"/>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="Foreground" Value="#001F3F"/>
     </Style>
 
     <!-- Chip base -->

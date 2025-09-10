@@ -113,7 +113,7 @@
                 <!-- Título -->
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="0">
                     <Image Source="/Assets/otros/material-symbols--list-rounded.png" Width="20" Height="20" Margin="0,0,8,0"/>
-                    <TextBlock Text="Listado de Producto" Style="{StaticResource TableHeaderTitle}"/>
+                    <TextBlock Text="Listado de Productos" Style="{StaticResource TableHeaderTitle}"/>
                 </StackPanel>
 
                 <!-- Buscador -->
