@@ -16,6 +16,7 @@
     <None Remove="Assets\box\fluent--box-16-regular.png" />
     <None Remove="Assets\box\logo.png" />
     <None Remove="Assets\box\lucide--box.png" />
+    <None Remove="Assets\box\prime--box.png" />
     <None Remove="Assets\cliente2.png" />
     <None Remove="Assets\data\iconoir--database-backup.png" />
     <None Remove="Assets\ei--user.png" />
@@ -60,6 +61,9 @@
 
   <ItemGroup>
     <Resource Include="Assets\box\logo.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\box\prime--box.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\otros\material-symbols--list-rounded.png">

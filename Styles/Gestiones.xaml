@@ -12,8 +12,8 @@
     </Style>
 
     <Style x:Key="HeaderIcon" TargetType="Image">
-        <Setter Property="Width" Value="28"/>
-        <Setter Property="Height" Value="28"/>
+        <Setter Property="Width" Value="24"/>
+        <Setter Property="Height" Value="24"/>
         <Setter Property="Margin" Value="0,0,10,0"/>
     </Style>
 
@@ -111,14 +111,13 @@
         <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>
 
-    <!-- Y si querés afinar más: -->
     <Style TargetType="DatePickerTextBox">
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
     </Style>
 
     <!-- SearchBox con “placeholder” usando Tag -->
     <Style x:Key="SearchBox" TargetType="TextBox" BasedOn="{StaticResource FormTextBox}">
-        <Setter Property="Tag" Value="Buscar producto..."/>
+        <Setter Property="Tag" Value="Buscar..."/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">

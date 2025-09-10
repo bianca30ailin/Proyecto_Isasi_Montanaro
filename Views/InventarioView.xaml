@@ -24,7 +24,7 @@
         
         <!-- FILA 0: TÍTULO -->
         <StackPanel Grid.Row="0" Style="{StaticResource HeaderWithIcon}">
-            <Image Source="/Assets/box/bi--box.png" Style="{StaticResource HeaderIcon}"/>
+            <Image Source="/Assets/box/prime--box.png" Style="{StaticResource HeaderIcon}"/>
             <TextBlock Text="Gestión de Inventario" Style="{StaticResource HeaderTitle}"/>
         </StackPanel>
 
