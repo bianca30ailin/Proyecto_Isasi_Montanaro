@@ -20,6 +20,7 @@
     <None Remove="Assets\cliente2.png" />
     <None Remove="Assets\data\iconoir--database-backup.png" />
     <None Remove="Assets\ei--user.png" />
+    <None Remove="Assets\envio\cil--truck.png" />
     <None Remove="Assets\envio\mynaui--truck %281%29.png" />
     <None Remove="Assets\envio\mynaui--truck.png" />
     <None Remove="Assets\fluent--box-16-regular %281%29.png" />
@@ -29,6 +30,7 @@
     <None Remove="Assets\form\solar--lock-outline.png" />
     <None Remove="Assets\form\userlogin.png" />
     <None Remove="Assets\iconoir--database-backup.png" />
+    <None Remove="Assets\iconos\fluent--box-16-regular.ico" />
     <None Remove="Assets\lucide--box.png" />
     <None Remove="Assets\lucide--users %281%29.png" />
     <None Remove="Assets\lucide--users %282%29.png" />
@@ -65,6 +67,12 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\box\prime--box.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\envio\cil--truck.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\iconos\fluent--box-16-regular.ico">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\otros\material-symbols--list-rounded.png">

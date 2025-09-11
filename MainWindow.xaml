@@ -4,10 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Proyecto_Isasi_Montanaro.ViewModels"
-
+        Icon="/Assets/iconos/fluent--box-16-regular.ico"
         xmlns:local="clr-namespace:Proyecto_Isasi_Montanaro"
         mc:Ignorable="d"
-        Title="MainWindow" Width="1000" Height="500">
+        Title="SISIE" Width="1000" Height="500">
 
         <Window.DataContext>
             <vm:MainWindowViewModel/>

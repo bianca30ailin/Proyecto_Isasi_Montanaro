@@ -100,10 +100,10 @@
 
         <!-- FILA 3: Encabezado de tabla -->
         <Border Grid.Row="3"
-        Background="White"
-        Margin="0,10,0,4" 
-        BorderBrush="#E5E7EB"
-        BorderThickness="0,0,0,1">
+            Background="White"
+            Margin="0,10,0,4" 
+            BorderBrush="#E5E7EB"
+            BorderThickness="0,0,0,1">
             <!-- línea sutil abajo -->
             <Grid Style="{StaticResource TableHeaderBar}">
                 <Grid.ColumnDefinitions>
@@ -125,13 +125,13 @@
 
         <!-- FILA 4: TABLA -->
         <DataGrid Grid.Row="4" Style="{StaticResource AppDataGrid}" Margin="0,2,0,0"
-          ItemsSource="{Binding Productos}">
+          ItemsSource="{Binding Report}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Numero"    Binding="{Binding Codigo}" Width="Auto"/>
-                <DataGridTextColumn Header="Nombre"  Binding="{Binding Nombre}" Width="*"/>
-                <DataGridTextColumn Header="Tipo" Binding="{Binding Categoria}" Width="*"/>
-                <DataGridTextColumn Header="Fecha"     Binding="{Binding Stock}" Width="*"/>
-                <DataGridTextColumn Header="Estado"    Binding="{Binding Precio, StringFormat=C}" Width="Auto"/>
+                <DataGridTextColumn Header="Numero"    Binding="{Binding Nro_report}" Width="Auto"/>
+                <DataGridTextColumn Header="Nombre"  Binding="{Binding Nombre_report}" Width="*"/>
+                <DataGridTextColumn Header="Tipo" Binding="{Binding Tipo_report}" Width="*"/>
+                <DataGridTextColumn Header="Fecha"     Binding="{Binding Fecha_report}" Width="*"/>
+                <DataGridTextColumn Header="Estado"    Binding="{Binding Estado_report}" Width="Auto"/>
                 <DataGridTextColumn Header="Creado por" Binding="{Binding CreadoPor}" Width="*"/>
                 <DataGridTemplateColumn Header="Acciones">
                     <DataGridTemplateColumn.CellTemplate>

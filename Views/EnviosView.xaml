@@ -24,7 +24,7 @@
 
         <!-- FILA 0: TÍTULO -->
         <StackPanel Grid.Row="0" Style="{StaticResource HeaderWithIcon}">
-            <Image Source="/Assets/envio/mynaui--truck.png" Style="{StaticResource HeaderIcon}"/>
+            <Image Source="/Assets/envio/cil--truck.png" Style="{StaticResource HeaderIcon}"/>
             <TextBlock Text="Gestión de Envios" Style="{StaticResource HeaderTitle}"/>
         </StackPanel>
 
@@ -126,14 +126,14 @@
         <DataGrid Grid.Row="4" Style="{StaticResource AppDataGrid}" Margin="0,2,0,0"
               ItemsSource="{Binding Productos}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Codigo"    Binding="{Binding Codigo}" Width="Auto"/>
-                <DataGridTextColumn Header="ID venta"  Binding="{Binding Nombre}" Width="Auto"/>
-                <DataGridTextColumn Header="Costo" Binding="{Binding Categoria}" Width="Auto"/>
-                <DataGridTextColumn Header="Destinatario"     Binding="{Binding Stock}" Width="*"/>
-                <DataGridTextColumn Header="Servicio"    Binding="{Binding Precio, StringFormat=C}" Width="*"/>
-                <DataGridTextColumn Header="Fecha envio"    Binding="{Binding Estado}" Width="1*"/>
-                <DataGridTextColumn Header="Fecha recepcion" Binding="{Binding CreadoPor}" Width="1*"/>
-                <DataGridTextColumn Header="Estado" Binding="{Binding CreadoPor}" Width="*"/>
+                <DataGridTextColumn Header="Codigo"    Binding="{Binding Codigo_envio}" Width="Auto"/>
+                <DataGridTextColumn Header="ID venta"  Binding="{Binding Envio_venta}" Width="Auto"/>
+                <DataGridTextColumn Header="Costo" Binding="{Binding Costo_envio, StringFormat=C}" Width="Auto"/>
+                <DataGridTextColumn Header="Destinatario"     Binding="{Binding Destinatario}" Width="*"/>
+                <DataGridTextColumn Header="Servicio"    Binding="{Binding Servicio}" Width="*"/>
+                <DataGridTextColumn Header="Fecha envio"    Binding="{Binding Fecha_envio}" Width="1*"/>
+                <DataGridTextColumn Header="Fecha recepcion" Binding="{Binding Recepcion_envio}" Width="1*"/>
+                <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="*"/>
                 <DataGridTemplateColumn Header="Acciones">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

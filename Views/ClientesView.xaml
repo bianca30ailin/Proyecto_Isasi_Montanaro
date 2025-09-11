@@ -124,7 +124,7 @@
 
         <!-- FILA 4: TABLA -->
         <DataGrid Grid.Row="4" Style="{StaticResource AppDataGrid}" Margin="0,2,0,0"
-          ItemsSource="{Binding Productos}">
+          ItemsSource="{Binding Clientes}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Dni"    Binding="{Binding Codigo}" Width="Auto"/>
                 <DataGridTextColumn Header="Nombre"  Binding="{Binding Nombre}" Width="*"/>

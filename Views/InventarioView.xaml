@@ -24,7 +24,7 @@
         
         <!-- FILA 0: TÍTULO -->
         <StackPanel Grid.Row="0" Style="{StaticResource HeaderWithIcon}">
-            <Image Source="/Assets/box/prime--box.png" Style="{StaticResource HeaderIcon}"/>
+            <Image Source="/Assets/box/bi--box.png" Style="{StaticResource HeaderIcon}"/>
             <TextBlock Text="Gestión de Inventario" Style="{StaticResource HeaderTitle}"/>
         </StackPanel>
 
@@ -127,7 +127,7 @@
               ItemsSource="{Binding Productos}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Código"    Binding="{Binding Codigo}" Width="Auto"/>
-                <DataGridTextColumn Header="Producto"  Binding="{Binding Nombre}" Width="*"/>
+                <DataGridTextColumn Header="Producto"  Binding="{Binding Nombre_producto}" Width="*"/>
                 <DataGridTextColumn Header="Categoría" Binding="{Binding Categoria}" Width="*"/>
                 <DataGridTextColumn Header="Stock"     Binding="{Binding Stock}" Width="Auto"/>
                 <DataGridTextColumn Header="Precio"    Binding="{Binding Precio, StringFormat=C}" Width="Auto"/>

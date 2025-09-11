@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Proyecto_Isasi_Montanaro.Views"
         mc:Ignorable="d"
         Title="SISIE-Iniciar Sesión" Height="600" Width="450"
+        Icon="/Assets/iconos/fluent--box-16-regular.ico"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
         Background="#FFFFFF">

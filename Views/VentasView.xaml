@@ -42,9 +42,9 @@
 
             <!-- Botón a la derecha -->
             <Button Content="Nuevo Producto"
-        Style="{StaticResource BtnPrimary}"
-        Grid.Column="1"
-        HorizontalAlignment="Right"/>
+                Style="{StaticResource BtnPrimary}"
+                Grid.Column="1"
+                HorizontalAlignment="Right"/>
         </Grid>
 
 
@@ -124,7 +124,7 @@
 
         <!-- FILA 4: TABLA -->
         <DataGrid Grid.Row="4" Style="{StaticResource AppDataGrid}" Margin="0,2,0,0"
-          ItemsSource="{Binding Productos}">
+          ItemsSource="{Binding Ventas}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id"    Binding="{Binding Id_venta}" Width="Auto"/>
                 <DataGridTextColumn Header="Detalle"  Binding="{Binding Detalle_venta}" Width="*"/>
