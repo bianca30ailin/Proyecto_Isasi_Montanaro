@@ -23,5 +23,10 @@ namespace Proyecto_Isasi_Montanaro.Views.Formularios
         {
             InitializeComponent();
         }
+
+        private void Cancelar_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

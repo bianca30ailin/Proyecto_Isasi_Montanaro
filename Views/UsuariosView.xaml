@@ -42,9 +42,10 @@
 
             <!-- Botón a la derecha -->
             <Button Content="Nuevo Usuario"
-        Style="{StaticResource BtnPrimary}"
-        Grid.Column="1"
-        HorizontalAlignment="Right"/>
+                Style="{StaticResource BtnPrimary}"
+                Grid.Column="1"
+                Click="NuevoUsuario_Click"
+                HorizontalAlignment="Right"/>
         </Grid>
 
 
