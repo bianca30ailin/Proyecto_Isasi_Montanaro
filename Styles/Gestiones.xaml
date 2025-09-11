@@ -27,38 +27,38 @@
     
  <!-- BOTONES -->
     <!-- Botón primario -->
-        <Style x:Key="BtnPrimary" TargetType="Button">
-            <Setter Property="Background" Value="#001F3F"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="MinWidth" Value="100"/>
-            <!-- tamaño mínimo -->
-            <Setter Property="Padding" Value="10,8"/>
-            <!-- espacio interno -->
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
-                            <ContentPresenter HorizontalAlignment="Center"
+    <Style x:Key="BtnPrimary" TargetType="Button">
+        <Setter Property="Background" Value="#001F3F"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="MinWidth" Value="100"/>
+        <!-- tamaño mínimo -->
+        <Setter Property="Padding" Value="10,8"/>
+        <!-- espacio interno -->
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                        <ContentPresenter HorizontalAlignment="Center"
                                           VerticalAlignment="Center"
                                           RecognizesAccessKey="True"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <!-- Botón secundario -->
-        <Style x:Key="BtnSecondary" TargetType="Button" BasedOn="{StaticResource BtnPrimary}">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="Foreground" Value="#001F3F"/>
-        </Style>
+    <Style x:Key="BtnSecondary" TargetType="Button" BasedOn="{StaticResource BtnPrimary}">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="Foreground" Value="#001F3F"/>
+    </Style>
 
-    
- <!-- CHIPS -->
+
+    <!-- CHIPS -->
     <!-- Chip base -->
         <Style x:Key="Chip" TargetType="Button" BasedOn="{StaticResource BtnSecondary}">
             <Setter Property="Height" Value="30"/>

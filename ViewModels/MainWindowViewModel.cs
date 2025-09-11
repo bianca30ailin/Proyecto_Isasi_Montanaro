@@ -10,7 +10,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
-        private object _vistaActual;
+        private object _vistaActual = new Views.UserControl1();
         public object VistaActual
         {
             get => _vistaActual;
@@ -23,7 +23,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 }
             }
         }
-
+       
         private bool _isUsuariosActive;
         public bool IsUsuariosActive
         {
