@@ -39,6 +39,7 @@
     <None Remove="Assets\mynaui--truck %281%29.png" />
     <None Remove="Assets\mynaui--truck.png" />
     <None Remove="Assets\otros\Imagen1.png" />
+    <None Remove="Assets\otros\mage--edit.png" />
     <None Remove="Assets\otros\material-symbols--list-rounded.png" />
     <None Remove="Assets\otros\mingcute--exit-line.png" />
     <None Remove="Assets\qlementine-icons--user-24.png" />
@@ -77,6 +78,9 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\otros\Imagen1.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\otros\mage--edit.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\otros\material-symbols--list-rounded.png">

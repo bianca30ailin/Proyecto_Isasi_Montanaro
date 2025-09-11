@@ -106,4 +106,28 @@
         <!-- Borde del cuadradito -->
     </Style>
 
+
+ <!-- OTROS ESTILOS GENERALES -->
+    <!-- Estilo para ComboBox -->
+    <Style TargetType="ComboBox" x:Key="FormComboBox">
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="BorderBrush" Value="#072741"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Margin" Value="0,2,0,10"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="5,0"/>
+    </Style>
+
+    <!-- Título de formulario -->
+    <Style x:Key="FormHeaderIcon" TargetType="Image" BasedOn="{StaticResource HeaderIcon}">
+        <Setter Property="Width" Value="20"/>
+        <Setter Property="Height" Value="20"/>
+    </Style>
+
+    <Style x:Key="FormHeaderTitle" TargetType="TextBlock" BasedOn="{StaticResource HeaderTitle}">
+        <Setter Property="FontSize" Value="16"/>
+    </Style>
+
+    
 </ResourceDictionary>
