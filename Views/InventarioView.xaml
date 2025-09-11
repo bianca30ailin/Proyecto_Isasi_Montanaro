@@ -45,7 +45,7 @@
                 Style="{StaticResource BtnPrimary}"
                 Grid.Column="1"
                 HorizontalAlignment="Right"
-                Click="C_Click"/>
+                Click="NuevoProducto_Click"/>
         </Grid>
 
 

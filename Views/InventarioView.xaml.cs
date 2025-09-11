@@ -26,7 +26,7 @@ namespace Proyecto_Isasi_Montanaro.Views
             InitializeComponent();
         }
 
-        private void C_Click(object sender, RoutedEventArgs e)
+        private void NuevoProducto_Click(object sender, RoutedEventArgs e)
         {
             // Instanciás la ventana de producto
             var ventana = new Producto_form();
