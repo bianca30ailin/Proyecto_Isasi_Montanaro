@@ -63,7 +63,7 @@
                      Margin="0,30,0,10"
                      Grid.Row="0" Grid.Column="0"/>
 
-                <!-- Nombre -->
+                <!-- Dni -->
                 <TextBlock Text="Dni" 
                    Style="{StaticResource FormLabel}"
                    Grid.Row="0" Grid.Column="2" />

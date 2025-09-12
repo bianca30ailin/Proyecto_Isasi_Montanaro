@@ -41,9 +41,10 @@
             </StackPanel>
 
             <!-- Botón a la derecha -->
-            <Button Content="Nuevo Producto"
+            <Button Content="Nueva Venta"
                 Style="{StaticResource BtnPrimary}"
                 Grid.Column="1"
+                Click="NuevaVenta_Click"
                 HorizontalAlignment="Right"/>
         </Grid>
 

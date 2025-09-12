@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Proyecto_Isasi_Montanaro.Views.Formularios;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,15 @@ namespace Proyecto_Isasi_Montanaro.Views
         public VentasView()
         {
             InitializeComponent();
+        }
+
+        private void NuevaVenta_Click(object sender, RoutedEventArgs e)
+        {
+            // Instanciás la ventana de producto
+            var ventana = new Venta_form();
+
+            // Si querés que se abra como modal (bloquea hasta cerrar)
+            ventana.ShowDialog();
         }
     }
 }
