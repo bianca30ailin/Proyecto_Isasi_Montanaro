@@ -4,10 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Proyecto_Isasi_Montanaro.Views"
+             xmlns:vm="clr-namespace:Proyecto_Isasi_Montanaro.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Background="#F3EDF7">
 
+    <!-- Asignamos el ViewModel al DataContext -->
+    <UserControl.DataContext>
+        <vm:UsuariosViewModel />
+    </UserControl.DataContext>
+    
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <!-- Encabezado -->
@@ -127,11 +133,25 @@
         <DataGrid Grid.Row="4" Style="{StaticResource AppDataGrid}" Margin="0,2,0,0"
           ItemsSource="{Binding Usuarios}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Dni"    Binding="{Binding Dni_user}" Width="Auto"/>
-                <DataGridTextColumn Header="Nombre"  Binding="{Binding Nombre_user}" Width="*"/>
-                <DataGridTextColumn Header="Rol/es" Binding="{Binding Roles_user}" Width="*"/>
-                <DataGridTextColumn Header="Fecha creacion"     Binding="{Binding Creacion_user}" Width="Auto"/>
-                <DataGridTextColumn Header="Estado"    Binding="{Binding Estado}" Width="*"/>
+                <DataGridTextColumn Header="Dni"    Binding="{Binding Dni}" Width="Auto"/>
+                <DataGridTextColumn Header="Nombre"  Binding="{Binding Nombre}" Width="*"/>
+                
+                
+                <DataGridTemplateColumn Header="Rol/es">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ItemsControl ItemsSource="{Binding IdTipoUsuarios}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Nombre}" />
+                                        <!-- ajusta al campo real -->
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Estado"    Binding="{Binding Baja}" Width="*"/>
                 <DataGridTemplateColumn Header="Acciones">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
