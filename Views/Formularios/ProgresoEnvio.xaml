@@ -91,7 +91,7 @@
                     Margin="0,0,10,0"
                     Foreground="White"
                     Background="#757575"
-                    Click="Cancelar_Click"/>
+                    Click="Cancelar_Click" Cursor="Hand"/>
 
                 <!-- Modificar -->
                 <Button Style="{StaticResource BtnPrimary}" 
