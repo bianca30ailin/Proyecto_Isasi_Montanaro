@@ -54,7 +54,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
         }
 
-        // Implementación de INotifyPropertyChanged (si no la tienes ya)
+        // Implementación de INotifyPropertyChanged 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
         {

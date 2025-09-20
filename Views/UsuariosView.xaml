@@ -75,9 +75,9 @@
                 <ComboBox Grid.Column="0"
                   Style="{StaticResource FormCombo}"
                   Margin="0,0,10,0"
-                  SelectedIndex="0">
+                  SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged">
                     <ComboBoxItem IsEnabled="False" Foreground="Gray">
-                        Seleccione una categoria...
+                        Todos los estados...
                     </ComboBoxItem>
                 </ComboBox>
 
@@ -151,7 +151,9 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Estado"    Binding="{Binding Baja}" Width="*"/>
+                
+                <DataGridTextColumn Header="Baja"    Binding="{Binding Baja}" Width="*"/>
+                
                 <DataGridTemplateColumn Header="Acciones">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

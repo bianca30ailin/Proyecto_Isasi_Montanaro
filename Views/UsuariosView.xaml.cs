@@ -35,6 +35,11 @@ namespace Proyecto_Isasi_Montanaro.Views
             // Si querés que se abra como modal (bloquea hasta cerrar)
             ventana.ShowDialog();
         }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
     
 }
