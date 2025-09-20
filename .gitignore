@@ -10,7 +10,7 @@
 *.userosscache
 *.sln.docstates
 
-#Conexion de base de datos
+#Conexion a base de datos
 appsettings.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
