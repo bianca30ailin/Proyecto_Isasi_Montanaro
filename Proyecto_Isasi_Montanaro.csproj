@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="appsettings.json" />
     <None Remove="Assets\bi--box.png" />
     <None Remove="Assets\box\bi--box.png" />
     <None Remove="Assets\box\fluent--box-16-regular %281%29.png" />
@@ -63,6 +64,12 @@
 
   <ItemGroup>
     <Page Remove="Styles\Gestiones.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

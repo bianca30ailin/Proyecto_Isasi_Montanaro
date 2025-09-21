@@ -12,6 +12,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using static System.Collections.Specialized.BitVector32;
+using Proyecto_Isasi_Montanaro.Models;
+using Proyecto_Isasi_Montanaro.Helpers;
 
 namespace Proyecto_Isasi_Montanaro.Views
 {
@@ -70,21 +73,66 @@ namespace Proyecto_Isasi_Montanaro.Views
 
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
-            // Validar campos vacíos
             if (string.IsNullOrWhiteSpace(txtUsuario.Text) || string.IsNullOrWhiteSpace(txtPassword.Password))
             {
                 MessageBox.Show("Por favor, complete todos los campos.",
                                 "Campos requeridos",
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Warning);
-                return; // Salir sin abrir MainWindow
+                return;
             }
-            // Por ahora sin validación de cuentas, entra directo
-            MainWindow main = new MainWindow();
 
-            // Mostrar main y cerrar login
-            main.Show();
-            this.Close();
+            string usuarioInput = txtUsuario.Text.Trim();
+            string contraseña = txtPassword.Password.Trim();
+
+            using (var context = new ProyectoTallerContext())
+            {
+                Usuario? usuario;
+
+                if (usuarioInput.Equals("admin", StringComparison.OrdinalIgnoreCase))
+                {
+                    // 🔹 Caso especial: admin se valida con Nombre
+                    usuario = context.Usuarios
+                        .FirstOrDefault(u => u.Nombre == "admin" &&
+                                             u.Contraseña == contraseña &&
+                                             u.Baja == "NO");
+                }
+                else
+                {
+                    // 🔹 Los demás se validan con DNI
+                    if (int.TryParse(usuarioInput, out int dni))
+                    {
+                        usuario = context.Usuarios
+                            .FirstOrDefault(u => u.Dni == dni &&
+                                                 u.Contraseña == contraseña &&
+                                                 u.Baja == "NO");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Debe ingresar un DNI válido.",
+                                        "Error",
+                                        MessageBoxButton.OK,
+                                        MessageBoxImage.Warning);
+                        return;
+                    }
+                }
+
+                if (usuario != null)
+                {
+                    Sesion.UsuarioActual = usuario;
+
+                    MainWindow main = new MainWindow();
+                    main.Show();
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Usuario o contraseña incorrectos.",
+                                    "Error de inicio de sesión",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Error);
+                }
+            }
         }
     }
 }

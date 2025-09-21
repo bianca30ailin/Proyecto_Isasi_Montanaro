@@ -49,16 +49,24 @@
                 </TextBlock>
 
                 <!-- Texto Admin -->
-                <TextBlock  FontSize="14"
-                           Foreground="White" VerticalAlignment="Center"
-                           HorizontalAlignment="Right" Margin="0,30,15,0"
-                           Grid.Column="1">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Image Source="/Assets/user/ei--user.png" Width="20" Height="20" Margin="-10,0,5,0"/>
-                        <TextBlock Text="Admin" VerticalAlignment="Center"/>
-                    </StackPanel>   
-                 </TextBlock>
+                <ToggleButton Grid.Column="1"
+                      Style="{StaticResource UserButtonStyle}"
+                      IsChecked="{Binding IsPerfilActive}"
+                      HorizontalAlignment="Right"
+                      VerticalAlignment="Center"
+                      Margin="0,30,15,0">
+
+                      <StackPanel Orientation="Horizontal">
+                                <Image Source="/Assets/user/ei--user.png"
+                                   Width="20" Height="20"
+                                   Margin="0,0,5,0"/>
+                                <TextBlock Text="{Binding NombreUsuario}" 
+                           Foreground="White"
+                           FontSize="14"/>
+                       </StackPanel>
+                </ToggleButton>
             </Grid>
+            
 
             <!-- Menú blanco -->
             <Grid Grid.Row="1" Background="White">
@@ -86,7 +94,7 @@
                 </Grid.RowDefinitions>
 
                 <!-- Botones -->
-                <ToggleButton Name="BtnUsuarios" IsChecked="{Binding IsUsuariosActive}" Grid.Row="0" Grid.Column="1" Style="{StaticResource EstadoBoton}" Margin="0,20,0,10">
+                <ToggleButton Name="BtnUsuarios" IsChecked="{Binding IsUsuariosActive}" Grid.Row="0" Grid.Column="1" Style="{StaticResource EstadoBoton}" Margin="0,20,0,10" >
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <Image Source="Assets/user/lucide--users (2).png" Width="20" Height="20" Margin="5,0,25,0"/>
                         <TextBlock Text="Usuarios" VerticalAlignment="Center"/>
@@ -135,7 +143,7 @@
                     </StackPanel>
                 </ToggleButton>
 
-                <Button  Grid.Row="8" Grid.Column="1" Style="{StaticResource Cerrarsesion}" Margin="0,10">
+                <Button x:Name="btn_cerrar_sesion"  Grid.Row="8" Grid.Column="1" Style="{StaticResource Cerrarsesion}" Margin="0,10" Click="BtnCerrarSesion_Click">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <Image Source="/Assets/otros/mingcute--exit-line.png" Width="20" Height="20" Margin="0,0,10,0"/>
                         <TextBlock Text="Cerrar sesión" VerticalAlignment="Center"/>
