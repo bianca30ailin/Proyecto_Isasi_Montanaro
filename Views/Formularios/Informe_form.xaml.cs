@@ -1,5 +1,4 @@
-﻿using Proyecto_Isasi_Montanaro.Views.Formularios;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,25 +10,23 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Proyecto_Isasi_Montanaro.Views
+namespace Proyecto_Isasi_Montanaro.Views.Formularios
 {
     /// <summary>
-    /// Lógica de interacción para InformesView.xaml
+    /// Lógica de interacción para Window1.xaml
     /// </summary>
-    public partial class InformesView : UserControl
+    public partial class Informe_form : Window
     {
-        public InformesView()
+        public Informe_form()
         {
             InitializeComponent();
         }
 
-        private void NuevoInforme(object sender, RoutedEventArgs e)
+        private void Cancelar_Click(object sender, RoutedEventArgs e)
         {
-            var ventana = new Informe_form();
-            ventana.ShowDialog();
+            this.Close();
         }
     }
 }

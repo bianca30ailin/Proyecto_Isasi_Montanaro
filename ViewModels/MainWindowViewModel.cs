@@ -1,4 +1,5 @@
 ﻿
+using Proyecto_Isasi_Montanaro.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -130,6 +131,21 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
         }
 
+        private bool _isPerfilActive;
+        public bool IsPerfilActive
+        {
+            get => _isPerfilActive;
+            set
+            {
+                if (_isPerfilActive != value)
+                {
+                    _isPerfilActive = value;
+                    if (value) ActivarVista("Perfil");
+                    OnPropertyChanged(nameof(IsPerfilActive));
+                }
+            }
+        }
+
         private void ActivarVista(string vista)
         {
             // Resetear todos los botones
@@ -140,6 +156,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             _isVentasActive = false;
             _isEnviosActive = false;
             _isInformesActive = false;
+            _isPerfilActive = false;
 
             // Activamos solo el seleccionado
             switch (vista)
@@ -172,6 +189,10 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                     _isInformesActive = true;
                     VistaActual = new Views.InformesView();
                     break;
+                case "Perfil":
+                    _isPerfilActive = true;
+                    VistaActual = new Views.PerfilUsuarioView();
+                    break;
             }
 
             // Notificar cambios para que los botones se refresquen
@@ -182,8 +203,11 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             OnPropertyChanged(nameof(IsVentasActive));
             OnPropertyChanged(nameof(IsEnviosActive));
             OnPropertyChanged(nameof(IsInformesActive));
+            OnPropertyChanged(nameof(IsPerfilActive));
             OnPropertyChanged(nameof(VistaActual));
         }
+
+        public string NombreUsuario => Sesion.UsuarioActual?.Nombre ?? "Usuario";
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string nombre) =>
