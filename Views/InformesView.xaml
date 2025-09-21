@@ -45,6 +45,7 @@
             <Button Content="Nuevo Informe"
                 Style="{StaticResource BtnPrimary}"
                 Grid.Column="1"
+                Click="NuevoInforme"
                 HorizontalAlignment="Right"/>
         </Grid>
 
