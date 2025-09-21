@@ -50,8 +50,8 @@
             <Button Content="Nuevo Usuario"
                 Style="{StaticResource BtnPrimary}"
                 Grid.Column="1"
-                Click="NuevoUsuario_Click"
-                HorizontalAlignment="Right"/>
+                HorizontalAlignment="Right"
+                Command="{Binding AbrirFormularioUsuarioCommand}"/>
         </Grid>
 
 
