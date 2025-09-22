@@ -9,7 +9,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Disabled">
+                      HorizontalScrollBarVisibility="Disabled" Margin="0,0,0,-138">
             <Border CornerRadius="8"
                     Background="White"
                     BorderBrush="#E5E7EB"
@@ -93,43 +93,39 @@
                                   Margin="0,30,0,10"
                                   Grid.Row="1" Grid.Column="3"/>
 
-                        <!-- Usuario -->
-                        <TextBlock Text="Usuario" 
-                                    Style="{StaticResource FormLabel}" 
-                                    Grid.Row="2" Grid.Column="0"/>
-                        <TextBox Style="{StaticResource FormTextBox}" 
-                                  Margin="0,30,0,10"
-                                  Grid.Row="2" Grid.Column="0"/>
-
                         <!-- Contraseña -->
-                        <TextBlock Text="Contraseña" 
-                                     Style="{StaticResource FormLabel}" 
-                                     Grid.Row="3" Grid.Column="0"/>
-                        <PasswordBox Name="UsuarioPassword" 
-                                    Style="{StaticResource FormPasswordBox}"
-                                    Margin="0,30,0,10"
-                                    Grid.Row="3" Grid.Column="0"/>
+                        <TextBlock Text="Contraseña"  
+                           Style="{StaticResource FormLabel}"  
+                           Grid.Row="2" Grid.Column="0"/>
+                        <TextBox x:Name="txtContrasena"
+                           Style="{StaticResource FormTextBox}"
+                           Margin="0,30,0,10"
+                           Grid.Row="2" Grid.Column="0"
+                           Text="{Binding NuevoUsuario.Contraseña, Mode=TwoWay}"/>
 
-                        <!-- Perfil -->
-                        <TextBlock Text="Perfil" 
-                                    Style="{StaticResource FormLabel}" 
-                                    Grid.Row="4" Grid.Column="0"/>
-                        <ComboBox x:Name="cmbPerfiles"
-                                   Style="{StaticResource FormComboBox}"
-                                   Margin="0,30,0,10"
-                                   Grid.Row="4" Grid.Column="0"
-                                   Background="#072741"
-                                   IsEditable="True"
-                       StaysOpenOnEdit="True">
-                            <ComboBox.ItemTemplate>
+
+
+                        <!--Perfiles-->
+                        <TextBlock Text="Perfil"  
+                           Style="{StaticResource FormLabel}"  
+                           Grid.Row="4" Grid.Column="0"/>
+                        <ListBox x:Name="lstPerfiles"
+                             Grid.Row="4"
+                             Margin="10,30,102,10"
+                             Background="#E0E0E0"
+                             ItemsSource="{Binding PerfilesDisponibles}"
+                             SelectionMode="Multiple"
+                             BorderBrush="Transparent">
+                            <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <CheckBox Content="{Binding}" 
-                       IsChecked="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ComboBoxItem}, Mode=TwoWay}"/>
+                                    <CheckBox Content="{Binding TipoUsuario.Tipo}"
+                                      IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                      Foreground="#072741" />
                                 </DataTemplate>
-                            </ComboBox.ItemTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
 
-                            <ComboBoxItem>prueba</ComboBoxItem>
-                        </ComboBox>
+
 
                         <!-- Fecha de nacimiento -->
                         <TextBlock Text="Fecha de nacimiento" 
@@ -141,38 +137,24 @@
 
                         <!-- Telefono -->
                         <TextBlock Text="Telefono" 
-                                Style="{StaticResource FormLabel}" 
-                                Grid.Row="3" Grid.Column="3"/>
-                        <TextBox Style="{StaticResource FormTextBox}"
-                                 x:Name="txtTelefono"
-                                  Margin="0,30,0,10"
-                                  Grid.Row="3" Grid.Column="3"/>
+                           Style="{StaticResource FormLabel}" 
+                           Grid.Row="3" Grid.Column="3"/>
+                        <TextBox Style="{StaticResource FormTextBox}" 
+                         Margin="0,30,0,10"
+                         Grid.Row="3" Grid.Column="3"
+                         Text="{Binding , Mode=TwoWay}"/>
 
                         <!-- Correo -->
                         <TextBlock Text="Correo electronico" 
-                                Style="{StaticResource FormLabel}" 
-                                Grid.Row="4" Grid.Column="3"/>
+                           Style="{StaticResource FormLabel}" 
+                           Grid.Row="3" Grid.Column="0"/>
                         <TextBox Style="{StaticResource FormTextBox}" 
-                                 x:Name="txtCorreo"
-                                  Margin="0,30,0,10"
-                                  Grid.Row="4" Grid.Column="3"/>
+                             Margin="0,30,0,10"
+                             Grid.Row="3" Grid.Column="0"
+                             Text="{Binding , Mode=TwoWay}"/>
 
-                        <!-- Sexo -->
-                        <TextBlock Text="Sexo" 
-                                    Style="{StaticResource FormLabel}"
-                                    Grid.Row="5" Grid.Column="3"/>
-                        <StackPanel Orientation="Horizontal" 
-                                 Grid.Row="5" Grid.Column="3"
-                                 Margin="0,30,0,0"
-                                 HorizontalAlignment="Center" 
-                                 VerticalAlignment="Center">
-                                        <RadioButton Content="Mujer" 
-                                          GroupName="Sexo"
-                                          Margin="0,0,40,0"/>
-                                        <RadioButton Content="Hombre" 
-                                         GroupName="Sexo"
-                                         Margin="0,0,0,0"/>
-                        </StackPanel>
+                        
+                        
                     </Grid>
 
                     <!-- Botones -->
