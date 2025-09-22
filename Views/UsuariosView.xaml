@@ -145,8 +145,14 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Button Content="Editar"   Style="{StaticResource BtnSecondary}" Margin="0,0,6,0"/>
-                                <Button Content="Eliminar" Style="{StaticResource BtnSecondary}"/>
+                                <Button Content="Editar"   Style="{StaticResource BtnSecondary}" Margin="0,0,6,0"
+                                        Command="{Binding DataContext.EditarUsuarioCommand,
+                                          RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}" />
+                                <Button Content="Eliminar" Style="{StaticResource BtnSecondary}"
+                                        Command="{Binding DataContext.EliminarUsuarioCommand,
+                                        RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

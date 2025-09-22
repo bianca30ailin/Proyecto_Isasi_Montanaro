@@ -57,6 +57,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             CargarPerfiles();
         }
 
+
         // ======== MÉTODOS ======== //
         private void CargarPerfiles()
         {
@@ -99,32 +100,63 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                     return;
                 }
 
-                // Agregar usuario
-                _context.Usuarios.Add(NuevoUsuario);
-
-                // Agregar relaciones muchos a muchos
-                foreach (var perfil in PerfilesDisponibles.Where(p => p.IsSelected))
+                if (NuevoUsuario.IdUsuario == 0)
                 {
-                    var tipoUsuario = _context.TipoUsuarios.Find(perfil.TipoUsuario.IdTipoUsuario);
-                    NuevoUsuario.IdTipoUsuarios.Add(tipoUsuario);
+                    // === ALTA ===
+                    foreach (var perfil in PerfilesDisponibles.Where(p => p.IsSelected))
+                    {
+                        var tipoUsuario = _context.TipoUsuarios.Find(perfil.TipoUsuario.IdTipoUsuario);
+                        if (tipoUsuario != null)
+                            NuevoUsuario.IdTipoUsuarios.Add(tipoUsuario);
+                    }
+
+                    _context.Usuarios.Add(NuevoUsuario);
+                }
+                else
+                {
+                    // === EDICIÓN ===
+                    var usuarioEnDb = _context.Usuarios
+                                              .Include(u => u.IdTipoUsuarios)
+                                              .FirstOrDefault(u => u.IdUsuario == NuevoUsuario.IdUsuario);
+
+                    if (usuarioEnDb != null)
+                    {
+                        // Actualizar campos básicos
+                        usuarioEnDb.Nombre = NuevoUsuario.Nombre;
+                        usuarioEnDb.Apellido = NuevoUsuario.Apellido;
+                        usuarioEnDb.Dni = NuevoUsuario.Dni;
+                        usuarioEnDb.Email = NuevoUsuario.Email;
+                        usuarioEnDb.Telefono = NuevoUsuario.Telefono;
+                        usuarioEnDb.Direccion = NuevoUsuario.Direccion;
+                        usuarioEnDb.Contraseña = NuevoUsuario.Contraseña;
+                        usuarioEnDb.Baja = NuevoUsuario.Baja;
+                        usuarioEnDb.FechaNacimiento = NuevoUsuario.FechaNacimiento;
+
+                        // Actualizar perfiles
+                        usuarioEnDb.IdTipoUsuarios.Clear();
+                        foreach (var perfil in PerfilesDisponibles.Where(p => p.IsSelected))
+                        {
+                            var tipoUsuario = _context.TipoUsuarios.Find(perfil.TipoUsuario.IdTipoUsuario);
+                            if (tipoUsuario != null)
+                                usuarioEnDb.IdTipoUsuarios.Add(tipoUsuario);
+                        }
+                    }
                 }
 
                 // Guardar en la base
                 _context.SaveChanges();
 
                 MessageBox.Show(
-                    "Usuario guardado con éxito..",
+                    "Usuario guardado con éxito.",
                     "Éxito",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information
                 );
 
-                // Cerrar ventana
                 CerrarVentana(parameter);
             }
             catch (Exception ex)
             {
-                // Mostrar mensaje más detallado si hay InnerException
                 var inner = ex.InnerException?.Message ?? string.Empty;
                 MessageBox.Show(
                     $"Error al guardar el usuario:\n{ex.Message}\n{inner}",
@@ -142,6 +174,28 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             if (parameter is Window window)
             {
                 window.Close();
+            }
+        }
+
+        public UsuarioFormViewModel(Usuario usuarioExistente)
+        {
+            _context = new ProyectoTallerContext();
+
+            // Asignás el usuario que recibís
+            NuevoUsuario = usuarioExistente;
+
+            GuardarUsuarioCommand = new RelayCommand(GuardarUsuario);
+            CancelarCommand = new RelayCommand(Cancelar);
+
+            CargarPerfiles();
+
+            // Marcar como seleccionados los perfiles que ya tiene el usuario
+            foreach (var perfil in PerfilesDisponibles)
+            {
+                if (usuarioExistente.IdTipoUsuarios.Any(t => t.IdTipoUsuario == perfil.TipoUsuario.IdTipoUsuario))
+                {
+                    perfil.IsSelected = true;
+                }
             }
         }
 
