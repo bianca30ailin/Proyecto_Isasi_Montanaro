@@ -134,7 +134,8 @@
                      Style="{StaticResource FormLabel}" 
                      Grid.Row="2" Grid.Column="3"/>
                 <DatePicker Grid.Row="2" Grid.Column="3" 
-                    Style="{StaticResource FormDate}" 
+                    Style="{StaticResource FormDate}"
+                    SelectedDate="{Binding UsuarioActual.FechaNacimiento, Mode=TwoWay}" 
                     Margin="0,30,0,10"/>
 
                 <!-- Telefono -->
