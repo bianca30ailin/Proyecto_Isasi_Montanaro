@@ -1,10 +1,11 @@
-﻿using Proyecto_Isasi_Montanaro.Views.Formularios;
+﻿using Proyecto_Isasi_Montanaro.ViewModels;
+using Proyecto_Isasi_Montanaro.Views.Formularios;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -36,10 +37,8 @@ namespace Proyecto_Isasi_Montanaro.Views
             ventana.ShowDialog();
         }
 
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
+        
 
-        }
     }
-    
+
 }

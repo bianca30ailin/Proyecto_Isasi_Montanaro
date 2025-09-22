@@ -400,6 +400,14 @@ public partial class ProyectoTallerContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("email");
+            entity.Property(e => e.Direccion)
+                .HasMaxLength(100) 
+                .IsUnicode(false)
+                .HasColumnName("direccion");
+            entity.Property(e => e.Telefono)
+                .HasMaxLength(20) // Un tamaño razonable para un teléfono
+                .IsUnicode(false)
+                .HasColumnName("telefono");
             entity.Property(e => e.Nombre)
                 .HasMaxLength(50)
                 .IsUnicode(false)

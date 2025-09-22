@@ -11,7 +11,7 @@
 
     <!-- Asignamos el ViewModel al DataContext -->
     <UserControl.DataContext>
-        <vm:UsuariosViewModel />
+        <vm:UsuariosViewModel/>
     </UserControl.DataContext>
     
     <Grid Margin="20">
@@ -135,24 +135,11 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Dni"    Binding="{Binding Dni}" Width="Auto"/>
                 <DataGridTextColumn Header="Nombre"  Binding="{Binding Nombre}" Width="*"/>
-                
-                
-                <DataGridTemplateColumn Header="Rol/es">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <ItemsControl ItemsSource="{Binding IdTipoUsuarios}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Nombre}" />
-                                        <!-- ajusta al campo real -->
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                
-                <DataGridTextColumn Header="Baja"    Binding="{Binding Baja}" Width="*"/>
+
+
+                <DataGridTextColumn Header="Rol/es" Binding="{Binding PerfilesAsignados}" Width="*" />
+
+                    <DataGridTextColumn Header="Baja"    Binding="{Binding Baja}" Width="*"/>
                 
                 <DataGridTemplateColumn Header="Acciones">
                     <DataGridTemplateColumn.CellTemplate>
