@@ -4,12 +4,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Proyecto_Isasi_Montanaro.Views"
+             xmlns:helper="clr-namespace:Proyecto_Isasi_Montanaro.Helpers"
              mc:Ignorable="d" 
              Background="#F3EDF7"
              d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <helper:InverseBoolConverter x:Key="InverseBoolConverter"/>
+    </UserControl.Resources>
+
     <Grid>
         <ScrollViewer VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Disabled" Margin="0,0,0,-138">
+                      HorizontalScrollBarVisibility="Disabled" Margin="0">
             <Border CornerRadius="8"
                     Background="White"
                     BorderBrush="#E5E7EB"
@@ -62,16 +68,18 @@
                                     Style="{StaticResource FormLabel}"
                                     Grid.Row="0" Grid.Column="0" />
                         <TextBox Style="{StaticResource FormTextBox}" 
-                                  x:Name="txtNombre"
+                                   Text="{Binding UsuarioActual.Nombre, Mode=TwoWay}"
+                                   IsReadOnly="{Binding IsEditable, Converter={StaticResource InverseBoolConverter}}"
                                   Margin="0,30,0,10"
                                   Grid.Row="0" Grid.Column="0"/>
 
-                        <!-- Nombre -->
+                        <!-- Dni -->
                         <TextBlock Text="Dni" 
                                     Style="{StaticResource FormLabel}"
                                     Grid.Row="0" Grid.Column="2" />
                         <TextBox Style="{StaticResource FormTextBox}"
-                                 x:Name="txtDni"
+                                 Text="{Binding UsuarioActual.Dni, Mode=TwoWay}"
+                                 IsReadOnly="{Binding IsEditable, Converter={StaticResource InverseBoolConverter}}"
                                   Margin="0,30,0,10"
                                   Grid.Row="0" Grid.Column="2"/>
 
@@ -80,7 +88,8 @@
                                 Style="{StaticResource FormLabel}" 
                                 Grid.Row="1" Grid.Column="0"/>
                         <TextBox Style="{StaticResource FormTextBox}" 
-                                 x:Name="txtApellido"
+                                 Text="{Binding UsuarioActual.Apellido, Mode=TwoWay}"
+                                 IsReadOnly="{Binding IsEditable, Converter={StaticResource InverseBoolConverter}}"
                                   Margin="0,30,0,10"
                                   Grid.Row="1" Grid.Column="0"/>
 
@@ -89,7 +98,8 @@
                                 Style="{StaticResource FormLabel}" 
                                 Grid.Row="1" Grid.Column="3"/>
                         <TextBox Style="{StaticResource FormTextBox}" 
-                                  x:Name="txtDireccion"
+                                  Text="{Binding UsuarioActual.Direccion, Mode=TwoWay}"
+                                 IsReadOnly="{Binding IsEditable, Converter={StaticResource InverseBoolConverter}}"
                                   Margin="0,30,0,10"
                                   Grid.Row="1" Grid.Column="3"/>
 
@@ -101,7 +111,8 @@
                            Style="{StaticResource FormTextBox}"
                            Margin="0,30,0,10"
                            Grid.Row="2" Grid.Column="0"
-                           Text="{Binding NuevoUsuario.Contraseña, Mode=TwoWay}"/>
+                           Text="{Binding UsuarioActual.Contraseña, Mode=TwoWay}"
+                           IsReadOnly="{Binding IsEditable, Converter={StaticResource InverseBoolConverter}}"/>
 
 
 
@@ -115,12 +126,14 @@
                              Background="#E0E0E0"
                              ItemsSource="{Binding PerfilesDisponibles}"
                              SelectionMode="Multiple"
-                             BorderBrush="Transparent">
+                             BorderBrush="Transparent"
+                             IsHitTestVisible="False">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <CheckBox Content="{Binding TipoUsuario.Tipo}"
                                       IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                      Foreground="#072741" />
+                                      Foreground="#072741"
+                                      IsEnabled="False"/>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
@@ -132,7 +145,9 @@
                               Style="{StaticResource FormLabel}" 
                               Grid.Row="2" Grid.Column="3"/>
                         <DatePicker Grid.Row="2" Grid.Column="3" 
-                             Style="{StaticResource FormDate}" 
+                             Style="{StaticResource FormDate}"
+                            SelectedDate="{Binding UsuarioActual.FechaNacimiento, Mode=TwoWay}"
+                             IsEnabled="{Binding IsEditable}"
                              Margin="0,30,0,10"/>
 
                         <!-- Telefono -->
@@ -142,7 +157,8 @@
                         <TextBox Style="{StaticResource FormTextBox}" 
                          Margin="0,30,0,10"
                          Grid.Row="3" Grid.Column="3"
-                         Text="{Binding , Mode=TwoWay}"/>
+                         Text="{Binding UsuarioActual.Telefono, Mode=TwoWay}"
+                         IsReadOnly="{Binding IsEditable, Converter={StaticResource InverseBoolConverter}}"/>
 
                         <!-- Correo -->
                         <TextBlock Text="Correo electronico" 
@@ -151,10 +167,8 @@
                         <TextBox Style="{StaticResource FormTextBox}" 
                              Margin="0,30,0,10"
                              Grid.Row="3" Grid.Column="0"
-                             Text="{Binding , Mode=TwoWay}"/>
-
-                        
-                        
+                             Text="{Binding UsuarioActual.Email, Mode=TwoWay}"
+                             IsReadOnly="{Binding IsEditable, Converter={StaticResource InverseBoolConverter}}"/>
                     </Grid>
 
                     <!-- Botones -->
@@ -168,6 +182,7 @@
                              Margin="0,0,10,0"
                              Foreground="White"
                              Background="#757575"
+                             Command="{Binding CancelarCommand}"
                              />
 
                         <!-- Modificar -->
@@ -175,12 +190,15 @@
                              Content="Modificar" Width="100"
                              Margin="0,0,10,0"
                              Background="#F5A623"
+                             Command="{Binding ModificarCommand}"
                              />
 
                         <!-- Guardar -->
                         <Button Style="{StaticResource BtnPrimary}" 
                                  Content="Guardar" Width="100"
-                                 Background="#53BA83"/>
+                                 Background="#53BA83"
+                                Command="{Binding GuardarCommand}"
+                                IsEnabled="{Binding IsEditable}"/>
                     </StackPanel>
                 </Grid>
             </Border>

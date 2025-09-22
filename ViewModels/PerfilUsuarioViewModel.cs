@@ -6,131 +6,165 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Proyecto_Isasi_Montanaro.ViewModels
 {
-    public class PerfilUsuarioViewModel : INotifyPropertyChanged
+    namespace Proyecto_Isasi_Montanaro.ViewModels
     {
-        private readonly ProyectoTallerContext _context;
-
-        public PerfilUsuarioViewModel()
+        public class PerfilUsuarioViewModel : INotifyPropertyChanged
         {
-            _context = new ProyectoTallerContext();
+            private readonly ProyectoTallerContext _context;
 
-            IsEditable = false;
-
-            ModificarCommand = new RelayCommand(Modificar);
-            GuardarCommand = new RelayCommand(Guardar, CanGuardar);
-            CancelarCommand = new RelayCommand(Cancelar);
-
-            CargarUsuario();
-            CargarPerfiles();
-        }
-
-        private Usuario _usuarioActual;
-        public Usuario UsuarioActual
-        {
-            get => _usuarioActual;
-            set { _usuarioActual = value; OnPropertyChanged(); }
-        }
-
-        public ObservableCollection<PerfilItem> PerfilesDisponibles { get; set; } = new ObservableCollection<PerfilItem>();
-
-        private bool _isEditable;
-        public bool IsEditable
-        {
-            get => _isEditable;
-            set { _isEditable = value; OnPropertyChanged(); }
-        }
-
-        public ICommand ModificarCommand { get; }
-        public ICommand GuardarCommand { get; }
-        public ICommand CancelarCommand { get; }
-
-        private void CargarUsuario()
-        {
-            // Traer el usuario en sesión
-            UsuarioActual = Sesion.UsuarioEnSesion;
-
-            if (UsuarioActual != null && PerfilesDisponibles.Any())
+            public PerfilUsuarioViewModel()
             {
-                foreach (var perfil in PerfilesDisponibles)
+                _context = new ProyectoTallerContext();
+
+                IsEditable = false;
+
+                ModificarCommand = new RelayCommand(Modificar);
+                GuardarCommand = new RelayCommand(Guardar, CanGuardar);
+                CancelarCommand = new RelayCommand(Cancelar);
+
+                CargarPerfiles();  // Primero cargamos los perfiles
+                CargarUsuario();   // Luego marcamos los seleccionados
+            }
+
+            private Usuario _usuarioActual;
+            public Usuario UsuarioActual
+            {
+                get => _usuarioActual;
+                set { _usuarioActual = value; OnPropertyChanged(); }
+            }
+
+            public ObservableCollection<PerfilItem> PerfilesDisponibles { get; set; } = new();
+
+            private bool _isEditable;
+            public bool IsEditable
+            {
+                get => _isEditable;
+                set { _isEditable = value; OnPropertyChanged(); }
+            }
+
+            public ICommand ModificarCommand { get; }
+            public ICommand GuardarCommand { get; }
+            public ICommand CancelarCommand { get; }
+
+            private void CargarUsuario()
+            {
+                // Tomar usuario logueado
+                UsuarioActual = Sesion.UsuarioActual;
+
+                if (UsuarioActual != null)
                 {
-                    perfil.IsSelected = UsuarioActual.IdTipoUsuarios.Any(t => t.IdTipoUsuario == perfil.TipoUsuario.IdTipoUsuario);
+                    foreach (var perfil in PerfilesDisponibles)
+                    {
+                        perfil.IsSelected = UsuarioActual.IdTipoUsuarios
+                            .Any(t => t.IdTipoUsuario == perfil.TipoUsuario.IdTipoUsuario);
+                    }
                 }
             }
-        }
 
-        private void CargarPerfiles()
-        {
-            var perfiles = _context.TipoUsuarios.ToList();
-
-            PerfilesDisponibles.Clear();
-            foreach (var perfil in perfiles)
+            private void CargarPerfiles()
             {
-                PerfilesDisponibles.Add(new PerfilItem
+                var perfiles = _context.TipoUsuarios.ToList();
+
+                PerfilesDisponibles.Clear();
+                foreach (var perfil in perfiles)
                 {
-                    TipoUsuario = perfil,
-                    IsSelected = UsuarioActual?.IdTipoUsuarios.Any(t => t.IdTipoUsuario == perfil.IdTipoUsuario) ?? false
-                });
+                    PerfilesDisponibles.Add(new PerfilItem
+                    {
+                        TipoUsuario = perfil
+                    });
+                }
+            }
+
+            private void Modificar(object obj) => IsEditable = true;
+
+            private bool CanGuardar(object obj) => IsEditable;
+
+            private void Guardar(object obj)
+            {
+                if (UsuarioActual == null)
+                {
+                    MessageBox.Show("No se encontró un usuario válido.",
+                                    "Error",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Error);
+                    return;
+                }
+
+                try
+                {
+                    // Traer al usuario desde el contexto con sus perfiles
+                    var usuarioEnDb = _context.Usuarios
+                                              .Include(u => u.IdTipoUsuarios)
+                                              .FirstOrDefault(u => u.IdUsuario == UsuarioActual.IdUsuario);
+
+                    if (usuarioEnDb != null)
+                    {
+                        // Actualizar datos básicos (opcional)
+                        usuarioEnDb.Nombre = UsuarioActual.Nombre;
+                        usuarioEnDb.Apellido = UsuarioActual.Apellido;
+                        usuarioEnDb.Dni = UsuarioActual.Dni;
+                        usuarioEnDb.Email = UsuarioActual.Email;
+                        usuarioEnDb.Telefono = UsuarioActual.Telefono;
+                        usuarioEnDb.Direccion = UsuarioActual.Direccion;
+                        usuarioEnDb.Contraseña = UsuarioActual.Contraseña;
+                        usuarioEnDb.Baja = UsuarioActual.Baja;
+                        usuarioEnDb.FechaNacimiento = UsuarioActual.FechaNacimiento;
+
+                        // Actualizar perfiles
+                        usuarioEnDb.IdTipoUsuarios.Clear();
+                        foreach (var perfil in PerfilesDisponibles.Where(p => p.IsSelected))
+                        {
+                            var tipoUsuario = _context.TipoUsuarios.Find(perfil.TipoUsuario.IdTipoUsuario);
+                            if (tipoUsuario != null)
+                                usuarioEnDb.IdTipoUsuarios.Add(tipoUsuario);
+                        }
+
+                        _context.SaveChanges();
+
+                        MessageBox.Show("Los cambios se guardaron correctamente.",
+                                        "Éxito",
+                                        MessageBoxButton.OK,
+                                        MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("No se pudo encontrar el usuario en la base de datos.",
+                                        "Error",
+                                        MessageBoxButton.OK,
+                                        MessageBoxImage.Error);
+                    }
+
+                    IsEditable = false;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Ocurrió un error al guardar: {ex.Message}",
+                                    "Error",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Error);
+                }
+            }
+
+
+            private void Cancelar(object obj)
+            {
+                _context.Entry(UsuarioActual).Reload();
+                CargarPerfiles();
+                CargarUsuario();
+                IsEditable = false;
+            }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+            protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-
-        private void Modificar(object obj)
-        {
-            IsEditable = true;
-        }
-
-        private bool CanGuardar(object obj)
-        {
-            return IsEditable;
-        }
-
-        private void Guardar(object obj)
-        {
-            if (UsuarioActual == null) return;
-
-            UsuarioActual.IdTipoUsuarios = PerfilesDisponibles
-                .Where(p => p.IsSelected)
-                .Select(p => p.TipoUsuario)
-                .ToList();
-
-            _context.Usuarios.Update(UsuarioActual);
-            _context.SaveChanges();
-
-            IsEditable = false;
-        }
-
-        private void Cancelar(object obj)
-        {
-            _context.Entry(UsuarioActual).Reload();
-            CargarPerfiles();
-            IsEditable = false;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 
-    public class PerfilItem : INotifyPropertyChanged
-    {
-        public TipoUsuario TipoUsuario { get; set; }
-
-        private bool _isSelected;
-        public bool IsSelected
-        {
-            get => _isSelected;
-            set { _isSelected = value; OnPropertyChanged(); }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
 }

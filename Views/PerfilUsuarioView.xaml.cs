@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Proyecto_Isasi_Montanaro.Helpers;
+using Proyecto_Isasi_Montanaro.ViewModels.Proyecto_Isasi_Montanaro.ViewModels;
+using Proyecto_Isasi_Montanaro.Views;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,8 +15,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Proyecto_Isasi_Montanaro.Helpers;
-using Proyecto_Isasi_Montanaro.Views;
 
 
 namespace Proyecto_Isasi_Montanaro.Views
@@ -26,17 +27,9 @@ namespace Proyecto_Isasi_Montanaro.Views
         public PerfilUsuarioView()
         {
             InitializeComponent();
+            DataContext = new PerfilUsuarioViewModel();
         }
 
-        private void CargarDatosUsuario()
-        {
-            if (Sesion.UsuarioActual != null)
-            {
-                txtNombre.Text = Sesion.UsuarioActual.Nombre;
-                txtApellido.Text = Sesion.UsuarioActual.Apellido;
-                txtDni.Text = Sesion.UsuarioActual.Dni.ToString();
-                txtCorreo.Text = Sesion.UsuarioActual.Email;    
-            }
-        }
+        
     }
 }

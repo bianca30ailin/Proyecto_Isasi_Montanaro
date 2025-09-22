@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Proyecto_Isasi_Montanaro.Models;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Proyecto_Isasi_Montanaro.Models;
-using System.ComponentModel;
 
 namespace Proyecto_Isasi_Montanaro.ViewModels
 {
@@ -21,14 +22,13 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 if (_isSelected != value)
                 {
                     _isSelected = value;
-                    OnPropertyChanged(nameof(IsSelected));
+                    OnPropertyChanged();
                 }
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged(string propertyName)
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
