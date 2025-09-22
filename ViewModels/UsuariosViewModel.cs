@@ -91,8 +91,5 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-
-
-
     }
 }
