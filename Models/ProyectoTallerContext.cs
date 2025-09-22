@@ -65,7 +65,7 @@ public partial class ProyectoTallerContext : DbContext
             entity.ToTable("categoria");
 
             entity.Property(e => e.IdCategoria)
-                .ValueGeneratedNever()
+                
                 .HasColumnName("id_categoria");
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(150)
@@ -84,7 +84,7 @@ public partial class ProyectoTallerContext : DbContext
             entity.ToTable("ciudad");
 
             entity.Property(e => e.IdCiudad)
-                .ValueGeneratedNever()
+                
                 .HasColumnName("id_ciudad");
             entity.Property(e => e.IdProvincia).HasColumnName("id_provincia");
             entity.Property(e => e.Nombre)
@@ -132,7 +132,7 @@ public partial class ProyectoTallerContext : DbContext
             entity.ToTable("detalle_venta_producto");
 
             entity.Property(e => e.IdDetalle)
-                .ValueGeneratedNever()
+                
                 .HasColumnName("id_detalle");
             entity.Property(e => e.Cantidad).HasColumnName("cantidad");
             entity.Property(e => e.IdNroVenta).HasColumnName("id_nro_venta");
@@ -157,7 +157,7 @@ public partial class ProyectoTallerContext : DbContext
             entity.ToTable("direccion");
 
             entity.Property(e => e.IdDireccion)
-                .ValueGeneratedNever()
+                
                 .HasColumnName("id_direccion");
             entity.Property(e => e.Altura).HasColumnName("altura");
             entity.Property(e => e.CodigoPostal).HasColumnName("codigo_postal");
@@ -199,10 +199,10 @@ public partial class ProyectoTallerContext : DbContext
             entity.ToTable("envio");
 
             entity.Property(e => e.IdEnvio)
-                .ValueGeneratedNever()
+                
                 .HasColumnName("id_envio");
             entity.Property(e => e.Costo).HasColumnName("costo");
-            entity.Property(e => e.FehcaDespacho).HasColumnName("fehca_despacho");
+            entity.Property(e => e.FechaDespacho).HasColumnName("fehca_despacho");
             entity.Property(e => e.IdEstado).HasColumnName("id_estado");
             entity.Property(e => e.IdNroVenta).HasColumnName("id_nro_venta");
             entity.Property(e => e.IdTransporte).HasColumnName("id_transporte");
@@ -234,7 +234,7 @@ public partial class ProyectoTallerContext : DbContext
             entity.ToTable("estado");
 
             entity.Property(e => e.IdEstado)
-                .ValueGeneratedNever()
+                
                 .HasColumnName("id_estado");
             entity.Property(e => e.Nombre)
                 .HasMaxLength(15)
@@ -249,7 +249,7 @@ public partial class ProyectoTallerContext : DbContext
             entity.ToTable("producto");
 
             entity.Property(e => e.IdProducto)
-                .ValueGeneratedNever()
+                
                 .HasColumnName("id_producto");
             entity.Property(e => e.Baja)
                 .HasMaxLength(2)
@@ -282,7 +282,7 @@ public partial class ProyectoTallerContext : DbContext
             entity.ToTable("provincia");
 
             entity.Property(e => e.IdProvincia)
-                .ValueGeneratedNever()
+                
                 .HasColumnName("id_provincia");
             entity.Property(e => e.Nombre)
                 .HasMaxLength(50)
@@ -361,7 +361,7 @@ public partial class ProyectoTallerContext : DbContext
             entity.ToTable("transporte");
 
             entity.Property(e => e.IdTransporte)
-                .ValueGeneratedNever()
+                
                 .HasColumnName("id_transporte");
             entity.Property(e => e.Nombre)
                 .HasMaxLength(50)
@@ -380,7 +380,7 @@ public partial class ProyectoTallerContext : DbContext
             entity.HasIndex(e => e.Dni, "UQ__usuario__D87608A7AF6E4AC8").IsUnique();
 
             entity.Property(e => e.IdUsuario)
-                .ValueGeneratedNever()
+                
                 .HasColumnName("id_usuario");
             entity.Property(e => e.Apellido)
                 .HasMaxLength(50)
@@ -413,7 +413,7 @@ public partial class ProyectoTallerContext : DbContext
             entity.ToTable("venta");
 
             entity.Property(e => e.IdNroVenta)
-                .ValueGeneratedNever()
+                
                 .HasColumnName("id_nro_venta");
             entity.Property(e => e.DniCliente).HasColumnName("dni_cliente");
             entity.Property(e => e.FechaHora).HasColumnName("fechaHora");

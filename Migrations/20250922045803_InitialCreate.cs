@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Proyecto_Isasi_Montanaro.Migrations
 {
     /// <inheritdoc />
-    public partial class Inicial : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,7 +17,8 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                 name: "categoria",
                 columns: table => new
                 {
-                    id_categoria = table.Column<int>(type: "int", nullable: false),
+                    id_categoria = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     nombre = table.Column<string>(type: "varchar(20)", unicode: false, maxLength: 20, nullable: false),
                     descripcion = table.Column<string>(type: "varchar(150)", unicode: false, maxLength: 150, nullable: false)
                 },
@@ -43,7 +46,8 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                 name: "estado",
                 columns: table => new
                 {
-                    id_estado = table.Column<int>(type: "int", nullable: false),
+                    id_estado = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     nombre = table.Column<string>(type: "varchar(15)", unicode: false, maxLength: 15, nullable: false)
                 },
                 constraints: table =>
@@ -55,7 +59,8 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                 name: "provincia",
                 columns: table => new
                 {
-                    id_provincia = table.Column<int>(type: "int", nullable: false),
+                    id_provincia = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     nombre = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false)
                 },
                 constraints: table =>
@@ -80,7 +85,8 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                 name: "transporte",
                 columns: table => new
                 {
-                    id_transporte = table.Column<int>(type: "int", nullable: false),
+                    id_transporte = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     nombre = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false)
                 },
                 constraints: table =>
@@ -92,11 +98,14 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                 name: "usuario",
                 columns: table => new
                 {
-                    id_usuario = table.Column<int>(type: "int", nullable: false),
+                    id_usuario = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     nombre = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
                     apellido = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
                     dni = table.Column<int>(type: "int", nullable: false),
                     email = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    Telefono = table.Column<int>(type: "int", nullable: false),
+                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     contraseña = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
                     baja = table.Column<string>(type: "char(2)", unicode: false, fixedLength: true, maxLength: 2, nullable: false)
                 },
@@ -109,7 +118,8 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                 name: "producto",
                 columns: table => new
                 {
-                    id_producto = table.Column<int>(type: "int", nullable: false),
+                    id_producto = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     nombre = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
                     descripcion = table.Column<string>(type: "varchar(150)", unicode: false, maxLength: 150, nullable: false),
                     precio = table.Column<double>(type: "float", nullable: false),
@@ -132,7 +142,8 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                 name: "ciudad",
                 columns: table => new
                 {
-                    id_ciudad = table.Column<int>(type: "int", nullable: false),
+                    id_ciudad = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     nombre = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
                     id_provincia = table.Column<int>(type: "int", nullable: false)
                 },
@@ -172,7 +183,8 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                 name: "venta",
                 columns: table => new
                 {
-                    id_nro_venta = table.Column<int>(type: "int", nullable: false),
+                    id_nro_venta = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     fechaHora = table.Column<DateOnly>(type: "date", nullable: false),
                     total = table.Column<double>(type: "float", nullable: false),
                     dni_cliente = table.Column<int>(type: "int", nullable: false),
@@ -197,7 +209,8 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                 name: "direccion",
                 columns: table => new
                 {
-                    id_direccion = table.Column<int>(type: "int", nullable: false),
+                    id_direccion = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     nombreCalle = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false),
                     altura = table.Column<int>(type: "int", nullable: false),
                     codigo_postal = table.Column<int>(type: "int", nullable: false),
@@ -217,7 +230,8 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                 name: "detalle_venta_producto",
                 columns: table => new
                 {
-                    id_detalle = table.Column<int>(type: "int", nullable: false),
+                    id_detalle = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     cantidad = table.Column<int>(type: "int", nullable: false),
                     subtotal = table.Column<double>(type: "float", nullable: false),
                     id_nro_venta = table.Column<int>(type: "int", nullable: false),
@@ -242,7 +256,8 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                 name: "envio",
                 columns: table => new
                 {
-                    id_envio = table.Column<int>(type: "int", nullable: false),
+                    id_envio = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     fehca_despacho = table.Column<DateOnly>(type: "date", nullable: false),
                     num_seguimiento = table.Column<string>(type: "varchar(25)", unicode: false, maxLength: 25, nullable: false),
                     costo = table.Column<double>(type: "float", nullable: false),
@@ -290,6 +305,17 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                         column: x => x.id_direccion,
                         principalTable: "direccion",
                         principalColumn: "id_direccion");
+                });
+
+            migrationBuilder.InsertData(
+                table: "tipo_usuario",
+                columns: new[] { "id_tipo_usuario", "descripcion", "tipo" },
+                values: new object[,]
+                {
+                    { 1, "Usuario con acceso total al sistema", "Admin" },
+                    { 2, "Usuario que registra las ventas", "Ventas" },
+                    { 3, "Usuario que se encarga de registrar los envíos y sus estados", "Logistica" },
+                    { 4, "Usuario que se encarga del inventario", "Inventario" }
                 });
 
             migrationBuilder.CreateIndex(

@@ -61,8 +61,11 @@ namespace Proyecto_Isasi_Montanaro.Migrations
             modelBuilder.Entity("Proyecto_Isasi_Montanaro.Models.Categorium", b =>
                 {
                     b.Property<int>("IdCategoria")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id_categoria");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCategoria"));
 
                     b.Property<string>("Descripcion")
                         .IsRequired()
@@ -87,8 +90,11 @@ namespace Proyecto_Isasi_Montanaro.Migrations
             modelBuilder.Entity("Proyecto_Isasi_Montanaro.Models.Ciudad", b =>
                 {
                     b.Property<int>("IdCiudad")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id_ciudad");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdCiudad"));
 
                     b.Property<int>("IdProvincia")
                         .HasColumnType("int")
@@ -152,8 +158,11 @@ namespace Proyecto_Isasi_Montanaro.Migrations
             modelBuilder.Entity("Proyecto_Isasi_Montanaro.Models.DetalleVentaProducto", b =>
                 {
                     b.Property<int>("IdDetalle")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id_detalle");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDetalle"));
 
                     b.Property<int>("Cantidad")
                         .HasColumnType("int")
@@ -184,8 +193,11 @@ namespace Proyecto_Isasi_Montanaro.Migrations
             modelBuilder.Entity("Proyecto_Isasi_Montanaro.Models.Direccion", b =>
                 {
                     b.Property<int>("IdDireccion")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id_direccion");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdDireccion"));
 
                     b.Property<int>("Altura")
                         .HasColumnType("int")
@@ -217,14 +229,17 @@ namespace Proyecto_Isasi_Montanaro.Migrations
             modelBuilder.Entity("Proyecto_Isasi_Montanaro.Models.Envio", b =>
                 {
                     b.Property<int>("IdEnvio")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id_envio");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEnvio"));
 
                     b.Property<double>("Costo")
                         .HasColumnType("float")
                         .HasColumnName("costo");
 
-                    b.Property<DateOnly>("FehcaDespacho")
+                    b.Property<DateOnly>("FechaDespacho")
                         .HasColumnType("date")
                         .HasColumnName("fehca_despacho");
 
@@ -262,8 +277,11 @@ namespace Proyecto_Isasi_Montanaro.Migrations
             modelBuilder.Entity("Proyecto_Isasi_Montanaro.Models.Estado", b =>
                 {
                     b.Property<int>("IdEstado")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id_estado");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEstado"));
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -281,8 +299,11 @@ namespace Proyecto_Isasi_Montanaro.Migrations
             modelBuilder.Entity("Proyecto_Isasi_Montanaro.Models.Producto", b =>
                 {
                     b.Property<int>("IdProducto")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id_producto");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdProducto"));
 
                     b.Property<string>("Baja")
                         .IsRequired()
@@ -333,8 +354,11 @@ namespace Proyecto_Isasi_Montanaro.Migrations
             modelBuilder.Entity("Proyecto_Isasi_Montanaro.Models.Provincium", b =>
                 {
                     b.Property<int>("IdProvincia")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id_provincia");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdProvincia"));
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -404,8 +428,11 @@ namespace Proyecto_Isasi_Montanaro.Migrations
             modelBuilder.Entity("Proyecto_Isasi_Montanaro.Models.Transporte", b =>
                 {
                     b.Property<int>("IdTransporte")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id_transporte");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTransporte"));
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -423,8 +450,11 @@ namespace Proyecto_Isasi_Montanaro.Migrations
             modelBuilder.Entity("Proyecto_Isasi_Montanaro.Models.Usuario", b =>
                 {
                     b.Property<int>("IdUsuario")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id_usuario");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUsuario"));
 
                     b.Property<string>("Apellido")
                         .IsRequired()
@@ -448,6 +478,10 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                         .HasColumnType("varchar(50)")
                         .HasColumnName("contraseña");
 
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Dni")
                         .HasColumnType("int")
                         .HasColumnName("dni");
@@ -466,6 +500,9 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                         .HasColumnType("varchar(50)")
                         .HasColumnName("nombre");
 
+                    b.Property<int>("Telefono")
+                        .HasColumnType("int");
+
                     b.HasKey("IdUsuario")
                         .HasName("PK__usuario__4E3E04ADF6B4BB0C");
 
@@ -481,8 +518,11 @@ namespace Proyecto_Isasi_Montanaro.Migrations
             modelBuilder.Entity("Proyecto_Isasi_Montanaro.Models.Ventum", b =>
                 {
                     b.Property<int>("IdNroVenta")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("id_nro_venta");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdNroVenta"));
 
                     b.Property<int>("DniCliente")
                         .HasColumnType("int")
