@@ -12,20 +12,23 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
+        //se declara un campo privado al que se le asigna el usercontrol1
         private object _vistaActual = new Views.UserControl1();
         public object VistaActual
         {
+            //devolver el valor que tenga el campo privado
             get => _vistaActual;
             set
-            {
+            {//antes de asignar compara si el valor es distinto al actual
                 if (_vistaActual != value)
-                {
+                {//llama a la propiedad para avisar que la vista cambio
                     _vistaActual = value;
                     OnPropertyChanged(nameof(VistaActual));
                 }
             }
         }
        
+        //cada boton tiene una propiedad booleana que indica si esta activo o no
         private bool _isUsuariosActive;
         public bool IsUsuariosActive
         {

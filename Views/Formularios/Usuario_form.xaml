@@ -12,7 +12,7 @@
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
         Title="Producto" 
-        Height="560" Width="520">
+        Height="600" Width="520">
 
     <Window.DataContext>
         <vm:UsuarioFormViewModel/>
@@ -69,16 +69,18 @@
                 <TextBox Style="{StaticResource FormTextBox}" 
                      Margin="0,30,0,10"
                      Grid.Row="0" Grid.Column="0"
-                     Text="{Binding NuevoUsuario.Nombre, Mode=TwoWay}"/>
+                     Text="{Binding NuevoUsuario.Nombre, Mode=TwoWay}"
+                         PreviewKeyDown="TextBox_PreviewKeyDown"/>
 
-                <!-- Nombre -->
+                <!-- DNI -->
                 <TextBlock Text="Dni" 
                    Style="{StaticResource FormLabel}"
                    Grid.Row="0" Grid.Column="2" />
                 <TextBox Style="{StaticResource FormTextBox}" 
                      Margin="0,30,0,10"
                      Grid.Row="0" Grid.Column="2"
-                     Text="{Binding NuevoUsuario.Dni, Mode=TwoWay}"/>
+                     Text="{Binding NuevoUsuario.Dni, Mode=TwoWay}"
+                         PreviewKeyDown="TextBox_PreviewKeyDown"/>
 
                 <!-- Apellido -->
                 <TextBlock Text="Apellido" 
@@ -87,7 +89,8 @@
                 <TextBox Style="{StaticResource FormTextBox}" 
                      Margin="0,30,0,10"
                      Grid.Row="1" Grid.Column="0"
-                     Text="{Binding NuevoUsuario.Apellido, Mode=TwoWay}"/>
+                     Text="{Binding NuevoUsuario.Apellido, Mode=TwoWay}"
+                         PreviewKeyDown="TextBox_PreviewKeyDown"/>
 
                 <!-- Direccion -->
                 <TextBlock Text="Dirección" 
@@ -96,7 +99,8 @@
                 <TextBox Style="{StaticResource FormTextBox}" 
                      Margin="0,30,0,10"
                      Grid.Row="1" Grid.Column="3"
-                         Text="{Binding NuevoUsuario.Direccion, Mode=TwoWay}"/>
+                         Text="{Binding NuevoUsuario.Direccion, Mode=TwoWay}"
+                         PreviewKeyDown="TextBox_PreviewKeyDown"/>
 
                 <!--Contraseña-->
                 <TextBlock Text="Contraseña"  
@@ -106,7 +110,8 @@
                      Style="{StaticResource FormTextBox}"
                      Margin="0,30,0,10"
                      Grid.Row="2" Grid.Column="0"
-                     Text="{Binding NuevoUsuario.Contraseña, Mode=TwoWay}"/>
+                     Text="{Binding NuevoUsuario.Contraseña, Mode=TwoWay}"
+                          PreviewKeyDown="TextBox_PreviewKeyDown"/>
 
 
                 <!--Perfiles-->
@@ -145,18 +150,26 @@
                 <TextBox Style="{StaticResource FormTextBox}" 
                      Margin="0,30,0,10"
                      Grid.Row="3" Grid.Column="3"
-                     Text="{Binding NuevoUsuario.Telefono, Mode=TwoWay}"/>
+                     Text="{Binding NuevoUsuario.Telefono, Mode=TwoWay}"
+                         PreviewKeyDown="TextBox_PreviewKeyDown"/>
 
                 <!-- Correo -->
-                <TextBlock Text="Correo electronico" 
-                   Style="{StaticResource FormLabel}" 
-                   Grid.Row="3" Grid.Column="0"/>
-                <TextBox Style="{StaticResource FormTextBox}" 
-                     Margin="0,30,0,10"
-                     Grid.Row="3" Grid.Column="0"
-                     Text="{Binding NuevoUsuario.Email, Mode=TwoWay}"/>
+                <TextBlock Text="Correo electrónico"
+           Style="{StaticResource FormLabel}"
+           Grid.Row="3" Grid.Column="0"/>
 
-                
+                <StackPanel Grid.Row="3" Grid.Column="0" Margin="0,30,0,10">
+                    <TextBox Style="{StaticResource FormTextBox}"
+                         Text="{Binding NuevoUsuario.Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         LostFocus="EmailTextBox_LostFocus"
+                         Name="EmailTextBox"/>
+                    <TextBlock Name="EmailError"
+               Foreground="Red"
+               FontSize="12"
+                               PreviewKeyDown="TextBox_PreviewKeyDown"/>
+                </StackPanel>
+
+
             </Grid>
 
             <!-- Botones -->

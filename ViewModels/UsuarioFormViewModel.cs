@@ -17,7 +17,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         // ======== PROPIEDADES ======== //
         private Usuario _nuevoUsuario;
         public Usuario NuevoUsuario
-        {
+        {//devuelve el valor del campo
             get => _nuevoUsuario;
             set
             {
@@ -26,6 +26,9 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
         }
 
+        /// Colección observable de perfiles disponibles para el usuario.
+        // Cada elemento es un PerfilItem que envuelve un TipoUsuario de la base
+        // y agrega la propiedad IsSelected para saber si está tildado en la UI.
         private ObservableCollection<PerfilItem> _perfilesDisponibles;
         public ObservableCollection<PerfilItem> PerfilesDisponibles
         {
@@ -63,9 +66,9 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         {
             try
             {
-                // Trae los perfiles desde la base
+                // Trae los perfiles desde la base de datos (tabla TipoUsuarios)
                 var tipos = _context.TipoUsuarios.AsNoTracking().ToList();
-
+                // Crea un PerfilItem por cada TipoUsuario, inicializando IsSelected en false
                 PerfilesDisponibles = new ObservableCollection<PerfilItem>(
                     tipos.Select(t => new PerfilItem
                     {
@@ -92,7 +95,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
             try
             {
-                // Validación mínima: por ejemplo nombre o email
+                // Validación mínima
                 if (string.IsNullOrWhiteSpace(NuevoUsuario.Nombre))
                 {
                     MessageBox.Show("El nombre es obligatorio.",
@@ -104,7 +107,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 {
                     // === ALTA ===
                     foreach (var perfil in PerfilesDisponibles.Where(p => p.IsSelected))
-                    {
+                    {// Busca el TipoUsuario en la BD y lo agrega a la colección del usuario
                         var tipoUsuario = _context.TipoUsuarios.Find(perfil.TipoUsuario.IdTipoUsuario);
                         if (tipoUsuario != null)
                             NuevoUsuario.IdTipoUsuarios.Add(tipoUsuario);
@@ -132,7 +135,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                         usuarioEnDb.Baja = NuevoUsuario.Baja;
                         usuarioEnDb.FechaNacimiento = NuevoUsuario.FechaNacimiento;
 
-                        // Actualizar perfiles
+                        // Limpia los perfiles actuales y agrega los seleccionados
                         usuarioEnDb.IdTipoUsuarios.Clear();
                         foreach (var perfil in PerfilesDisponibles.Where(p => p.IsSelected))
                         {
