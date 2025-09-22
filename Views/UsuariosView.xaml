@@ -71,7 +71,7 @@
                     <!-- Botón Limpiar -->
                 </Grid.ColumnDefinitions>
 
-                <!-- ComboBox Categorías -->
+                <!-- ComboBox Categorías 
                 <ComboBox Grid.Column="0"
                   Style="{StaticResource FormCombo}"
                   Margin="0,0,10,0"
@@ -79,7 +79,7 @@
                     <ComboBoxItem IsEnabled="False" Foreground="Gray">
                         Todos los estados...
                     </ComboBoxItem>
-                </ComboBox>
+                </ComboBox> -->
 
                 <!-- DatePickers -->
                 <DatePicker Grid.Column="1" 

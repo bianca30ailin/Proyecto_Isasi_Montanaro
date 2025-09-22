@@ -25,6 +25,8 @@ public partial class Usuario
 
     public string Baja { get; set; } = null!;
 
+    public DateTime? FechaNacimiento { get; set; }
+
     //Propiedad de navegacion. Relacion uno a muchos. Un usuario puede registrar muchas ventas
     public virtual ICollection<Ventum> Venta { get; set; } = new List<Ventum>();
 

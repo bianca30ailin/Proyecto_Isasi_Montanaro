@@ -98,32 +98,25 @@
                      Grid.Row="1" Grid.Column="3"
                          Text="{Binding NuevoUsuario.Direccion, Mode=TwoWay}"/>
 
-                <!-- Usuario 
-                <TextBlock Text="Usuario" 
-                   Style="{StaticResource FormLabel}" 
-                   Grid.Row="2" Grid.Column="0"/>
-                <TextBox Style="{StaticResource FormTextBox}" 
-                     Margin="0,30,0,10"
-                     Grid.Row="2" Grid.Column="0"
-                     />-->
-                
                 <!--Contraseña-->
                 <TextBlock Text="Contraseña"  
                    Style="{StaticResource FormLabel}"  
-                   Grid.Row="3" Grid.Column="0"/>
-                        <TextBox x:Name="txtContrasena"
-                 Style="{StaticResource FormTextBox}"
-                 Margin="0,30,0,10"
-                 Grid.Row="3" Grid.Column="1"
-                 Text="{Binding NuevoUsuario.Contraseña, Mode=TwoWay}"/>
+                   Grid.Row="2" Grid.Column="0"/>
+                 <TextBox x:Name="txtContrasena"
+                     Style="{StaticResource FormTextBox}"
+                     Margin="0,30,0,10"
+                     Grid.Row="2" Grid.Column="0"
+                     Text="{Binding NuevoUsuario.Contraseña, Mode=TwoWay}"/>
 
+
+                <!--Perfiles-->
                 <TextBlock Text="Perfil"  
                        Style="{StaticResource FormLabel}"  
                        Grid.Row="4" Grid.Column="0"/>
                 <ListBox x:Name="lstPerfiles"
                      Grid.Row="4"
                      Margin="10,30,102,10"
-                     Background="#072741"
+                     Background="#E0E0E0"
                      ItemsSource="{Binding PerfilesDisponibles}"
                      SelectionMode="Multiple"
                      BorderBrush="Transparent">
@@ -131,7 +124,7 @@
                         <DataTemplate>
                             <CheckBox Content="{Binding TipoUsuario.Tipo}"
                       IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                      Foreground="White" />
+                      Foreground="#072741" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -156,28 +149,13 @@
                 <!-- Correo -->
                 <TextBlock Text="Correo electronico" 
                    Style="{StaticResource FormLabel}" 
-                   Grid.Row="4" Grid.Column="3"/>
+                   Grid.Row="3" Grid.Column="0"/>
                 <TextBox Style="{StaticResource FormTextBox}" 
                      Margin="0,30,0,10"
-                     Grid.Row="4" Grid.Column="3"
+                     Grid.Row="3" Grid.Column="0"
                      Text="{Binding NuevoUsuario.Email, Mode=TwoWay}"/>
 
-                <!-- Sexo 
-                <TextBlock Text="Sexo" 
-                   Style="{StaticResource FormLabel}"
-                   Grid.Row="5" Grid.Column="3"/>
-                <StackPanel Orientation="Horizontal" 
-                    Grid.Row="5" Grid.Column="3"
-                    Margin="0,30,0,0"
-                    HorizontalAlignment="Center" 
-                    VerticalAlignment="Center">
-                        <RadioButton Content="Mujer" 
-                             GroupName="Sexo"
-                             Margin="0,0,40,0"/>
-                        <RadioButton Content="Hombre" 
-                            GroupName="Sexo"
-                            Margin="0,0,0,0"/>
-                </StackPanel>-->
+                
             </Grid>
 
             <!-- Botones -->
