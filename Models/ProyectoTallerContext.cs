@@ -327,6 +327,32 @@ public partial class ProyectoTallerContext : DbContext
                         j.IndexerProperty<int>("IdUsuario").HasColumnName("id_usuario");
                     });
         });
+        modelBuilder.Entity<TipoUsuario>().HasData(
+            new TipoUsuario
+            {
+                IdTipoUsuario = 1,
+                Tipo = "Admin",
+                Descripcion = "Usuario con acceso total al sistema"
+            },
+            new TipoUsuario
+            {
+                IdTipoUsuario = 2,
+                Tipo = "Ventas",
+                Descripcion = "Usuario que registra las ventas"
+            },
+            new TipoUsuario
+            {
+                IdTipoUsuario = 3,
+                Tipo = "Logistica",
+                Descripcion = "Usuario que se encarga de registrar los envíos y sus estados"
+            },
+            new TipoUsuario
+            {
+                IdTipoUsuario = 4,
+                Tipo = "Inventario",
+                Descripcion = "Usuario que se encarga del inventario"
+            }
+        );
 
         modelBuilder.Entity<Transporte>(entity =>
         {
