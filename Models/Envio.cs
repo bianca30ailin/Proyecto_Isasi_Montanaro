@@ -7,7 +7,7 @@ public partial class Envio
 {
     public int IdEnvio { get; set; }
 
-    public DateOnly FehcaDespacho { get; set; }
+    public DateOnly FechaDespacho { get; set; }
 
     public string NumSeguimiento { get; set; } = null!;
 
