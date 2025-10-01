@@ -64,6 +64,7 @@
                          PreviewKeyDown="TxtPassword_PreviewKeyDown"/>
 
             <CheckBox Content="Recordar usuario" 
+                      Name="chkRecordarUsuario"
                       Style="{StaticResource CustomCheckBox}"/>
 
             <Button Name="btnLogin" 

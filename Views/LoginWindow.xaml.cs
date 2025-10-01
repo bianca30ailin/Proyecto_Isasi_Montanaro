@@ -17,6 +17,7 @@ using Proyecto_Isasi_Montanaro.Models;
 using Proyecto_Isasi_Montanaro.Helpers;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace Proyecto_Isasi_Montanaro.Views
 {
     /// <summary>
@@ -28,6 +29,12 @@ namespace Proyecto_Isasi_Montanaro.Views
         {
             InitializeComponent();
             txtUsuario.Focus(); //inicia en el input usuario
+
+            // 🔹 Al abrir la ventana, cargar el último usuario recordado
+            txtUsuario.Text = Settings.Default.UltimoUsuario;
+
+            // Opcional: si había usuario guardado, marcar el checkbox
+            chkRecordarUsuario.IsChecked = !string.IsNullOrEmpty(Settings.Default.UltimoUsuario);
         }
 
         private void TxtUsuario_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -121,6 +128,17 @@ namespace Proyecto_Isasi_Montanaro.Views
 
                 if (usuario != null)
                 {
+                    // Guardar el usuario si está marcado el checkbox
+                    if (chkRecordarUsuario.IsChecked == true)
+                    {
+                        Settings.Default.UltimoUsuario = txtUsuario.Text.Trim();
+                        Settings.Default.Save();
+                    }
+                    else
+                    {
+                        Settings.Default.UltimoUsuario = string.Empty;
+                        Settings.Default.Save();
+                    }
                     Sesion.UsuarioActual = usuario;
 
                     MainWindow main = new MainWindow();
