@@ -66,6 +66,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 }
             }
 
+
             private void CargarPerfiles()
             {
                 var perfiles = _context.TipoUsuarios.ToList();
@@ -114,15 +115,6 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                         usuarioEnDb.Contraseña = UsuarioActual.Contraseña;
                         usuarioEnDb.Baja = UsuarioActual.Baja;
                         usuarioEnDb.FechaNacimiento = UsuarioActual.FechaNacimiento;
-
-                        // Actualizar perfiles
-                        usuarioEnDb.IdTipoUsuarios.Clear();
-                        foreach (var perfil in PerfilesDisponibles.Where(p => p.IsSelected))
-                        {
-                            var tipoUsuario = _context.TipoUsuarios.Find(perfil.TipoUsuario.IdTipoUsuario);
-                            if (tipoUsuario != null)
-                                usuarioEnDb.IdTipoUsuarios.Add(tipoUsuario);
-                        }
 
                         _context.SaveChanges();
 

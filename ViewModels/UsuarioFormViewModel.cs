@@ -1,10 +1,12 @@
 ﻿using Proyecto_Isasi_Montanaro.Commands;
+using Proyecto_Isasi_Montanaro.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Proyecto_Isasi_Montanaro.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 
@@ -26,9 +28,40 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
         }
 
-        /// Colección observable de perfiles disponibles para el usuario.
-        // Cada elemento es un PerfilItem que envuelve un TipoUsuario de la base
-        // y agrega la propiedad IsSelected para saber si está tildado en la UI.
+        //propiedad para habilitar edicion
+        private bool _isEditable;
+        public bool IsEditable
+        {
+            get => _isEditable;
+            set
+            {
+                if (_isEditable != value)
+                {
+                    _isEditable = value;
+                    OnPropertyChanged(nameof(IsEditable));
+
+                }
+            }
+        }
+
+        //propiedad para habilitar boton o ocultarlo
+        private bool _esNuevo;
+        public bool EsNuevo
+        {
+            get => _esNuevo;
+            set
+            {
+                if (_esNuevo != value)
+                {
+                    _esNuevo = value;
+                    OnPropertyChanged(nameof(EsNuevo));
+                }
+            }
+        }
+
+
+        /*Colección observable de perfiles disponibles para el usuario. Cada elemento es un PerfilItem 
+         que envuelve un TipoUsuario de la base y agrega la propiedad IsSelected para saber si está tildado en la UI.*/
         private ObservableCollection<PerfilItem> _perfilesDisponibles;
         public ObservableCollection<PerfilItem> PerfilesDisponibles
         {
@@ -43,8 +76,10 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         // ======== COMANDOS ======== //
         public ICommand GuardarUsuarioCommand { get; }
         public ICommand CancelarCommand { get; }
+        public ICommand ModificarCommand { get; }
 
-        // ======== CONSTRUCTOR ======== //
+       
+        // CONSTRUCTOR ALTA //
         public UsuarioFormViewModel()
         {
             _context = new ProyectoTallerContext();
@@ -54,14 +89,48 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 Baja = "no" // valor por defecto
             };
 
-            GuardarUsuarioCommand = new RelayCommand(GuardarUsuario);
+            IsEditable = true; //permito editar campos
+            EsNuevo = true;//marco que es nuevo usuario
+
+            GuardarUsuarioCommand = new RelayCommand(GuardarUsuario, CanGuardar);
             CancelarCommand = new RelayCommand(Cancelar);
+            ModificarCommand = new RelayCommand(Modificar);
 
             CargarPerfiles();
         }
 
+        // CONSTRUCTOR MODIFICACION //
+        public UsuarioFormViewModel(Usuario usuarioExistente)
+        {
+            _context = new ProyectoTallerContext();
+
+            // Asignás el usuario que recibís
+            NuevoUsuario = usuarioExistente;
+
+            IsEditable = false; // modo edición arranca bloqueado
+            EsNuevo = false; // marco que no es nuevo usuario
+
+            GuardarUsuarioCommand = new RelayCommand(GuardarUsuario, CanGuardar);
+            CancelarCommand = new RelayCommand(Cancelar);
+            ModificarCommand = new RelayCommand(Modificar);
+
+            CargarPerfiles();
+
+            // Marcar como seleccionados los perfiles que ya tiene el usuario
+            foreach (var perfil in PerfilesDisponibles)
+            {
+                if (usuarioExistente.IdTipoUsuarios.Any(t => t.IdTipoUsuario == perfil.TipoUsuario.IdTipoUsuario))
+                {
+                    perfil.IsSelected = true;
+                }
+            }
+        }
 
         // ======== MÉTODOS ======== //
+
+        private void Modificar(object obj) => IsEditable = true;
+        private bool CanGuardar(object obj) => IsEditable;
+
         private void CargarPerfiles()
         {
             try
@@ -180,27 +249,6 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
         }
 
-        public UsuarioFormViewModel(Usuario usuarioExistente)
-        {
-            _context = new ProyectoTallerContext();
-
-            // Asignás el usuario que recibís
-            NuevoUsuario = usuarioExistente;
-
-            GuardarUsuarioCommand = new RelayCommand(GuardarUsuario);
-            CancelarCommand = new RelayCommand(Cancelar);
-
-            CargarPerfiles();
-
-            // Marcar como seleccionados los perfiles que ya tiene el usuario
-            foreach (var perfil in PerfilesDisponibles)
-            {
-                if (usuarioExistente.IdTipoUsuarios.Any(t => t.IdTipoUsuario == perfil.TipoUsuario.IdTipoUsuario))
-                {
-                    perfil.IsSelected = true;
-                }
-            }
-        }
 
         // ======== INotifyPropertyChanged ======== //
         public event PropertyChangedEventHandler PropertyChanged;

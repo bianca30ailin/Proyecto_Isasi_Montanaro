@@ -14,9 +14,6 @@
         Title="Producto" 
         Height="600" Width="520">
 
-    <Window.DataContext>
-        <vm:UsuarioFormViewModel/>
-    </Window.DataContext>
 
     <!-- Borde redondeado -->
     <Border CornerRadius="8"
@@ -70,7 +67,8 @@
                      Margin="0,30,0,10"
                      Grid.Row="0" Grid.Column="0"
                      Text="{Binding NuevoUsuario.Nombre, Mode=TwoWay}"
-                         PreviewKeyDown="TextBox_PreviewKeyDown"/>
+                     IsReadOnly="{Binding IsEditable, Converter={StaticResource InverseBoolConverter}}"
+                     PreviewKeyDown="TextBox_PreviewKeyDown"/>
 
                 <!-- DNI -->
                 <TextBlock Text="Dni" 
@@ -80,7 +78,8 @@
                      Margin="0,30,0,10"
                      Grid.Row="0" Grid.Column="2"
                      Text="{Binding NuevoUsuario.Dni, Mode=TwoWay}"
-                         PreviewKeyDown="TextBox_PreviewKeyDown"/>
+                     IsReadOnly="{Binding IsEditable, Converter={StaticResource InverseBoolConverter}}"
+                     PreviewKeyDown="TextBox_PreviewKeyDown"/>
 
                 <!-- Apellido -->
                 <TextBlock Text="Apellido" 
@@ -90,7 +89,8 @@
                      Margin="0,30,0,10"
                      Grid.Row="1" Grid.Column="0"
                      Text="{Binding NuevoUsuario.Apellido, Mode=TwoWay}"
-                         PreviewKeyDown="TextBox_PreviewKeyDown"/>
+                     IsReadOnly="{Binding IsEditable, Converter={StaticResource InverseBoolConverter}}"
+                     PreviewKeyDown="TextBox_PreviewKeyDown"/>
 
                 <!-- Direccion -->
                 <TextBlock Text="Dirección" 
@@ -99,8 +99,9 @@
                 <TextBox Style="{StaticResource FormTextBox}" 
                      Margin="0,30,0,10"
                      Grid.Row="1" Grid.Column="3"
-                         Text="{Binding NuevoUsuario.Direccion, Mode=TwoWay}"
-                         PreviewKeyDown="TextBox_PreviewKeyDown"/>
+                     Text="{Binding NuevoUsuario.Direccion, Mode=TwoWay}"
+                     IsReadOnly="{Binding IsEditable, Converter={StaticResource InverseBoolConverter}}"
+                     PreviewKeyDown="TextBox_PreviewKeyDown"/>
 
                 <!--Contraseña-->
                 <TextBlock Text="Contraseña"  
@@ -111,7 +112,8 @@
                      Margin="0,30,0,10"
                      Grid.Row="2" Grid.Column="0"
                      Text="{Binding NuevoUsuario.Contraseña, Mode=TwoWay}"
-                          PreviewKeyDown="TextBox_PreviewKeyDown"/>
+                     IsReadOnly="{Binding IsEditable, Converter={StaticResource InverseBoolConverter}}"
+                     PreviewKeyDown="TextBox_PreviewKeyDown"/>
 
 
                 <!--Perfiles-->
@@ -128,8 +130,19 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <CheckBox Content="{Binding TipoUsuario.Tipo}"
-                      IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                      Foreground="#072741" />
+                              IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                              Foreground="#072741">
+                                <CheckBox.Style>
+                                    <Style TargetType="CheckBox">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding DataContext.IsEditable, RelativeSource={RelativeSource AncestorType=Window}}" Value="True">
+                                                <Setter Property="IsEnabled" Value="True"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </CheckBox.Style>
+                            </CheckBox>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -140,7 +153,8 @@
                      Grid.Row="2" Grid.Column="3"/>
                 <DatePicker Grid.Row="2" Grid.Column="3" 
                     Style="{StaticResource FormDate}"
-                    SelectedDate="{Binding UsuarioActual.FechaNacimiento, Mode=TwoWay}" 
+                    SelectedDate="{Binding UsuarioActual.FechaNacimiento, Mode=TwoWay}"
+                    IsEnabled="{Binding IsEditable}"
                     Margin="0,30,0,10"/>
 
                 <!-- Telefono -->
@@ -151,22 +165,23 @@
                      Margin="0,30,0,10"
                      Grid.Row="3" Grid.Column="3"
                      Text="{Binding NuevoUsuario.Telefono, Mode=TwoWay}"
-                         PreviewKeyDown="TextBox_PreviewKeyDown"/>
+                     IsReadOnly="{Binding IsEditable, Converter={StaticResource InverseBoolConverter}}"
+                     PreviewKeyDown="TextBox_PreviewKeyDown"/>
 
                 <!-- Correo -->
                 <TextBlock Text="Correo electrónico"
-           Style="{StaticResource FormLabel}"
-           Grid.Row="3" Grid.Column="0"/>
-
+                   Style="{StaticResource FormLabel}"
+                   Grid.Row="3" Grid.Column="0"/>   
                 <StackPanel Grid.Row="3" Grid.Column="0" Margin="0,30,0,10">
                     <TextBox Style="{StaticResource FormTextBox}"
                          Text="{Binding NuevoUsuario.Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         IsReadOnly="{Binding IsEditable, Converter={StaticResource InverseBoolConverter}}"  
                          LostFocus="EmailTextBox_LostFocus"
                          Name="EmailTextBox"/>
                     <TextBlock Name="EmailError"
-               Foreground="Red"
-               FontSize="12"
-                               PreviewKeyDown="TextBox_PreviewKeyDown"/>
+                           Foreground="Red"
+                           FontSize="12"  
+                           PreviewKeyDown="TextBox_PreviewKeyDown"/>
                 </StackPanel>
 
 
@@ -190,6 +205,8 @@
                     Content="Modificar" Width="100"
                     Margin="0,0,10,0"
                     Background="#F5A623"
+                    Visibility="{Binding EsNuevo, Converter={StaticResource InverseBoolToVisibilityConverter}}" 
+                    Command="{Binding ModificarCommand}"
                 />
 
                 <!-- Guardar -->

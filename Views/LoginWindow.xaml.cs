@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using static System.Collections.Specialized.BitVector32;
 using Proyecto_Isasi_Montanaro.Models;
 using Proyecto_Isasi_Montanaro.Helpers;
+using Microsoft.EntityFrameworkCore;
 
 namespace Proyecto_Isasi_Montanaro.Views
 {
@@ -93,6 +94,7 @@ namespace Proyecto_Isasi_Montanaro.Views
                 {
                     // 🔹 Caso especial: admin se valida con Nombre
                     usuario = context.Usuarios
+                        .Include(u => u.IdTipoUsuarios)             // tabla intermedia
                         .FirstOrDefault(u => u.Nombre == "admin" &&
                                              u.Contraseña == contraseña &&
                                              u.Baja == "NO");
