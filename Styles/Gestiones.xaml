@@ -201,48 +201,70 @@
         </Style>
 
 
- <!-- TABLA -->
     <!-- ===== DataGrid ===== -->
-        <Style x:Key="AppDataGrid" TargetType="DataGrid">
-            <Setter Property="AutoGenerateColumns" Value="False"/>
-            <Setter Property="HeadersVisibility" Value="Column"/>
-            <Setter Property="CanUserAddRows" Value="False"/>
-            <Setter Property="GridLinesVisibility" Value="All"/>
-            <!-- 🔹 Color de líneas -->
-            <Setter Property="RowBackground" Value="White"/>
-            <!-- 🔹 Fondo fila -->
-            <Setter Property="AlternatingRowBackground" Value="White"/>
-            <!-- 🔹 Fondo alternado -->
-            <Setter Property="Background" Value="White"/>
-            <!-- 🔹 Fondo general tabla -->
-            <Setter Property="BorderBrush" Value="#E5E7EB"/>
-            <Setter Property="BorderThickness" Value="1"/>
-        </Style>
+    <Style x:Key="AppDataGrid" TargetType="DataGrid" >
+        <Setter Property="AutoGenerateColumns" Value="False"/>
+        <Setter Property="HeadersVisibility" Value="Column"/>
+        <Setter Property="CanUserAddRows" Value="False"/>
+        <Setter Property="GridLinesVisibility" Value="None"/>
+        <!-- 🔹 Colores -->
+        <Setter Property="RowBackground" Value="White"/>
+        <Setter Property="AlternatingRowBackground" Value="White"/>
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="BorderBrush" Value="#E5E7EB"/>
+        <Setter Property="BorderThickness" Value="1"/>
+
+        <!-- 🔹 Estilo para filas -->
+        <Setter Property="RowStyle">
+            <Setter.Value>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="White"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="BorderBrush" Value="#E5E7EB"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <!-- Naranja clarito con 20% opacidad -->
+                            <Setter Property="Background" Value="#33F5A623"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Setter.Value>
+        </Setter>
+
+        <!-- 🔹 Estilo para celdas -->
+        <Setter Property="CellStyle">
+            <Setter.Value>
+                <Style TargetType="DataGridCell">
+                    <!-- Fondo transparente para que se vea el color de la fila -->
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderBrush" Value="#E5E7EB"/>
+                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                    <Setter Property="Padding" Value="12,4,6,4"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <!-- Mantener transparente incluso al seleccionar -->
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <!-- ===== Columnas: Encabezados ===== -->
-        <Style TargetType="DataGridColumnHeader">
-            <Setter Property="Background" Value="#F3F4F6"/>
-            <Setter Property="Foreground" Value="#111827"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Padding" Value="8,6"/>
-            <Setter Property="BorderBrush" Value="#E5E7EB"/>
-            <Setter Property="BorderThickness" Value="0,0,1,1"/>
-            <!-- 🔹 línea inferior + separador -->
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <!-- 🔹 Título centrado -->
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
-
-    <!-- ===== Columnas: Celdas ===== -->
-        <Style TargetType="DataGridCell">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="#E5E7EB"/>
-            <Setter Property="BorderThickness" Value="0,0,1,1"/>
-            <!-- 🔹 separadores entre celdas -->
-            <Setter Property="Padding" Value="6,4"/>
-            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            <!-- 🔹 Datos centrados -->
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
+    <Style TargetType="DataGridColumnHeader">
+        <Setter Property="Background" Value="#F3F4F6"/>
+        <Setter Property="Foreground" Value="#111827"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Padding" Value="8,6"/>
+        <Setter Property="BorderBrush" Value="#E5E7EB"/>
+        <Setter Property="BorderThickness" Value="0,0,1,1"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
 
 </ResourceDictionary>

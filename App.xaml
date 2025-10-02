@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:helper="clr-namespace:Proyecto_Isasi_Montanaro.Helpers"
              xmlns:local="clr-namespace:Proyecto_Isasi_Montanaro"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              StartupUri="Views/LoginWindow.xaml">
 
     <Application.Resources>
@@ -15,6 +16,7 @@
            
             <helper:InverseBoolConverter x:Key="InverseBoolConverter"/>
             <helper:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+            <helper:ToLowerConverter x:Key="ToLowerConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 

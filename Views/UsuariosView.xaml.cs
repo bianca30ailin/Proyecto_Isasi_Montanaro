@@ -37,8 +37,10 @@ namespace Proyecto_Isasi_Montanaro.Views
             ventana.ShowDialog();
         }
 
-        
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
 
+        }
     }
 
 }

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Proyecto_Isasi_Montanaro.Views"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:vm="clr-namespace:Proyecto_Isasi_Montanaro.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
@@ -131,28 +132,32 @@
 
         <!-- FILA 4: TABLA -->
         <DataGrid Grid.Row="4" Style="{StaticResource AppDataGrid}" Margin="0,2,0,0"
-          ItemsSource="{Binding Usuarios}">
+          ItemsSource="{Binding Usuarios}" SelectionChanged="DataGrid_SelectionChanged"
+          IsReadOnly="True">
+
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Dni"    Binding="{Binding Dni}" Width="Auto"/>
                 <DataGridTextColumn Header="Nombre"  Binding="{Binding Nombre}" Width="*"/>
-
-
                 <DataGridTextColumn Header="Rol/es" Binding="{Binding PerfilesAsignados}" Width="*" />
-
-                    <DataGridTextColumn Header="Baja"    Binding="{Binding Baja}" Width="*"/>
-                
-                <DataGridTemplateColumn Header="Acciones">
+                <DataGridTextColumn Header="Baja"    Binding="{Binding Baja, Converter={StaticResource ToLowerConverter}}" Width="*"/>
+                <DataGridTemplateColumn Header="Acciones" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Button Content="Editar"   Style="{StaticResource BtnSecondary}" Margin="0,0,6,0"
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <!-- Ver -->
+                                <Button Style="{StaticResource BtnSecondary}" Height="15" MinWidth="15" Margin="2,2,4,2"
                                         Command="{Binding DataContext.EditarUsuarioCommand,
-                                          RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                        CommandParameter="{Binding}" />
-                                <Button Content="Eliminar" Style="{StaticResource BtnSecondary}"
+                                                  RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}">
+                                    <iconPacks:PackIconMaterial Kind="Eye" Width="16" Height="16" Foreground="#F5A623"/>
+                                </Button>
+                                <!-- Eliminar -->
+                                <Button Style="{StaticResource BtnSecondary}" Height="15" MinWidth="15" Margin="4,2,2,2"
                                         Command="{Binding DataContext.EliminarUsuarioCommand,
-                                        RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                        CommandParameter="{Binding}"/>
+                                                  RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}">
+                                    <iconPacks:PackIconMaterial Kind="DeleteEmpty" Width="16" Height="16" Foreground="#D64545"/>
+                                </Button>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
