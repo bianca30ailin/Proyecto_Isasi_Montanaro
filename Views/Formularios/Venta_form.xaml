@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Proyecto_Isasi_Montanaro.Views.Formularios"
+        xmlns:vm="clr-namespace:Proyecto_Isasi_Montanaro.ViewModels"
         mc:Ignorable="d"
         AllowsTransparency="True"
         Background="Transparent"
@@ -12,7 +13,11 @@
         Title="Producto" 
         Height="Auto" Width="520">
 
-  <ScrollViewer VerticalScrollBarVisibility="Auto"
+    <Window.DataContext>
+        <vm:VentasViewModel/>
+    </Window.DataContext>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Disabled">
         <!-- Borde redondeado -->
     <Border CornerRadius="8"
@@ -154,70 +159,87 @@
                    Margin="0,30,0,10"
                    Grid.Row="5" Grid.Column="0"/>
 
-                <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10,0,0">
+                    <!-- Envio -->
+                <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10,0,0" Orientation="Horizontal">
                     <TextBlock Text="Envio" 
-                       Style="{StaticResource FormLabel}" 
-                       FontWeight="Bold" 
-                       Margin="0,0,0,5"/>
-                    <Separator Background="#E5E7EB" Height="1" Margin="0,0,0,10"/>
-                </StackPanel>
+                               Style="{StaticResource FormLabel}" 
+                               FontWeight="Bold" 
+                                VerticalAlignment="Center"
+                               Margin="0,0,10,0"/>
+                    <CheckBox Name="CkEnvio"
+                              IsChecked="{Binding EnvioHabilitado, Mode=TwoWay}"
+                              VerticalAlignment="Center"/>
+                    </StackPanel>
 
-                <!-- Direccion -->
+                    <!-- Separador -->
+                <Separator Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3"
+                           Background="#E5E7EB"
+                           Height="1"
+                           Margin="0,35,0,0"/>
+
+                    <!-- Direccion -->
                 <TextBlock Text="Direccion" 
-                   Style="{StaticResource FormLabel}" 
-                   Grid.Row="7" Grid.Column="0"/>
+                           Style="{StaticResource FormLabel}" 
+                           Grid.Row="7" Grid.Column="0"/>
                 <ComboBox Style="{StaticResource FormComboBox}" 
-                  Margin="0,30,0,10"
-                  Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3">
+                          Margin="0,30,0,10"
+                          Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3"
+                          IsEnabled="{Binding EnvioHabilitado}">
                 </ComboBox>
 
                 <!-- Calle -->
                 <TextBlock Text="Calle" 
-                     Style="{StaticResource FormLabel}"
-                     Grid.Row="8" Grid.Column="0" />
+                           Style="{StaticResource FormLabel}"
+                           Grid.Row="8" Grid.Column="0" />
                 <TextBox Style="{StaticResource FormTextBox}" 
-                   Margin="0,30,0,10"
-                   Grid.Row="8" Grid.Column="0"/>
+                           Margin="0,30,0,10"
+                           Grid.Row="8" Grid.Column="0"
+                           IsEnabled="{Binding EnvioHabilitado}"/>
 
                 <!-- Altura -->
                 <TextBlock Text="Altura" 
-                     Style="{StaticResource FormLabel}"
-                     Grid.Row="8" Grid.Column="2" />
+                           Style="{StaticResource FormLabel}"
+                           Grid.Row="8" Grid.Column="2" />
                 <TextBox Style="{StaticResource FormTextBox}" 
-                   Margin="0,30,0,10"
-                   Grid.Row="8" Grid.Column="2"/>
+                         Margin="0,30,0,10"
+                         Grid.Row="8" Grid.Column="2"
+                         IsEnabled="{Binding EnvioHabilitado}"/>
 
                 <!-- Provincia -->
                 <TextBlock Text="Provincia" 
-                     Style="{StaticResource FormLabel}"
-                     Grid.Row="9" Grid.Column="0" />
+                         Style="{StaticResource FormLabel}"
+                         Grid.Row="9" Grid.Column="0" />
                 <TextBox Style="{StaticResource FormTextBox}" 
-                   Margin="0,30,0,10"
-                   Grid.Row="9" Grid.Column="0"/>
+                         Margin="0,30,0,10"
+                         Grid.Row="9" Grid.Column="0"
+                         IsEnabled="{Binding EnvioHabilitado}"/>
 
                 <!-- Ciudad -->
                 <TextBlock Text="Ciudad" 
-                     Style="{StaticResource FormLabel}"
-                     Grid.Row="9" Grid.Column="2" />
+                           Style="{StaticResource FormLabel}"
+                           Grid.Row="9" Grid.Column="2" />
                 <TextBox Style="{StaticResource FormTextBox}" 
-                       Margin="0,30,0,10"
-                       Grid.Row="9" Grid.Column="2"/>
+                         Margin="0,30,0,10"
+                         Grid.Row="9" Grid.Column="2"
+                         IsEnabled="{Binding EnvioHabilitado}"/>
 
                 <!-- Servicio -->
                 <TextBlock Text="Provincia" 
-                     Style="{StaticResource FormLabel}"
-                     Grid.Row="10" Grid.Column="0" />
+                           Style="{StaticResource FormLabel}"
+                           Grid.Row="10" Grid.Column="0" />
                 <TextBox Style="{StaticResource FormTextBox}" 
-                   Margin="0,30,0,10"
-                   Grid.Row="10" Grid.Column="0"/>
+                         Margin="0,30,0,10"
+                         Grid.Row="10" Grid.Column="0"
+                         IsEnabled="{Binding EnvioHabilitado}"/>
 
                 <!-- Costo servicio -->
                 <TextBlock Text="Costo" 
-                     Style="{StaticResource FormLabel}"
-                     Grid.Row="10" Grid.Column="2" />
+                           Style="{StaticResource FormLabel}"
+                           Grid.Row="10" Grid.Column="2" />
                 <TextBox Style="{StaticResource FormTextBox}" 
-                       Margin="0,30,0,10"
-                       Grid.Row="10" Grid.Column="2"/>
+                         Margin="0,30,0,10"
+                         Grid.Row="10" Grid.Column="2"
+                         IsEnabled="{Binding EnvioHabilitado}"/>
 
             </Grid>
 
