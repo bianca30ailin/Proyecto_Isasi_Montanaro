@@ -18,158 +18,81 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 {
     public class VentasViewModel : INotifyPropertyChanged
     {
-       private readonly ProyectoTallerContext _context;
+        private readonly ProyectoTallerContext _context;
 
-            //constructor
-            public VentasViewModel()
+        public VentasViewModel()
+        {
+            _context = new ProyectoTallerContext();
+
+            ClienteVM = new ClienteViewModel();
+            DetalleVM = new DetalleVentaViewModel(_context);
+
+            // --- Inicialización de envío ---
+            EnvioHabilitado = false;
+
+            // Inicializar venta
+            int ultimoId = _context.Venta.Any() ? _context.Venta.Max(v => v.IdNroVenta) : 0;
+            VentaActual = new Ventum
             {
-                _context = new ProyectoTallerContext();
+                IdNroVenta = ultimoId + 1,
+                FechaHora = DateOnly.FromDateTime(DateTime.Now),
+                Total = 0
+            };
 
-                // --- Inicialización de envío ---
-                EnvioHabilitado = false;
-
-                // --- Inicialización de venta ---
-                ProductosDisponibles = new ObservableCollection<Producto>(_context.Productos.ToList());
-                DetalleProductos = new ObservableCollection<DetalleVentaProducto>();
-
-                // Calcular próximo número de venta
-                int ultimoId = _context.Venta.Any()
-                    ? _context.Venta.Max(v => v.IdNroVenta)
-                    : 0;
-                int proximoId = ultimoId + 1;
-
-                VentaActual = new Ventum
-                {
-                    IdNroVenta = proximoId,
-                    FechaHora = DateOnly.FromDateTime(DateTime.Now),
-                    Total = 0
-                };
-
-                AgregarProductoCommand = new RelayCommand(_ => AgregarProducto(), _ => ProductoSeleccionado != null && CantidadSeleccionada > 0);
-                ConfirmarVentaCommand = new RelayCommand(_ => ConfirmarVenta(), _ => DetalleProductos.Any());
-                EditarProductoCommand = new RelayCommand(p => EditarProducto(p as DetalleVentaProducto));
-                EliminarProductoCommand = new RelayCommand(p => EliminarProducto(p as DetalleVentaProducto));
+            ConfirmarVentaCommand = new RelayCommand(_ => ConfirmarVenta(), _ => DetalleVM.DetalleProductos.Any());
         }
 
-            // --- Envío ---
-            private bool _envioHabilitado;
-            public bool EnvioHabilitado
+        public ClienteViewModel ClienteVM { get; set; }
+        public DetalleVentaViewModel DetalleVM { get; set; }
+
+        public Ventum VentaActual { get; set; }
+
+
+        // --- COMANDOS ---
+        public ICommand ConfirmarVentaCommand { get; set; }
+
+
+        // --- METODOS ---
+        private void ConfirmarVenta()
+        {
+            // 1️⃣ Guardar cliente si no existe
+            ClienteVM.GuardarClienteSiNoExiste();
+
+            // 2️⃣ Asociar cliente y detalles
+            VentaActual.DniCliente = ClienteVM.ClienteActual.DniCliente;
+            VentaActual.FechaHora = DateOnly.FromDateTime(DateTime.Now);
+            VentaActual.Total = DetalleVM.Total;
+
+            foreach (var d in DetalleVM.DetalleProductos)
+                VentaActual.DetalleVentaProductos.Add(d);
+
+            // 3️⃣ Guardar venta
+            _context.Venta.Add(VentaActual);
+            _context.SaveChanges();
+
+            MessageBox.Show($"Venta registrada correctamente. N° {VentaActual.IdNroVenta}",
+                            "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            DetalleVM.Reiniciar();
+            ClienteVM.Reiniciar();
+        }
+
+
+        // --- Envío ---
+        private bool _envioHabilitado;
+        public bool EnvioHabilitado
+        {
+            get => _envioHabilitado;
+            set
             {
-                get => _envioHabilitado;
-                set
+                if (_envioHabilitado != value)
                 {
-                    if (_envioHabilitado != value)
-                    {
-                        _envioHabilitado = value;
-                        OnPropertyChanged();
-                    }
+                    _envioHabilitado = value;
+                    OnPropertyChanged();
                 }
             }
+        }
 
-            // --- Venta y productos ---
-            public Ventum VentaActual { get; set; }
-            public ObservableCollection<Producto> ProductosDisponibles { get; set; }
-            public ObservableCollection<DetalleVentaProducto> DetalleProductos { get; set; }
-
-            private Producto _productoSeleccionado;
-            public Producto ProductoSeleccionado
-            {
-                get => _productoSeleccionado;
-                set { _productoSeleccionado = value; OnPropertyChanged(); }
-            }
-
-            private int _cantidadSeleccionada;
-            public int CantidadSeleccionada
-            {
-                get => _cantidadSeleccionada;
-                set { _cantidadSeleccionada = value; OnPropertyChanged(); }
-            }
-
-            private double _total;
-            public double Total
-            {
-                get => _total;
-                set { _total = value; OnPropertyChanged(); }
-            }
-
-            // --- Commands ---
-            public ICommand AgregarProductoCommand { get; set; }
-            public ICommand ConfirmarVentaCommand { get; set; }
-
-            public ICommand EditarProductoCommand { get; set; }
-            public ICommand EliminarProductoCommand { get; set; }
-
-            // --- Métodos ---
-            private void AgregarProducto()
-                {
-                    if (ProductoSeleccionado == null || CantidadSeleccionada <= 0) return;
-
-                    var subtotal = ProductoSeleccionado.Precio * CantidadSeleccionada;
-
-                    var detalle = new DetalleVentaProducto
-                    {
-                        IdProducto = ProductoSeleccionado.IdProducto,
-                        Cantidad = CantidadSeleccionada,
-                        Subtotal = subtotal,
-                        IdProductoNavigation = ProductoSeleccionado
-                    };
-
-                    DetalleProductos.Add(detalle);
-                    CalcularTotal();
-                    CantidadSeleccionada = 0;
-                }
-
-            private void CalcularTotal()
-            {
-                Total = DetalleProductos.Sum(d => d.Subtotal);
-                VentaActual.Total = Total;
-            }
-
-            private void ConfirmarVenta()
-            {
-                foreach (var detalle in DetalleProductos)
-                {
-                    VentaActual.DetalleVentaProductos.Add(detalle);
-
-                    var producto = _context.Productos.FirstOrDefault(p => p.IdProducto == detalle.IdProducto);
-                    if (producto != null)
-                    {
-                        producto.Cantidad -= detalle.Cantidad;
-                        _context.Productos.Update(producto);
-                    }
-                }
-
-                _context.Venta.Add(VentaActual);
-                _context.SaveChanges();
-
-                DetalleProductos.Clear();
-                VentaActual = new Ventum
-                {
-                    FechaHora = DateOnly.FromDateTime(DateTime.Now),
-                    Total = 0
-                };
-                Total = 0;
-            }
-            private void EditarProducto(DetalleVentaProducto detalle)
-            {
-                if (detalle == null) return;
-
-                // Cargar los datos del detalle seleccionado en los campos de edición
-                ProductoSeleccionado = detalle.IdProductoNavigation;
-                CantidadSeleccionada = detalle.Cantidad;
-
-                // Eliminarlo temporalmente de la lista para volver a agregarlo editado
-                DetalleProductos.Remove(detalle);
-                CalcularTotal();
-            }
-
-            private void EliminarProducto(DetalleVentaProducto detalle)
-            {
-                if (detalle == null) return;
-
-                DetalleProductos.Remove(detalle);
-                CalcularTotal();
-            }
 
         // --- Notificación de cambios ---
         public event PropertyChangedEventHandler PropertyChanged;

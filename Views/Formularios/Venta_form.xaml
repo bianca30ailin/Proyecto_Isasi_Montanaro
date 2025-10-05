@@ -94,23 +94,23 @@
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                             <ComboBox Width="250"
                                       Margin="0,0,10,0"
-                                      ItemsSource="{Binding ProductosDisponibles}"
+                                      ItemsSource="{Binding DetalleVM.ProductosDisponibles}"
                                       DisplayMemberPath="Nombre"
-                                      SelectedItem="{Binding ProductoSeleccionado}" />
+                                      SelectedItem="{Binding DetalleVM.ProductoSeleccionado, Mode=TwoWay}" />
 
                             <TextBox Width="80"
                                      Margin="0"
                                      Style="{StaticResource FormTextBox}"
-                                     Text="{Binding CantidadSeleccionada, UpdateSourceTrigger=PropertyChanged}" />
+                                     Text="{Binding DetalleVM.CantidadSeleccionada, UpdateSourceTrigger=PropertyChanged}" />
 
                             <Button Content="+ Agregar"
                                     Style="{StaticResource BtnSecondary}"
                                     Width="10"
-                                    Command="{Binding AgregarProductoCommand}" />
+                                    Command="{Binding DetalleVM.AgregarProductoCommand}" />
                         </StackPanel>
 
                         <!-- Lista de productos agregados -->
-                        <DataGrid ItemsSource="{Binding DetalleProductos}"
+                        <DataGrid ItemsSource="{Binding DetalleVM.DetalleProductos}"
                               AutoGenerateColumns="False"
                               Margin="0,10,0,20"
                               CanUserAddRows="False"
@@ -130,7 +130,7 @@
                                                         Height="15"
                                                         MinWidth="15"
                                                         Margin="2,2,4,2"
-                                                        Command="{Binding DataContext.EditarProductoCommand,
+                                                        Command="{Binding DataContext.DetalleVM.EditarProductoCommand,
                                                                   RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                         CommandParameter="{Binding}">
                                                     <iconPacks:PackIconMaterial Kind="Pencil" 
@@ -143,8 +143,8 @@
                                                         Height="15"
                                                         MinWidth="15"
                                                         Margin="2,2,4,2"
-                                                        Command="{Binding DataContext.EliminarProductoCommand,
-                                                        RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        Command="{Binding DataContext.DetalleVM.EliminarProductoCommand,
+                                                                    RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                         CommandParameter="{Binding}">
                                                     <iconPacks:PackIconMaterial Kind="DeleteEmpty"
                                                                                 Width="16" Height="16"
@@ -160,7 +160,7 @@
                         <!-- Total -->
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <TextBlock Text="Total: " FontWeight="Bold" FontSize="14" />
-                            <TextBlock Text="{Binding Total}" FontWeight="Bold" FontSize="14" Margin="5,0,0,0" />
+                            <TextBlock Text="{Binding DetalleVM.Total}" FontWeight="Bold" FontSize="14" Margin="5,0,0,0" />
                         </StackPanel>
                     </StackPanel>
 
@@ -175,34 +175,54 @@
                 <!-- Nombre -->
                 <TextBlock Text="Nombre" 
                      Style="{StaticResource FormLabel}"
-                     Grid.Row="3" Grid.Column="0" />
-                <TextBox Style="{StaticResource FormTextBox}" 
-                   Margin="0,30,0,10"
-                   Grid.Row="3" Grid.Column="0"/>
-
-                <!-- Apellido -->
-                <TextBlock Text="Apellido" 
-                     Style="{StaticResource FormLabel}"
-                     Grid.Row="3" Grid.Column="2" />
-                <TextBox Style="{StaticResource FormTextBox}" 
-                   Margin="0,30,0,10"
-                   Grid.Row="3" Grid.Column="2"/>
-
-                <!-- Dni -->
-                <TextBlock Text="Dni" 
-                     Style="{StaticResource FormLabel}"
                      Grid.Row="4" Grid.Column="0" />
                 <TextBox Style="{StaticResource FormTextBox}" 
                    Margin="0,30,0,10"
-                   Grid.Row="4" Grid.Column="0"/>
+                   Grid.Row="4" Grid.Column="0"
+                   Text="{Binding ClienteVM.ClienteActual.Nombre, UpdateSourceTrigger=PropertyChanged}" />
 
-                <!-- Telefono -->
-                <TextBlock Text="Telefono" 
-                     Style="{StaticResource FormLabel}"
-                     Grid.Row="4" Grid.Column="2" />
+                <!-- Apellido -->
+                <TextBlock Text="Apellido" 
+                           Style="{StaticResource FormLabel}"
+                           Grid.Row="4" Grid.Column="2" />
                 <TextBox Style="{StaticResource FormTextBox}" 
-                   Margin="0,30,0,10"
-                   Grid.Row="4" Grid.Column="2"/>
+                         Margin="0,30,0,10"
+                         Grid.Row="4" Grid.Column="2"
+                         Text="{Binding ClienteVM.ClienteActual.Apellido, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <!-- Dni -->
+                <TextBlock Text="DNI" 
+                           Style="{StaticResource FormLabel}"
+                           Grid.Row="3" Grid.Column="0" />
+
+                <StackPanel Orientation="Horizontal"
+                            Grid.Row="3" Grid.Column="0"
+                            Margin="0,30,0,10">
+
+                        <!-- Campo de texto para el DNI -->
+                    <TextBox Width="140"
+                            Style="{StaticResource FormTextBox}"
+                            Text="{Binding ClienteVM.DniClienteInput, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <!-- Botón de búsqueda con ícono -->
+                    <Button Style="{StaticResource BtnSecondary}"
+                            Height="15"
+                            MinWidth="15"
+                            Margin="10,0,0,4"
+                            Command="{Binding ClienteVM.BuscarClienteCommand}">
+                        <iconPacks:PackIconMaterial Kind="Magnify"
+                                    Width="16" Height="16"
+                                    Foreground="#072741"/>
+                    </Button>
+                </StackPanel>
+                
+                    <!-- Telefono -->
+                <TextBlock Text="Telefono" 
+                           Style="{StaticResource FormLabel}"
+                           Grid.Row="5" Grid.Column="2" />
+                <TextBox Style="{StaticResource FormTextBox}" 
+                         Margin="0,30,0,10"
+                    Grid.Row="5" Grid.Column="2"/>
 
                 <!-- Correo -->
                 <TextBlock Text="Correo electronico" 
