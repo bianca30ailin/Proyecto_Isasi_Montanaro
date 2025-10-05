@@ -18,31 +18,23 @@ namespace Proyecto_Isasi_Montanaro.Views.Formularios
     /// <summary>
     /// Lógica de interacción para Window1.xaml
     /// </summary>
-    public class ProductoVenta
-    {
-        public string NombreProducto { get; set; }
-        public int Cantidad { get; set; }
-    }
+    
     public partial class Venta_form : Window
     {
-        public ObservableCollection<ProductoVenta> Productos { get; set; }
-
         public Venta_form()
         {
             InitializeComponent();
 
-            Productos = new ObservableCollection<ProductoVenta>();
-            ListaProductos.ItemsSource = Productos;
-        }
-
-        private void AgregarProducto_Click(object sender, RoutedEventArgs e)
-        {
-            Productos.Add(new ProductoVenta { NombreProducto = "", Cantidad = 1 });
         }
 
         private void Cancelar_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 
