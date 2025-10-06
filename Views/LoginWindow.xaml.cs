@@ -112,6 +112,7 @@ namespace Proyecto_Isasi_Montanaro.Views
                     if (int.TryParse(usuarioInput, out int dni))
                     {
                         usuario = context.Usuarios
+                            .Include(u => u.IdTipoUsuarios) // Carga los perfiles
                             .FirstOrDefault(u => u.Dni == dni &&
                                                  u.Contraseña == contraseña &&
                                                  u.Baja == "NO");

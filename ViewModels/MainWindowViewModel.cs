@@ -1,5 +1,6 @@
 ﻿
 using Proyecto_Isasi_Montanaro.Helpers;
+using Proyecto_Isasi_Montanaro.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,6 +13,19 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
+
+        // Constructor
+        public MainWindowViewModel()
+        {
+            // Inicializar vista por defecto
+            _vistaActual = new Views.UserControl1();
+
+            // Configurar permisos si hay usuario en sesión
+            if (Sesion.UsuarioActual != null)
+            {
+                ConfigurarPermisosPorTipo(Sesion.UsuarioActual);
+            }
+        }
         //se declara un campo privado al que se le asigna el usercontrol1
         private object _vistaActual = new Views.UserControl1();
         public object VistaActual
@@ -149,9 +163,96 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
         }
 
+        // Permisos según el tipo de usuario 
+        private bool _puedeUsuarios;
+        public bool PuedeUsuarios
+        {
+            get => _puedeUsuarios;
+            set { _puedeUsuarios = value; OnPropertyChanged(nameof(PuedeUsuarios)); }
+        }
+
+        private bool _puedeInventario;
+        public bool PuedeInventario
+        {
+            get => _puedeInventario;
+            set { _puedeInventario = value; OnPropertyChanged(nameof(PuedeInventario)); }
+        }
+
+        private bool _puedeClientes;
+        public bool PuedeClientes
+        {
+            get => _puedeClientes;
+            set { _puedeClientes = value; OnPropertyChanged(nameof(PuedeClientes)); }
+        }
+
+        private bool _puedeVentas;
+        public bool PuedeVentas
+        {
+            get => _puedeVentas;
+            set { _puedeVentas = value; OnPropertyChanged(nameof(PuedeVentas)); }
+        }
+
+        private bool _puedeEnvios;
+        public bool PuedeEnvios
+        {
+            get => _puedeEnvios;
+            set { _puedeEnvios = value; OnPropertyChanged(nameof(PuedeEnvios)); }
+        }
+
+        private bool _puedeInformes;
+        public bool PuedeInformes
+        {
+            get => _puedeInformes;
+            set { _puedeInformes = value; OnPropertyChanged(nameof(PuedeInformes)); }
+        }
+
+        private bool _puedeBackUp;
+        public bool PuedeBackUp
+        {
+            get => _puedeBackUp;
+            set { _puedeBackUp = value; OnPropertyChanged(nameof(PuedeBackUp)); }
+        }
+
+        // Método que configura los permisos según los tipos de usuario del usuario actual
+        private void ConfigurarPermisosPorTipo(Usuario usuario)
+        {
+            var tiposIds = usuario.IdTipoUsuarios.Select(t => t.IdTipoUsuario).ToList();
+
+            // Administrador (ID = 1)
+            if (tiposIds.Contains(1))
+            {
+                PuedeUsuarios = true;
+                PuedeInventario = true;
+                PuedeClientes = true;
+                PuedeVentas = true;
+                PuedeEnvios = true;
+                PuedeInformes = true;
+                PuedeBackUp = true;
+            }
+
+            // Ventas (ID = 2)
+            if (tiposIds.Contains(2))
+            {
+                PuedeClientes = true;
+                PuedeVentas = true;
+            }
+
+            // Inventario (ID = 4)
+            if (tiposIds.Contains(4))
+            {
+                PuedeInventario = true;
+            }
+
+            // Logística / Envíos (ID = 3)
+            if (tiposIds.Contains(3))
+            {
+                PuedeEnvios = true;
+            }
+        }
+
         private void ActivarVista(string vista)
         {
-            // Resetear todos los botones
+            //Resetear todos los botones
             _isUsuariosActive = false;
             _isBackUpActive = false;
             _isInventarioActive = false;
@@ -161,7 +262,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             _isInformesActive = false;
             _isPerfilActive = false;
 
-            // Activamos solo el seleccionado
+            //Activar solo el seleccionado
             switch (vista)
             {
                 case "Usuarios":
@@ -209,8 +310,10 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             OnPropertyChanged(nameof(IsPerfilActive));
             OnPropertyChanged(nameof(VistaActual));
         }
-
+        //nombre del usuario actual
         public string NombreUsuario => Sesion.UsuarioActual?.Nombre ?? "Usuario";
+
+        
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string nombre) =>
