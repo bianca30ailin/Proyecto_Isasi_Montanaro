@@ -17,5 +17,6 @@ public partial class Cliente
 
     public virtual ICollection<Ventum> Venta { get; set; } = new List<Ventum>();
 
-    public virtual ICollection<Direccion> IdDireccions { get; set; } = new List<Direccion>();
+    // 🔹 Un cliente puede tener 0..N direcciones
+    public virtual ICollection<Direccion> Direcciones { get; set; } = new List<Direccion>();
 }

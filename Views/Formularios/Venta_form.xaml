@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Proyecto_Isasi_Montanaro.Views.Formularios"
         xmlns:vm="clr-namespace:Proyecto_Isasi_Montanaro.ViewModels"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
         AllowsTransparency="True"
         Background="Transparent"
@@ -70,48 +71,100 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- ID Venta -->
-                <TextBlock Text="ID Venta" 
-                       Style="{StaticResource FormLabel}"
-                       Grid.Row="0" Grid.Column="0" />
-                <TextBox Style="{StaticResource FormTextBox}" 
-                     IsReadOnly="True"
-                     Margin="0,30,0,10"
-                     Grid.Row="0" Grid.Column="0"/>
+                    <!-- ID Venta -->
+                    <TextBlock Text="ID Venta" 
+                               Style="{StaticResource FormLabel}"
+                               Grid.Row="0" Grid.Column="0" />
+                    <TextBox Style="{StaticResource FormTextBox}" 
+                             IsReadOnly="True"
+                             Margin="0,30,0,10"
+                             Grid.Row="0" Grid.Column="0"
+                             Background="#E0E0E0"
+                             Text="{Binding VentaActual.IdNroVenta}" /> 
 
-                <!-- Productos -->
-                <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
+                    <!-- Productos -->
+                    <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
                         <TextBlock Text="Productos"
-                           Style="{StaticResource FormLabel}"
-                           FontWeight="Bold"
-                           Margin="0,0,0,5"/>
+                                   Style="{StaticResource FormLabel}"
+                                   FontWeight="Bold"
+                                   Margin="0,0,0,5"/>
                         <Separator Background="#E5E7EB" Height="1" Margin="0,0,0,10" />
 
-                        <!-- Botón para agregar productos -->
-                        <Button Content="+ Agregar producto"
-                        Style="{StaticResource BtnSecondary}"
-                        Width="150"
-                        Margin="0,0,0,10"
-                        Click="AgregarProducto_Click"/>
+                        <!-- Selección de producto y cantidad -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <ComboBox Width="250"
+                                      Margin="0,0,10,0"
+                                      ItemsSource="{Binding DetalleVM.ProductosDisponibles}"
+                                      DisplayMemberPath="Nombre"
+                                      SelectedItem="{Binding DetalleVM.ProductoSeleccionado, Mode=TwoWay}" />
 
-                        <!-- Lista de productos -->
-                        <ItemsControl x:Name="ListaProductos" Margin="0,10,0,20">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" Margin="0,5,0,5">
-                                        <TextBox Width="250" Margin="0,0,10,0"
-                                         Style="{StaticResource FormTextBox}"
-                                         Text="{Binding NombreProducto, UpdateSourceTrigger=PropertyChanged}"/>
-                                        <TextBox Width="80"
-                                         Style="{StaticResource FormTextBox}"
-                                         Text="{Binding Cantidad, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                 </StackPanel>
+                            <TextBox Width="80"
+                                     Margin="0"
+                                     Style="{StaticResource FormTextBox}"
+                                     Text="{Binding DetalleVM.CantidadSeleccionada, UpdateSourceTrigger=PropertyChanged}" />
 
-                <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10,0,0">
+                            <Button Content="+ Agregar"
+                                    Style="{StaticResource BtnSecondary}"
+                                    Width="10"
+                                    Command="{Binding DetalleVM.AgregarProductoCommand}" />
+                        </StackPanel>
+
+                        <!-- Lista de productos agregados -->
+                        <DataGrid ItemsSource="{Binding DetalleVM.DetalleProductos}"
+                              AutoGenerateColumns="False"
+                              Margin="0,10,0,20"
+                              CanUserAddRows="False"
+                              HeadersVisibility="Column">
+
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Producto" Binding="{Binding IdProductoNavigation.Nombre}" Width="*"/>
+                                <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="100"/>
+                                <DataGridTextColumn Header="Subtotal" Binding="{Binding Subtotal}" Width="120"/>
+                                <!-- Columna de Acciones -->
+                                <DataGridTemplateColumn Header="Acciones" Width="Auto">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <!-- Botón Editar -->
+                                                <Button Style="{StaticResource BtnSecondary}"
+                                                        Height="15"
+                                                        MinWidth="15"
+                                                        Margin="2,2,4,2"
+                                                        Command="{Binding DataContext.DetalleVM.EditarProductoCommand,
+                                                                  RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding}">
+                                                    <iconPacks:PackIconMaterial Kind="Pencil" 
+                                                                                Width="16" Height="16" 
+                                                                                Foreground="#F5A623"/>
+                                                </Button>
+
+                                                <!-- Botón Eliminar -->
+                                                <Button Style="{StaticResource BtnSecondary}"
+                                                        Height="15"
+                                                        MinWidth="15"
+                                                        Margin="2,2,4,2"
+                                                        Command="{Binding DataContext.DetalleVM.EliminarProductoCommand,
+                                                                    RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding}">
+                                                    <iconPacks:PackIconMaterial Kind="DeleteEmpty"
+                                                                                Width="16" Height="16"
+                                                                                Foreground="#D64545"/>
+                                                </Button>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <!-- Total -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <TextBlock Text="Total: " FontWeight="Bold" FontSize="14" />
+                            <TextBlock Text="{Binding DetalleVM.Total}" FontWeight="Bold" FontSize="14" Margin="5,0,0,0" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10,0,0">
                     <TextBlock Text="Datos del cliente" 
                        Style="{StaticResource FormLabel}"
                        FontWeight="Bold" 
@@ -122,42 +175,64 @@
                 <!-- Nombre -->
                 <TextBlock Text="Nombre" 
                      Style="{StaticResource FormLabel}"
-                     Grid.Row="3" Grid.Column="0" />
-                <TextBox Style="{StaticResource FormTextBox}" 
-                   Margin="0,30,0,10"
-                   Grid.Row="3" Grid.Column="0"/>
-
-                <!-- Apellido -->
-                <TextBlock Text="Apellido" 
-                     Style="{StaticResource FormLabel}"
-                     Grid.Row="3" Grid.Column="2" />
-                <TextBox Style="{StaticResource FormTextBox}" 
-                   Margin="0,30,0,10"
-                   Grid.Row="3" Grid.Column="2"/>
-
-                <!-- Dni -->
-                <TextBlock Text="Dni" 
-                     Style="{StaticResource FormLabel}"
                      Grid.Row="4" Grid.Column="0" />
                 <TextBox Style="{StaticResource FormTextBox}" 
                    Margin="0,30,0,10"
-                   Grid.Row="4" Grid.Column="0"/>
+                   Grid.Row="4" Grid.Column="0"
+                   Text="{Binding ClienteVM.ClienteActual.Nombre, UpdateSourceTrigger=PropertyChanged}" />
 
-                <!-- Telefono -->
-                <TextBlock Text="Telefono" 
-                     Style="{StaticResource FormLabel}"
-                     Grid.Row="4" Grid.Column="2" />
+                <!-- Apellido -->
+                <TextBlock Text="Apellido" 
+                           Style="{StaticResource FormLabel}"
+                           Grid.Row="4" Grid.Column="2" />
                 <TextBox Style="{StaticResource FormTextBox}" 
-                   Margin="0,30,0,10"
-                   Grid.Row="4" Grid.Column="2"/>
+                         Margin="0,30,0,10"
+                         Grid.Row="4" Grid.Column="2"
+                         Text="{Binding ClienteVM.ClienteActual.Apellido, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <!-- Dni -->
+                <TextBlock Text="DNI" 
+                           Style="{StaticResource FormLabel}"
+                           Grid.Row="3" Grid.Column="0" />
+
+                <StackPanel Orientation="Horizontal"
+                            Grid.Row="3" Grid.Column="0"
+                            Margin="0,30,0,10">
+
+                        <!-- Campo de texto para el DNI -->
+                    <TextBox Width="140"
+                            Style="{StaticResource FormTextBox}"
+                            Text="{Binding ClienteVM.DniClienteInput, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <!-- Botón de búsqueda con ícono -->
+                    <Button Style="{StaticResource BtnSecondary}"
+                            Height="15"
+                            MinWidth="15"
+                            Margin="10,0,0,4"
+                            Command="{Binding ClienteVM.BuscarClienteCommand}">
+                        <iconPacks:PackIconMaterial Kind="Magnify"
+                                    Width="16" Height="16"
+                                    Foreground="#072741"/>
+                    </Button>
+                </StackPanel>
+                
+                    <!-- Telefono -->
+                <TextBlock Text="Telefono" 
+                           Style="{StaticResource FormLabel}"
+                           Grid.Row="5" Grid.Column="2" />
+                <TextBox Style="{StaticResource FormTextBox}" 
+                         Margin="0,30,0,10"
+                         Grid.Row="5" Grid.Column="2"
+                         Text="{Binding ClienteVM.ClienteActual.Telefono, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <!-- Correo -->
                 <TextBlock Text="Correo electronico" 
-                     Style="{StaticResource FormLabel}"
-                     Grid.Row="5" Grid.Column="0" />
+                          Style="{StaticResource FormLabel}"
+                          Grid.Row="5" Grid.Column="0" />
                 <TextBox Style="{StaticResource FormTextBox}" 
-                   Margin="0,30,0,10"
-                   Grid.Row="5" Grid.Column="0"/>
+                         Margin="0,30,0,10"
+                         Grid.Row="5" Grid.Column="0"
+                         Text="{Binding ClienteVM.ClienteActual.Email, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <!-- Envio -->
                 <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10,0,0" Orientation="Horizontal">
@@ -266,7 +341,8 @@
                 <!-- Guardar -->
                 <Button Style="{StaticResource BtnPrimary}" 
                     Content="Guardar" Width="100"
-                    Background="#53BA83"/>
+                    Background="#53BA83"
+                    Command="{Binding ConfirmarVentaCommand}"/>
             </StackPanel>
         </Grid>
     </Border>
