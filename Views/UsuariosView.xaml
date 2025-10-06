@@ -6,6 +6,8 @@
              xmlns:local="clr-namespace:Proyecto_Isasi_Montanaro.Views"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:vm="clr-namespace:Proyecto_Isasi_Montanaro.ViewModels"
+             xmlns:helpers="clr-namespace:Proyecto_Isasi_Montanaro.Helpers"
+
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Background="#F3EDF7">
@@ -14,7 +16,11 @@
     <UserControl.DataContext>
         <vm:UsuariosViewModel/>
     </UserControl.DataContext>
-    
+
+    <UserControl.Resources>
+        <helpers:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+    </UserControl.Resources>
+
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <!-- Encabezado -->
@@ -43,8 +49,8 @@
 
             <!-- Chips a la izquierda -->
             <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left">
-                <Button Content="Activos" Style="{StaticResource ChipActivos}" Margin="0,0,10,0"/>
-                <Button Content="Inactivos" Style="{StaticResource ChipInactivos}"/>
+                <Button Content="Activos" Style="{StaticResource ChipActivos}" Command="{Binding FiltrarActivosCommand}" Margin="0,0,10,0"/>
+                <Button Content="Inactivos" Style="{StaticResource  ChipInactivos}" Command="{Binding FiltrarInactivosCommand}"/>
             </StackPanel>
 
             <!-- Botón a la derecha -->
@@ -72,15 +78,14 @@
                     <!-- Botón Limpiar -->
                 </Grid.ColumnDefinitions>
 
-                <!-- ComboBox Categorías 
+                <!-- ComboBox Perfiles -->
                 <ComboBox Grid.Column="0"
                   Style="{StaticResource FormCombo}"
+                  ItemsSource="{Binding Perfiles}"
+                  SelectedItem="{Binding PerfilSeleccionado, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   Margin="0,0,10,0"
-                  SelectedIndex="0" SelectionChanged="ComboBox_SelectionChanged">
-                    <ComboBoxItem IsEnabled="False" Foreground="Gray">
-                        Todos los estados...
-                    </ComboBoxItem>
-                </ComboBox> -->
+                  >
+                </ComboBox>
 
                 <!-- DatePickers -->
                 <DatePicker Grid.Column="1" 
@@ -100,6 +105,7 @@
                 <Button Grid.Column="4" 
                     Content="Limpiar" 
                     Style="{StaticResource BtnSecondary}" 
+                    Command="{Binding LimpiarFiltroCommand}"
                     Margin="0,0,0,0"
                     MinWidth="100"/>
             </Grid>
@@ -125,8 +131,21 @@
                 </StackPanel>
 
                 <!-- Buscador -->
-                <TextBox Grid.Column="1"
-                Style="{StaticResource TableSearchBox}"/>
+                <Grid Grid.Column="1">
+                    <TextBox x:Name="BuscarBox"
+                         Style="{StaticResource TableSearchBox}"
+                         Text="{Binding TextoBusqueda, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <!-- Placeholder que aparece cuando el TextBox está vacío -->
+                    <TextBlock Text="Buscar por nombre, apellido o DNI..."
+                           Foreground="Gray"
+                           Margin="10,0,0,0"
+                           VerticalAlignment="Center"
+                           IsHitTestVisible="False"
+                           Visibility="{Binding Text.IsEmpty,
+                                    ElementName=BuscarBox,
+                                    Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                </Grid>
             </Grid>
         </Border>
 
