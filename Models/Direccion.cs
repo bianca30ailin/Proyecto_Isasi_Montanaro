@@ -15,7 +15,10 @@ public partial class Direccion
 
     public int IdCiudad { get; set; }
 
+    // FK opcional hacia cliente
+    public int? DniCliente { get; set; } //permite 0:N
+
     public virtual Ciudad IdCiudadNavigation { get; set; } = null!;
 
-    public virtual ICollection<Cliente> DniClientes { get; set; } = new List<Cliente>();
+    public virtual Cliente? Cliente { get; set; } //hace la relacion oopcionel
 }

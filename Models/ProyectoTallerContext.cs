@@ -166,30 +166,19 @@ public partial class ProyectoTallerContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false)
                 .HasColumnName("nombreCalle");
+            // NUEVO campo dni_cliente (nullable)
+            entity.Property<int?>("DniCliente").HasColumnName("dni_cliente");
 
             entity.HasOne(d => d.IdCiudadNavigation).WithMany(p => p.Direccions)
                 .HasForeignKey(d => d.IdCiudad)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__direccion__id_ci__4E88ABD4");
 
-            entity.HasMany(d => d.DniClientes).WithMany(p => p.IdDireccions)
-                .UsingEntity<Dictionary<string, object>>(
-                    "DireccionCliente",
-                    r => r.HasOne<Cliente>().WithMany()
-                        .HasForeignKey("DniCliente")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__direccion__dni_c__5441852A"),
-                    l => l.HasOne<Direccion>().WithMany()
-                        .HasForeignKey("IdDireccion")
-                        .OnDelete(DeleteBehavior.ClientSetNull)
-                        .HasConstraintName("FK__direccion__id_di__534D60F1"),
-                    j =>
-                    {
-                        j.HasKey("IdDireccion", "DniCliente").HasName("PK__direccio__6A9089BDB397B0E7");
-                        j.ToTable("direccion_cliente");
-                        j.IndexerProperty<int>("IdDireccion").HasColumnName("id_direccion");
-                        j.IndexerProperty<int>("DniCliente").HasColumnName("dni_cliente");
-                    });
+            // Relación con Cliente (1:N opcional)
+            entity.HasOne(d => d.Cliente)
+                .WithMany(p => p.Direcciones)
+                .HasForeignKey(d => d.DniCliente)
+                .HasConstraintName("FK_direccion_cliente");
         });
 
         modelBuilder.Entity<Envio>(entity =>

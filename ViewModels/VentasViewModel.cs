@@ -34,7 +34,6 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             int ultimoId = _context.Venta.Any() ? _context.Venta.Max(v => v.IdNroVenta) : 0;
             VentaActual = new Ventum
             {
-                IdNroVenta = ultimoId + 1,
                 FechaHora = DateOnly.FromDateTime(DateTime.Now),
                 Total = 0
             };
@@ -68,13 +67,47 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
             // 3️⃣ Guardar venta
             _context.Venta.Add(VentaActual);
-            _context.SaveChanges();
+            _context.SaveChanges(); // 👈 primero guardamos la venta
 
+            // 4️⃣ Si el envío está habilitado, crear dirección + envío
+            if (EnvioHabilitado)
+            {
+                // Validar que haya dirección cargada
+                if (ClienteVM.DireccionActual != null)
+                {
+                    // Asociar la dirección al cliente
+                    ClienteVM.DireccionActual.DniCliente = ClienteVM.ClienteActual.DniCliente;
+                    _context.Direccions.Add(ClienteVM.DireccionActual);
+                    _context.SaveChanges();
+
+                    // Crear registro de envío
+                    var envio = new Envio
+                    {
+                        IdNroVenta = VentaActual.IdNroVenta,
+                        Costo = 0, // Podés calcularlo después si tenés lógica
+                        IdEstado = 1, // Ejemplo: "Pendiente"
+                        FechaDespacho = null
+                    };
+
+                    _context.Envios.Add(envio);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    MessageBox.Show("Debe ingresar una dirección para el envío.", "Aviso",
+                                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return; // No continúa si no hay dirección
+                }
+            }
+
+            // 5️⃣ Mostrar mensaje de éxito
             MessageBox.Show($"Venta registrada correctamente. N° {VentaActual.IdNroVenta}",
                             "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
 
+            // 6️⃣ Reiniciar formularios
             DetalleVM.Reiniciar();
             ClienteVM.Reiniciar();
+            VentaActual = new Ventum();
         }
 
 

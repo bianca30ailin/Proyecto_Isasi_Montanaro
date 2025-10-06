@@ -24,6 +24,8 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         }
 
         private string _dniClienteInput;
+
+        public Direccion? DireccionActual { get; set; }
         public string DniClienteInput
         {
             get => _dniClienteInput;
