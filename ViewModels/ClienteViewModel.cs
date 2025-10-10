@@ -2,6 +2,7 @@
 using Proyecto_Isasi_Montanaro.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -21,6 +22,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             _context = new ProyectoTallerContext();
             ClienteActual = new Cliente();
             BuscarClienteCommand = new RelayCommand(_ => BuscarCliente());
+            CargarClientes();
         }
 
         private string _dniClienteInput;
@@ -40,11 +42,29 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         }
 
 
+        // Lista de clientes
+        private ObservableCollection<Cliente> _clientes;
+        public ObservableCollection<Cliente> Clientes
+        {
+            get => _clientes;
+            set { _clientes = value; OnPropertyChanged(); }
+        }
+
         // --- COMANDOS ---
         public ICommand BuscarClienteCommand { get; set; }
 
 
         // --- METODOS ---
+        public void CargarClientes()
+        {
+            var lista = _context.Clientes
+                .OrderBy(c => c.Apellido)
+                .ThenBy(c => c.Nombre)
+                .ToList();
+
+            Clientes = new ObservableCollection<Cliente>(lista);
+        }
+
         private void BuscarCliente()
         {
             if (string.IsNullOrWhiteSpace(DniClienteInput))

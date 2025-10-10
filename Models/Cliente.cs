@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Proyecto_Isasi_Montanaro.Models;
 
@@ -19,4 +20,7 @@ public partial class Cliente
 
     // 🔹 Un cliente puede tener 0..N direcciones
     public virtual ICollection<Direccion> Direcciones { get; set; } = new List<Direccion>();
+
+    [NotMapped] // opcional, si usás EF Core
+    public string NombreCompleto => $"{Nombre} {Apellido}";
 }

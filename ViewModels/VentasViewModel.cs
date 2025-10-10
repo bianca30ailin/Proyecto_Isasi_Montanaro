@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore; // Necesario para DbContext
 using Proyecto_Isasi_Montanaro.Commands;
+using Proyecto_Isasi_Montanaro.Helpers;
 using Proyecto_Isasi_Montanaro.Models;
 using Proyecto_Isasi_Montanaro.ViewModels;
 using Proyecto_Isasi_Montanaro.Views.Formularios;
@@ -39,12 +40,20 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             };
 
             ConfirmarVentaCommand = new RelayCommand(_ => ConfirmarVenta(), _ => DetalleVM.DetalleProductos.Any());
+            CargarVentas();
         }
 
         public ClienteViewModel ClienteVM { get; set; }
         public DetalleVentaViewModel DetalleVM { get; set; }
 
         public Ventum VentaActual { get; set; }
+
+        private ObservableCollection<Ventum> _ventas;
+        public ObservableCollection<Ventum> Ventas
+        {
+            get => _ventas;
+            set { _ventas = value; OnPropertyChanged(nameof(Ventas)); }
+        }
 
 
         // --- COMANDOS ---
@@ -54,10 +63,10 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         // --- METODOS ---
         private void ConfirmarVenta()
         {
-            // 1️⃣ Guardar cliente si no existe
+            // Guardar cliente si no existe
             ClienteVM.GuardarClienteSiNoExiste();
 
-            // 2️⃣ Asociar cliente y detalles
+            // Asociar cliente y detalles
             VentaActual.DniCliente = ClienteVM.ClienteActual.DniCliente;
             VentaActual.FechaHora = DateOnly.FromDateTime(DateTime.Now);
             VentaActual.Total = DetalleVM.Total;
@@ -65,11 +74,13 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             foreach (var d in DetalleVM.DetalleProductos)
                 VentaActual.DetalleVentaProductos.Add(d);
 
-            // 3️⃣ Guardar venta
-            _context.Venta.Add(VentaActual);
-            _context.SaveChanges(); // 👈 primero guardamos la venta
+            VentaActual.IdUsuario = Sesion.UsuarioActual.IdUsuario;
 
-            // 4️⃣ Si el envío está habilitado, crear dirección + envío
+            // Guardar venta
+            _context.Venta.Add(VentaActual);
+            _context.SaveChanges(); // primero guardamos la venta
+
+            // Si el envío está habilitado, crear dirección + envío
             if (EnvioHabilitado)
             {
                 // Validar que haya dirección cargada
@@ -89,6 +100,8 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                         FechaDespacho = null
                     };
 
+                    VentaActual.IdUsuario = Sesion.UsuarioActual.IdUsuario;
+
                     _context.Envios.Add(envio);
                     _context.SaveChanges();
                 }
@@ -100,14 +113,30 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 }
             }
 
-            // 5️⃣ Mostrar mensaje de éxito
+            // Mostrar mensaje de éxito
             MessageBox.Show($"Venta registrada correctamente. N° {VentaActual.IdNroVenta}",
                             "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
 
-            // 6️⃣ Reiniciar formularios
+            // Recargar lista de ventas
+            CargarVentas();
+
+            // Reiniciar formularios
             DetalleVM.Reiniciar();
             ClienteVM.Reiniciar();
             VentaActual = new Ventum();
+        }
+
+
+        public void CargarVentas()
+        {
+            Ventas = new ObservableCollection<Ventum>(
+                _context.Venta
+                    .Include(v => v.DniClienteNavigation)
+                    .Include(v => v.IdUsuarioNavigation)
+                    .Include(v => v.DetalleVentaProductos)
+                    .ThenInclude(d => d.IdProductoNavigation)
+                    .ToList()
+            );
         }
 
 

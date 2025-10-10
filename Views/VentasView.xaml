@@ -4,9 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Proyecto_Isasi_Montanaro.Views"
+             xmlns:vm="clr-namespace:Proyecto_Isasi_Montanaro.ViewModels"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Background="#F3EDF7">
+
+    <UserControl.DataContext>
+        <vm:VentasViewModel/>
+    </UserControl.DataContext>
 
     <Grid Margin="20">
         <Grid.RowDefinitions>
@@ -127,19 +133,20 @@
         <DataGrid Grid.Row="4" Style="{StaticResource AppDataGrid}" Margin="0,2,0,0"
           ItemsSource="{Binding Ventas}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Id"    Binding="{Binding Id_venta}" Width="Auto"/>
-                <DataGridTextColumn Header="Detalle"  Binding="{Binding Detalle_venta}" Width="*"/>
-                <DataGridTextColumn Header="Total" Binding="{Binding Total_venta}" Width="*"/>
-                <DataGridTextColumn Header="Cliente"     Binding="{Binding Cliente_venta}" Width="Auto"/>
+                <DataGridTextColumn Header="Nro venta"    Binding="{Binding IdNroVenta}" Width="Auto"/>
+                <DataGridTextColumn Header="Fecha" Binding="{Binding FechaHora}" Width="Auto"/>
+                <DataGridTextColumn Header="Total" Binding="{Binding Total}" Width="*"/>
+                <DataGridTextColumn Header="Cliente"     Binding="{Binding DniClienteNavigation.NombreCompleto}" Width="Auto"/>
                 <DataGridTextColumn Header="Envio"    Binding="{Binding Envio}" Width="Auto"/>
                 <DataGridTextColumn Header="Estado"    Binding="{Binding Estado}" Width="*"/>
-                <DataGridTextColumn Header="Creado por" Binding="{Binding CreadoPor}" Width="*"/>
+                <DataGridTextColumn Header="Creado por" Binding="{Binding IdUsuarioNavigation.Nombre}" Width="*"/>
                 <DataGridTemplateColumn Header="Acciones">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <Button Content="Editar"   Style="{StaticResource BtnSecondary}" Margin="0,0,6,0"/>
-                                <Button Content="Eliminar" Style="{StaticResource BtnSecondary}"/>
+                                <Button Style="{StaticResource BtnSecondary}" Height="15" MinWidth="15" Margin="2,2,4,2">
+                                    <iconPacks:PackIconMaterial Kind="Eye" Width="16" Height="16" Foreground="#F5A623"/>
+                                </Button>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

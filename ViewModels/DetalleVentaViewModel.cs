@@ -20,16 +20,22 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         {
             _context = context;
             ProductosDisponibles = new ObservableCollection<Producto>(_context.Productos.ToList());
+            ProductosFiltrados = new ObservableCollection<Producto>(ProductosDisponibles);
             DetalleProductos = new ObservableCollection<DetalleVentaProducto>();
 
             AgregarProductoCommand = new RelayCommand(_ => AgregarProducto(), _ => ProductoSeleccionado != null && CantidadSeleccionada > 0);
             EditarProductoCommand = new RelayCommand(p => EditarProducto(p as DetalleVentaProducto));
             EliminarProductoCommand = new RelayCommand(p => EliminarProducto(p as DetalleVentaProducto));
+
         }
 
         public ObservableCollection<Producto> ProductosDisponibles { get; set; }
         public ObservableCollection<DetalleVentaProducto> DetalleProductos { get; set; }
 
+        private ObservableCollection<Producto> _productosFiltrados;
+
+       
+        //seleccion de producto
         private Producto _productoSeleccionado;
         public Producto ProductoSeleccionado
         {
@@ -51,6 +57,25 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             set { _total = value; OnPropertyChanged(); }
         }
 
+
+        //busqueda y filtro de producto
+        public ObservableCollection<Producto> ProductosFiltrados
+        {
+            get => _productosFiltrados;
+            set { _productosFiltrados = value; OnPropertyChanged(); }
+        }
+
+        private string _textoBusqueda;
+        public string TextoBusqueda
+        {
+            get => _textoBusqueda;
+            set
+            {
+                _textoBusqueda = value;
+                OnPropertyChanged();
+                FiltrarProductos();
+            }
+        }
 
         // --- COMANDOS ---
         public ICommand AgregarProductoCommand { get; set; }
@@ -107,6 +132,23 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             OnPropertyChanged(nameof(DetalleProductos));
         }
 
+
+        //Filtrado de productos
+        private void FiltrarProductos()
+        {
+            if (string.IsNullOrWhiteSpace(TextoBusqueda))
+            {
+                ProductosFiltrados = new ObservableCollection<Producto>(ProductosDisponibles);
+            }
+            else
+            {
+                var filtrados = ProductosDisponibles
+                    .Where(p => p.Nombre.Contains(TextoBusqueda, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+                ProductosFiltrados = new ObservableCollection<Producto>(filtrados);
+            }
+        }
 
         // --- Notificación de cambios ---
         public event PropertyChangedEventHandler PropertyChanged;

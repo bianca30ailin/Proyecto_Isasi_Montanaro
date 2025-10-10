@@ -94,9 +94,12 @@
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                             <ComboBox Width="250"
                                       Margin="0,0,10,0"
-                                      ItemsSource="{Binding DetalleVM.ProductosDisponibles}"
+                                      ItemsSource="{Binding DetalleVM.ProductosFiltrados}"
                                       DisplayMemberPath="Nombre"
-                                      SelectedItem="{Binding DetalleVM.ProductoSeleccionado, Mode=TwoWay}" />
+                                      IsEditable="True"
+                                      IsTextSearchEnabled="False"
+                                      SelectedItem="{Binding DetalleVM.ProductoSeleccionado, Mode=TwoWay}"
+                                      Text="{Binding DetalleVM.TextoBusqueda, UpdateSourceTrigger=PropertyChanged}"/>
 
                             <TextBox Width="80"
                                      Margin="0"
