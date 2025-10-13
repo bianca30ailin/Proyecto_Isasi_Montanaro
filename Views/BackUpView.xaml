@@ -4,9 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Proyecto_Isasi_Montanaro.Views"
+             xmlns:vm="clr-namespace:Proyecto_Isasi_Montanaro.ViewModels"
              mc:Ignorable="d" 
              Background="#F3EDF7"
              d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.DataContext>
+        <vm:BackUpViewModel/>
+    </UserControl.DataContext>
 
     <Grid Margin="20">
         <Grid.RowDefinitions>
@@ -31,12 +36,15 @@
                        Style="{StaticResource TableHeaderTitle}"/>
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
                     <TextBox Width="300"
-                         Style="{StaticResource FormTextBox}"/>
+                         Style="{StaticResource FormTextBox}"
+                         Text="{Binding NombreBaseDatos, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         IsReadOnly="True"/>
                     <Button Content="Conectar"
                         Margin="10,0,0,0"
                         Style="{StaticResource BtnSecondary}"
                         Background="#757575"
-                        Foreground="White"/>
+                        Foreground="White"
+                        Command="{Binding ConectarCommand}"/>
                 </StackPanel>
 
                 <!-- Campo Ruta -->
@@ -44,19 +52,23 @@
                        Style="{StaticResource TableHeaderTitle}"/>
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
                     <TextBox Width="300"
-                         Style="{StaticResource FormTextBox}"/>
+                         Style="{StaticResource FormTextBox}"
+                         Text="{Binding RutaArchivoBackup, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         IsReadOnly="True"/>
                     <Button Content="Ruta"
                         Margin="10,0,0,0"
                         Style="{StaticResource BtnSecondary}"
                         Background="#757575"
-                        Foreground="White"/>
+                        Foreground="White"
+                        Command="{Binding SeleccionarRutaCommand}"/>
                 </StackPanel>
 
                 <!-- Botón principal -->
                 <Button Content="Back Up"
                     Width="120"
                     HorizontalAlignment="Center"
-                    Style="{StaticResource BtnPrimary}"/>
+                    Style="{StaticResource BtnPrimary}"
+                    Command="{Binding RealizarBackupCommand}"/>
             </StackPanel>
         </Border>
     </Grid>

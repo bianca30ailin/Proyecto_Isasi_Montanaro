@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Proyecto_Isasi_Montanaro.Views.Formularios"
+        xmlns:vm="clr-namespace:Proyecto_Isasi_Montanaro.ViewModels"
         mc:Ignorable="d"
         AllowsTransparency="True"
         Background="Transparent"
@@ -12,6 +13,10 @@
         ResizeMode="NoResize"
         Title="Producto" 
         Height="560" Width="520">
+
+    <Window.DataContext>
+        <vm:ProductoFormViewModel/>
+    </Window.DataContext>
 
     <!-- Borde redondeado -->
     <Border CornerRadius="8"
@@ -71,6 +76,7 @@
                            Grid.Row="1" Grid.Column="0"/>
                 <TextBox Style="{StaticResource FormTextBox}" 
                          Margin="0,30,0,10"
+                         Text="{Binding NuevoProducto.Nombre, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"/>
 
                 <!-- Descripción -->
@@ -82,16 +88,20 @@
                          TextWrapping="Wrap"
                          AcceptsReturn="True"
                          Margin="0,30,0,10"
+                         Text="{Binding NuevoProducto.Descripcion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3"/>
 
                 <!-- Categoría -->
                 <TextBlock Text="Categoría" 
-                           Style="{StaticResource FormLabel}" 
-                           Grid.Row="3" Grid.Column="0"/>
-                <ComboBox Style="{StaticResource FormComboBox}" 
-                          Margin="0,30,0,10"
-                          Grid.Row="3" Grid.Column="0">
-                </ComboBox>
+                      Style="{StaticResource FormLabel}" 
+                      Grid.Row="3" Grid.Column="0"/>
+
+                            <ComboBox Style="{StaticResource FormComboBox}" 
+                      Margin="0,30,0,10"
+                      Grid.Row="3" Grid.Column="0"
+                      ItemsSource="{Binding Categorias}"
+                      DisplayMemberPath="Nombre"
+                      SelectedItem="{Binding CategoriaSeleccionada, Mode=TwoWay}" />
 
                 <!-- Precio unitario -->
                 <TextBlock Text="Precio unitario" 
@@ -99,6 +109,7 @@
                    Grid.Row="3" Grid.Column="2"/>
                 <TextBox Style="{StaticResource FormTextBox}" 
                      Margin="0,30,0,10"
+                     Text="{Binding NuevoProducto.Precio, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      Grid.Row="3" Grid.Column="2"/>
 
                 <!-- Stock -->
@@ -106,8 +117,9 @@
                            Style="{StaticResource FormLabel}" 
                            Grid.Row="4" Grid.Column="0"/>
                 <TextBox Style="{StaticResource FormTextBox}" 
-                         Text="0" 
+                         
                          Margin="0,30,0,10"
+                         Text="{Binding NuevoProducto.Cantidad, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Grid.Row="4" Grid.Column="0"/>
 
                 <!-- Stock Minimo -->
@@ -115,8 +127,9 @@
                            Style="{StaticResource FormLabel}" 
                            Grid.Row="4" Grid.Column="2"/>
                 <TextBox Style="{StaticResource FormTextBox}" 
-                         Text="0"
+                         
                          Margin="0,30,0,10"
+                         Text="{Binding NuevoProducto.StockMinimo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Grid.Row="4" Grid.Column="2"/>
             </Grid>
 
@@ -131,7 +144,8 @@
                         Margin="0,0,10,0"
                         Foreground="White"
                         Background="#757575"
-                        Click="Cancelar_Click"/>
+                        Command="{Binding CancelarCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" />
 
                 <!-- Modificar -->
                 <Button Style="{StaticResource BtnPrimary}" 
@@ -143,7 +157,9 @@
                 <!-- Guardar -->
                 <Button Style="{StaticResource BtnPrimary}" 
                         Content="Guardar" Width="100"
-                        Background="#53BA83"/>
+                        Background="#53BA83"
+                        Command="{Binding GuardarCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}" Cursor=""/>
             </StackPanel>
         </Grid>
     </Border>

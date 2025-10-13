@@ -4,9 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Proyecto_Isasi_Montanaro.Views"
+             xmlns:vm="clr-namespace:Proyecto_Isasi_Montanaro.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Background="#F3EDF7">
+
+    <UserControl.DataContext>
+        <vm:InventarioViewModel/>
+    </UserControl.DataContext>
 
     <Grid Margin="20">
         <Grid.RowDefinitions>
@@ -45,7 +50,7 @@
                 Style="{StaticResource BtnPrimary}"
                 Grid.Column="1"
                 HorizontalAlignment="Right"
-                Click="NuevoProducto_Click"/>
+                Command="{Binding NuevoProductoCommand}"/>
         </Grid>
 
 
@@ -127,12 +132,12 @@
         <DataGrid Grid.Row="4" Style="{StaticResource AppDataGrid}" Margin="0,2,0,0"
               ItemsSource="{Binding Productos}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Código"    Binding="{Binding Codigo}" Width="Auto"/>
-                <DataGridTextColumn Header="Producto"  Binding="{Binding Nombre_producto}" Width="*"/>
-                <DataGridTextColumn Header="Categoría" Binding="{Binding Categoria}" Width="*"/>
-                <DataGridTextColumn Header="Stock"     Binding="{Binding Stock}" Width="Auto"/>
+                <DataGridTextColumn Header="Código"    Binding="{Binding IdProducto}" Width="Auto"/>
+                <DataGridTextColumn Header="Producto"  Binding="{Binding Nombre}" Width="*"/>
+                <DataGridTextColumn Header="Categoría" Binding="{Binding IdCategoriaNavigation.Nombre}" Width="*"/>
+                <DataGridTextColumn Header="Stock"     Binding="{Binding Cantidad}" Width="Auto"/>
                 <DataGridTextColumn Header="Precio"    Binding="{Binding Precio, StringFormat=C}" Width="Auto"/>
-                <DataGridTextColumn Header="Estado"    Binding="{Binding Estado}" Width="*"/>
+                <DataGridTextColumn Header="Estado"    Binding="{Binding Baja}" Width="*"/>
                 <DataGridTextColumn Header="Creado por" Binding="{Binding CreadoPor}" Width="*"/>
                 <DataGridTemplateColumn Header="Acciones">
                     <DataGridTemplateColumn.CellTemplate>
