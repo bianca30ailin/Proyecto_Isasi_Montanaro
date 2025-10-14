@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Proyecto_Isasi_Montanaro.Models;
 
@@ -21,4 +22,7 @@ public partial class Direccion
     public virtual Ciudad IdCiudadNavigation { get; set; } = null!;
 
     public virtual Cliente? Cliente { get; set; } //hace la relacion oopcionel
+
+    [NotMapped]
+    public string DireccionCompleta => $"{NombreCalle} {Altura} - {IdCiudadNavigation.Nombre} (CP {CodigoPostal})";
 }

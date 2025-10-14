@@ -27,20 +27,6 @@ namespace Proyecto_Isasi_Montanaro.Views
         {
             InitializeComponent();
         }
-
-        private void NuevoUsuario_Click(object sender, RoutedEventArgs e)
-        {
-            // Instanciás la ventana de producto
-            var ventana = new Usuario_form();
-
-            // Si querés que se abra como modal (bloquea hasta cerrar)
-            ventana.ShowDialog();
-        }
-
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
     }
 
 }

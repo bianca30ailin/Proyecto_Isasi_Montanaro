@@ -59,73 +59,83 @@
                 <TextBlock Text="Nombre" 
                        Style="{StaticResource FormLabel}"
                        Grid.Row="0" Grid.Column="0" />
-                <TextBox Style="{StaticResource FormTextBox}" 
-                     Margin="0,30,0,10"
-                     Grid.Row="0" Grid.Column="0"/>
+                <TextBox Style="{StaticResource FormTextBox}"
+                         Text="{Binding ClienteActual.Nombre, Mode=TwoWay}"
+                         Margin="0,30,0,10"
+                         Grid.Row="0" Grid.Column="0"/>
 
                 <!-- Dni -->
                 <TextBlock Text="Dni" 
                    Style="{StaticResource FormLabel}"
                    Grid.Row="0" Grid.Column="2" />
-                <TextBox Style="{StaticResource FormTextBox}" 
-                     Margin="0,30,0,10"
-                     Grid.Row="0" Grid.Column="2"/>
+                <TextBox Style="{StaticResource FormTextBox}"
+                         Text="{Binding ClienteActual.DniCliente, Mode=TwoWay}"
+                         Margin="0,30,0,10"
+                         Grid.Row="0" Grid.Column="2"/>
 
                 <!-- Apellido -->
                 <TextBlock Text="Apellido" 
                        Style="{StaticResource FormLabel}" 
                        Grid.Row="1" Grid.Column="0"/>
                 <TextBox Style="{StaticResource FormTextBox}" 
-                     Margin="0,30,0,10"
-                     Grid.Row="1" Grid.Column="0"/>
+                         Text="{Binding ClienteActual.Apellido, Mode=TwoWay}"
+                         Margin="0,30,0,10"
+                         Grid.Row="1" Grid.Column="0"/>
 
-                <!-- Direccion -->
-                <TextBlock Text="Dirección" 
-                   Style="{StaticResource FormLabel}" 
-                   Grid.Row="1" Grid.Column="3"/>
-                <TextBox Style="{StaticResource FormTextBox}" 
-                     Margin="0,30,0,10"
-                     Grid.Row="1" Grid.Column="3"/>
+                <!-- Dirección -->
+                <TextBlock Text="Direcciones" 
+                           Style="{StaticResource FormLabel}" 
+                           Grid.Row="3" Grid.Column="0"/>
 
+                <Expander Header="Ver direcciones"
+                         Grid.Row="3" Grid.Column="0"  Grid.ColumnSpan="3"
+                         Margin="0,30,0,10"
+                         Background="Transparent"
+                         BorderBrush="#E5E7EB"
+                         BorderThickness="1"
+                         Padding="4"
+                         ExpandDirection="Down">
+
+                    <StackPanel>
+                        <!-- Listado de direcciones -->
+                        <ItemsControl ItemsSource="{Binding DireccionesCliente}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding DireccionCompleta}"
+                                               Foreground="#072741"
+                                                Margin="8,2,0,2"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Expander>
+                
                 <!-- Correo electronico -->
                 <TextBlock Text="Correo electronico" 
                        Style="{StaticResource FormLabel}" 
                        Grid.Row="2" Grid.Column="0"/>
                 <TextBox Style="{StaticResource FormTextBox}" 
-                     Margin="0,30,0,10"
-                     Grid.Row="2" Grid.Column="0"/>
+                         Text="{Binding ClienteActual.Email, Mode=TwoWay}"
+                         Margin="0,30,0,10"
+                         Grid.Row="2" Grid.Column="0"/>
 
                 <!-- Fecha de nacimiento -->
                 <TextBlock Text="Fecha de nacimiento" 
-                     Style="{StaticResource FormLabel}" 
-                     Grid.Row="2" Grid.Column="3"/>
+                           Style="{StaticResource FormLabel}" 
+                           Grid.Row="2" Grid.Column="3"/>
                 <DatePicker Grid.Row="2" Grid.Column="3" 
-                    Style="{StaticResource FormDate}" 
-                    Margin="0,30,0,10"/>
+                            Style="{StaticResource FormDate}" 
+                            Margin="0,30,0,10"/>
 
-                <!-- Categoría -->
+                <!-- Telefono -->
                 <TextBlock Text="Telefono" 
                        Style="{StaticResource FormLabel}" 
-                       Grid.Row="3" Grid.Column="0"/>
+                       Grid.Row="1" Grid.Column="3"/>
                 <TextBox Style="{StaticResource FormTextBox}" 
-                     Margin="0,30,0,10"
-                     Grid.Row="3" Grid.Column="0"/>
+                         Text="{Binding ClienteActual.Telefono, Mode=TwoWay}"
+                         Margin="0,30,0,10"
+                         Grid.Row="1" Grid.Column="3"/>
 
-                <!-- Sexo -->
-                <TextBlock Text="Sexo" 
-                   Style="{StaticResource FormLabel}"
-                   Grid.Row="3" Grid.Column="2"/>
-                <StackPanel Orientation="Horizontal" 
-                    Grid.Row="3" Grid.Column="3"
-                    HorizontalAlignment="Center"      
-                    VerticalAlignment="Center">
-                    <RadioButton Content="Mujer" 
-                         GroupName="Sexo"
-                         Margin="0,10,40,0"/>
-                    <RadioButton Content="Hombre" 
-                        GroupName="Sexo"
-                        Margin="0,10,0,0"/>
-                </StackPanel>
             </Grid>
 
             <!-- Botones -->

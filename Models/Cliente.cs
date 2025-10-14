@@ -18,9 +18,10 @@ public partial class Cliente
 
     public virtual ICollection<Ventum> Venta { get; set; } = new List<Ventum>();
 
-    // 🔹 Un cliente puede tener 0..N direcciones
+    //  Un cliente puede tener 0..N direcciones
     public virtual ICollection<Direccion> Direcciones { get; set; } = new List<Direccion>();
 
-    [NotMapped] // opcional, si usás EF Core
-    public string NombreCompleto => $"{Nombre} {Apellido}";
+    [NotMapped] // propiedades no mapeadas, no modifica la base de datos
+    public string NombreCompleto => $"{Nombre} {Apellido}"; //nombre y apellido del cliente
+    public int CantidadVentas => Venta?.Count ?? 0; //cantidad de ventas del cliente
 }
