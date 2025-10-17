@@ -16,6 +16,8 @@ public partial class Cliente
 
     public string Email { get; set; } = null!;
 
+    public DateTime? FechaNacimiento { get; set; }
+
     public virtual ICollection<Ventum> Venta { get; set; } = new List<Ventum>();
 
     //  Un cliente puede tener 0..N direcciones

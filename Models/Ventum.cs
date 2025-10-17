@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Proyecto_Isasi_Montanaro.Models;
 
@@ -22,4 +23,9 @@ public partial class Ventum
     public virtual ICollection<Envio> Envios { get; set; } = new List<Envio>();
 
     public virtual Usuario? IdUsuarioNavigation { get; set; }
+
+    public int? EstadoVentaId { get; set; }
+
+    [ForeignKey("EstadoVentaId")]
+    public EstadoVenta? EstadoVenta { get; set; }
 }

@@ -43,6 +43,8 @@ public partial class ProyectoTallerContext : DbContext
 
     public virtual DbSet<Ventum> Venta { get; set; }
 
+    public DbSet<EstadoVenta> EstadoVenta { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
@@ -426,6 +428,33 @@ public partial class ProyectoTallerContext : DbContext
                 .HasForeignKey(d => d.IdUsuario)
                 .HasConstraintName("FK__venta__id_usuari__6383C8BA");
         });
+
+        modelBuilder.Entity<EstadoVenta>().HasData(
+             new EstadoVenta
+             {
+                 IdEstadoVenta = 1,
+                 NombreEstado = "Activa",
+                 Descripcion = "Venta confirmada y en curso"
+             },
+            new EstadoVenta
+            {
+                IdEstadoVenta = 2,
+                NombreEstado = "Pendiente de pago",
+                Descripcion = "Venta registrada, esperando confirmación del pago"
+            },
+            new EstadoVenta
+            {
+                IdEstadoVenta = 3,
+                NombreEstado = "Cancelada",
+                Descripcion = "Venta anulada por el cliente o vendedor"
+            },
+            new EstadoVenta
+            {
+                IdEstadoVenta = 4,
+                NombreEstado = "Completada",
+                Descripcion = "Venta finalizada con entrega y pago confirmados"
+            }
+        );
 
         OnModelCreatingPartial(modelBuilder);
     }

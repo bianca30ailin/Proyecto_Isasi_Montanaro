@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Proyecto_Isasi_Montanaro.Models;
 
@@ -11,9 +12,11 @@ using Proyecto_Isasi_Montanaro.Models;
 namespace Proyecto_Isasi_Montanaro.Migrations
 {
     [DbContext(typeof(ProyectoTallerContext))]
-    partial class ProyectoTallerContextModelSnapshot : ModelSnapshot
+    [Migration("20251017134454_AgregarEstadoVenta_fechaCliente")]
+    partial class AgregarEstadoVenta_fechaCliente
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -311,32 +314,6 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                     b.HasKey("IdEstadoVenta");
 
                     b.ToTable("EstadoVenta");
-
-                    b.HasData(
-                        new
-                        {
-                            IdEstadoVenta = 1,
-                            Descripcion = "Venta confirmada y en curso",
-                            NombreEstado = "Activa"
-                        },
-                        new
-                        {
-                            IdEstadoVenta = 2,
-                            Descripcion = "Venta registrada, esperando confirmación del pago",
-                            NombreEstado = "Pendiente de pago"
-                        },
-                        new
-                        {
-                            IdEstadoVenta = 3,
-                            Descripcion = "Venta anulada por el cliente o vendedor",
-                            NombreEstado = "Cancelada"
-                        },
-                        new
-                        {
-                            IdEstadoVenta = 4,
-                            Descripcion = "Venta finalizada con entrega y pago confirmados",
-                            NombreEstado = "Completada"
-                        });
                 });
 
             modelBuilder.Entity("Proyecto_Isasi_Montanaro.Models.Producto", b =>
