@@ -28,15 +28,22 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             ClienteVM = new ClienteViewModel();
             DetalleVM = new DetalleVentaViewModel(_context);
 
+            ListaEstadosVenta = new ObservableCollection<EstadoVenta>(_context.EstadoVenta.ToList()); //lista de estados de venta
+
             // --- Inicialización de envío ---
             EnvioHabilitado = false;
 
-            // Inicializar venta
+           
+            // Calcular número próximo (solo para mostrar)
             int ultimoId = _context.Venta.Any() ? _context.Venta.Max(v => v.IdNroVenta) : 0;
+            ProximoIdVenta = ultimoId + 1;
+
+            // Inicializar venta
             VentaActual = new Ventum
             {
                 FechaHora = DateOnly.FromDateTime(DateTime.Now),
-                Total = 0
+                Total = 0,
+                EstadoVentaId = 1
             };
 
             ConfirmarVentaCommand = new RelayCommand(_ => ConfirmarVenta(), _ => DetalleVM.DetalleProductos.Any());
@@ -46,6 +53,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         public ClienteViewModel ClienteVM { get; set; }
         public DetalleVentaViewModel DetalleVM { get; set; }
 
+        public ObservableCollection<EstadoVenta> ListaEstadosVenta { get; set; }
         public Ventum VentaActual { get; set; }
 
         private ObservableCollection<Ventum> _ventas;
@@ -76,6 +84,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
             VentaActual.IdUsuario = Sesion.UsuarioActual.IdUsuario;
 
+
             // Guardar venta
             _context.Venta.Add(VentaActual);
             _context.SaveChanges(); // primero guardamos la venta
@@ -101,6 +110,8 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                     };
 
                     VentaActual.IdUsuario = Sesion.UsuarioActual.IdUsuario;
+
+                    VentaActual.EstadoVentaId = 1; // Activa
 
                     _context.Envios.Add(envio);
                     _context.SaveChanges();
@@ -132,6 +143,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             Ventas = new ObservableCollection<Ventum>(
                 _context.Venta
                     .Include(v => v.DniClienteNavigation)
+                    .Include(v => v.EstadoVenta)
                     .Include(v => v.IdUsuarioNavigation)
                     .Include(v => v.DetalleVentaProductos)
                     .ThenInclude(d => d.IdProductoNavigation)
@@ -155,6 +167,17 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
         }
 
+        //calcular nro de venta
+        private int _proximoIdVenta;
+        public int ProximoIdVenta
+        {
+            get => _proximoIdVenta;
+            set
+            {
+                _proximoIdVenta = value;
+                OnPropertyChanged(nameof(ProximoIdVenta));
+            }
+        }
 
         // --- Notificación de cambios ---
         public event PropertyChangedEventHandler PropertyChanged;

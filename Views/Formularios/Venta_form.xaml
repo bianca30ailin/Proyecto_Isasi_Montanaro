@@ -72,7 +72,7 @@
                 </Grid.RowDefinitions>
 
                     <!-- ID Venta -->
-                    <TextBlock Text="ID Venta" 
+                    <TextBlock Text="Nro Venta" 
                                Style="{StaticResource FormLabel}"
                                Grid.Row="0" Grid.Column="0" />
                     <TextBox Style="{StaticResource FormTextBox}" 
@@ -80,7 +80,20 @@
                              Margin="0,30,0,10"
                              Grid.Row="0" Grid.Column="0"
                              Background="#E0E0E0"
-                             Text="{Binding VentaActual.IdNroVenta}" /> 
+                             Text="{Binding ProximoIdVenta}" />
+
+                    <!-- Estado de la venta -->
+                    <TextBlock Text="Estado de la venta"
+                       Style="{StaticResource FormLabel}"
+                       Grid.Row="0" Grid.Column="3"/>
+
+                    <ComboBox Grid.Row="0" Grid.Column="3"
+                      Style="{StaticResource FormComboBox}"
+                      ItemsSource="{Binding ListaEstadosVenta}"
+                      DisplayMemberPath="NombreEstado"
+                      SelectedValuePath="IdEstadoVenta"
+                      SelectedValue="{Binding VentaActual.EstadoVentaId, Mode=TwoWay}"
+                      Margin="0,30,0,10"/>
 
                     <!-- Productos -->
                     <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">

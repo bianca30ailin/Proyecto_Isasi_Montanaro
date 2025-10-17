@@ -58,58 +58,141 @@
     </Style>
 
 
-    <!-- CHIPS -->
-    <!-- Chip base -->
-        <Style x:Key="Chip" TargetType="Button" BasedOn="{StaticResource BtnSecondary}">
-            <Setter Property="Height" Value="30"/>
-            <Setter Property="MinWidth" Value="80"/>
-            <Setter Property="Padding" Value="18,6"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <!-- si querés pill-shaped -->
-        </Style>
+    <!-- CHIP BASE -->
+    <Style x:Key="Chip" TargetType="Button" BasedOn="{StaticResource BtnSecondary}">
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="MinWidth" Value="80"/>
+        <Setter Property="Padding" Value="18,6"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+        <Setter Property="RenderTransform">
+            <Setter.Value>
+                <ScaleTransform ScaleX="1" ScaleY="1"/>
+            </Setter.Value>
+        </Setter>
 
-    <!-- Chips Específicos -->
+        <Style.Triggers>
+            <!-- Hover -->
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect Color="#999" BlurRadius="8" ShadowDepth="0"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+
+            <!-- Presionado -->
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="RenderTransform">
+                    <Setter.Value>
+                        <ScaleTransform ScaleX="0.96" ScaleY="0.96"/>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect Color="#333" BlurRadius="12" ShadowDepth="0"/>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- CHIPS ESPECÍFICOS -->
+
         <!-- Activos -->
         <Style x:Key="ChipActivos" TargetType="Button" BasedOn="{StaticResource Chip}">
             <Setter Property="Background" Value="#F5A623"/>
-            <!-- verde suave -->
-            <Setter Property="Foreground" Value="White"/>
-            <!-- verde oscuro -->
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E38F00"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#CC7A00"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <!-- Inactivos -->
         <Style x:Key="ChipInactivos" TargetType="Button" BasedOn="{StaticResource Chip}">
             <Setter Property="Background" Value="#D64545"/>
-            <!-- rojo claro -->
-            <Setter Property="Foreground" Value="White"/>
-            <!-- rojo oscuro -->
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#B73838"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#9F2E2E"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Completada -->
+        <Style x:Key="ChipCompletada" TargetType="Button" BasedOn="{StaticResource Chip}">
+            <Setter Property="Background" Value="#2BAE66"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#0B7D46"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#096B3A"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Pendiente de pago -->
+        <Style x:Key="ChipPendientePago" TargetType="Button" BasedOn="{StaticResource Chip}">
+        <Setter Property="Background" Value="#FFC107"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#E0A800"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#C69500"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <!-- Inventario -->
         <Style x:Key="ChipInventario" TargetType="Button" BasedOn="{StaticResource Chip}">
             <Setter Property="Background" Value="#A67C52"/>
-            <!-- rojo claro -->
-            <Setter Property="Foreground" Value="White"/>
-            <!-- rojo oscuro -->
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#8C6844"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#735439"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <!-- Ventas -->
         <Style x:Key="ChipVentas" TargetType="Button" BasedOn="{StaticResource Chip}">
             <Setter Property="Background" Value="#2BAE66"/>
-            <!-- rojo claro -->
-            <Setter Property="Foreground" Value="White"/>
-            <!-- rojo oscuro -->
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#229457"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#1C7A48"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
-        <!-- Envio -->
+        <!-- Envío -->
         <Style x:Key="ChipEnvio" TargetType="Button" BasedOn="{StaticResource Chip}">
             <Setter Property="Background" Value="#4DA3FF"/>
-            <!-- rojo claro -->
-            <Setter Property="Foreground" Value="White"/>
-            <!-- rojo oscuro -->
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#1E90FF"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#1B7ED9"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
+
 
     <!-- ===== INPUTS ===== -->
         <!-- Estilo base genérico -->

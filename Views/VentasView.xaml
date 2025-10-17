@@ -42,8 +42,10 @@
 
             <!-- Chips a la izquierda -->
             <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left">
-                <Button Content="Activos" Style="{StaticResource ChipActivos}" Margin="0,0,10,0"/>
-                <Button Content="Inactivos" Style="{StaticResource ChipInactivos}"/>
+                <Button Content="Activas" Style="{StaticResource ChipActivos}" Margin="0,0,10,0"/>
+                <Button Content="Canceladas" Style="{StaticResource ChipInactivos}" Margin="0,0,10,0"/>
+                <Button Content="Pago pendiente" Style="{StaticResource ChipPendientePago}" Margin="0,0,10,0"/>
+                <Button Content="Completadas" Style="{StaticResource ChipCompletada}" />
             </StackPanel>
 
             <!-- Botón a la derecha -->
@@ -138,7 +140,7 @@
                 <DataGridTextColumn Header="Total" Binding="{Binding Total}" Width="*"/>
                 <DataGridTextColumn Header="Cliente"     Binding="{Binding DniClienteNavigation.NombreCompleto}" Width="Auto"/>
                 <DataGridTextColumn Header="Envio"    Binding="{Binding Envio}" Width="Auto"/>
-                <DataGridTextColumn Header="Estado"    Binding="{Binding Estado}" Width="*"/>
+                <DataGridTextColumn Header="Estado"    Binding="{Binding EstadoVenta.NombreEstado}" Width="*"/>
                 <DataGridTextColumn Header="Creado por" Binding="{Binding IdUsuarioNavigation.Nombre}" Width="*"/>
                 <DataGridTemplateColumn Header="Acciones">
                     <DataGridTemplateColumn.CellTemplate>
