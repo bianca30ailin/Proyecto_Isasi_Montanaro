@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Proyecto_Isasi_Montanaro.Models;
 
@@ -11,9 +12,11 @@ using Proyecto_Isasi_Montanaro.Models;
 namespace Proyecto_Isasi_Montanaro.Migrations
 {
     [DbContext(typeof(ProyectoTallerContext))]
-    partial class ProyectoTallerContextModelSnapshot : ModelSnapshot
+    [Migration("20251018013615_AddDireccionToEnvio")]
+    partial class AddDireccionToEnvio
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -237,6 +240,9 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                     b.Property<int>("IdDireccion")
                         .HasColumnType("int");
 
+                    b.Property<int>("IdDireccionNavigationIdDireccion")
+                        .HasColumnType("int");
+
                     b.Property<int>("IdEstado")
                         .HasColumnType("int")
                         .HasColumnName("id_estado");
@@ -259,7 +265,7 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                     b.HasKey("IdEnvio")
                         .HasName("PK__envio__8C48C8CAEABDBD3A");
 
-                    b.HasIndex("IdDireccion");
+                    b.HasIndex("IdDireccionNavigationIdDireccion");
 
                     b.HasIndex("IdEstado");
 
@@ -279,9 +285,6 @@ namespace Proyecto_Isasi_Montanaro.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdEstado"));
 
-                    b.Property<string>("Descripcion")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(15)
@@ -293,44 +296,6 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                         .HasName("PK__estado__86989FB20C055FB1");
 
                     b.ToTable("estado", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            IdEstado = 1,
-                            Descripcion = "Pedido confirmado, preparando para envío",
-                            Nombre = "En preparación"
-                        },
-                        new
-                        {
-                            IdEstado = 2,
-                            Descripcion = "Pedido despachado, en tránsito",
-                            Nombre = "En camino"
-                        },
-                        new
-                        {
-                            IdEstado = 3,
-                            Descripcion = "Pedido recibido por el cliente",
-                            Nombre = "Entregado"
-                        },
-                        new
-                        {
-                            IdEstado = 4,
-                            Descripcion = "A la espera de procesamiento",
-                            Nombre = "Pendiente"
-                        },
-                        new
-                        {
-                            IdEstado = 5,
-                            Descripcion = "Envío cancelado antes del despacho",
-                            Nombre = "Cancelado"
-                        },
-                        new
-                        {
-                            IdEstado = 6,
-                            Descripcion = "El pedido fue devuelto al origen",
-                            Nombre = "Devuelto"
-                        });
                 });
 
             modelBuilder.Entity("Proyecto_Isasi_Montanaro.Models.EstadoVenta", b =>
@@ -721,7 +686,7 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                 {
                     b.HasOne("Proyecto_Isasi_Montanaro.Models.Direccion", "IdDireccionNavigation")
                         .WithMany()
-                        .HasForeignKey("IdDireccion")
+                        .HasForeignKey("IdDireccionNavigationIdDireccion")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

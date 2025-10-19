@@ -27,12 +27,32 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
             ClienteVM = new ClienteViewModel();
             DetalleVM = new DetalleVentaViewModel(_context);
+            EnvioVM = new EnvioViewModel(_context);
+            TransporteVM = new TransporteViewModel(_context);
 
-            ListaEstadosVenta = new ObservableCollection<EstadoVenta>(_context.EstadoVenta.ToList()); //lista de estados de venta
+            // lista de estados de venta
+            ListaEstadosVenta = new ObservableCollection<EstadoVenta>(_context.EstadoVenta.ToList());
 
-            // --- Inicialización de envío ---
+            ClienteVM.PropertyChanged += (s, e) =>
+            {
+                // Cuando cambia el ClienteActual, pasamos sus direcciones al EnvioVM
+                if (e.PropertyName == nameof(ClienteVM.ClienteActual))
+                {
+                    ClienteVM.CargarDirecciones();
+                    EnvioVM.DireccionesCliente = ClienteVM.DireccionesCliente;
+                    OnPropertyChanged(nameof(EnvioVM));
+                }
+
+                // Cuando cambia la lista de direcciones, la sincronizamos también
+                if (e.PropertyName == nameof(ClienteVM.DireccionesCliente))
+                {
+                    EnvioVM.DireccionesCliente = ClienteVM.DireccionesCliente;
+                    OnPropertyChanged(nameof(EnvioVM));
+                }
+            };
+
+            // Inicialización de envío por defecto deshabilitado
             EnvioHabilitado = false;
-
            
             // Calcular número próximo (solo para mostrar)
             int ultimoId = _context.Venta.Any() ? _context.Venta.Max(v => v.IdNroVenta) : 0;
@@ -52,6 +72,10 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
         public ClienteViewModel ClienteVM { get; set; }
         public DetalleVentaViewModel DetalleVM { get; set; }
+
+        public EnvioViewModel EnvioVM { get; set; }
+
+        public TransporteViewModel TransporteVM { get; set; }
 
         public ObservableCollection<EstadoVenta> ListaEstadosVenta { get; set; }
         public Ventum VentaActual { get; set; }
@@ -90,38 +114,48 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             _context.SaveChanges(); // primero guardamos la venta
 
             // Si el envío está habilitado, crear dirección + envío
-            if (EnvioHabilitado)
+            if (EnvioVM.EnvioHabilitado)
             {
-                // Validar que haya dirección cargada
-                if (ClienteVM.DireccionActual != null)
+                var direccionEnvio = EnvioVM.DireccionSeleccionada;
+
+                //verificar que se haya elegido una direccion antes de crear el envio
+                if (direccionEnvio == null)
                 {
-                    // Asociar la dirección al cliente
-                    ClienteVM.DireccionActual.DniCliente = ClienteVM.ClienteActual.DniCliente;
-                    _context.Direccions.Add(ClienteVM.DireccionActual);
-                    _context.SaveChanges();
-
-                    // Crear registro de envío
-                    var envio = new Envio
-                    {
-                        IdNroVenta = VentaActual.IdNroVenta,
-                        Costo = 0, // Podés calcularlo después si tenés lógica
-                        IdEstado = 1, // Ejemplo: "Pendiente"
-                        FechaDespacho = null
-                    };
-
-                    VentaActual.IdUsuario = Sesion.UsuarioActual.IdUsuario;
-
-                    VentaActual.EstadoVentaId = 1; // Activa
-
-                    _context.Envios.Add(envio);
-                    _context.SaveChanges();
-                }
-                else
-                {
-                    MessageBox.Show("Debe ingresar una dirección para el envío.", "Aviso",
+                    MessageBox.Show("Debe seleccionar una dirección para el envío.", "Aviso",
                                     MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return; // No continúa si no hay dirección
+                    return;
                 }
+
+                // Verificar que se haya elegido transporte antes de crear el envío
+                if (TransporteVM.TransporteSeleccionado == null)
+                {
+                    MessageBox.Show("Debe seleccionar un transporte para el envío.", "Aviso",
+                                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                //Verificar que el costo sea valido
+                if (EnvioVM.Costo <= 0)
+                {
+                    MessageBox.Show("Debe ingresar un costo válido para el envío.", "Aviso",
+                                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                //Crear el envio
+                var envio = new Envio
+                {
+                    IdNroVenta = VentaActual.IdNroVenta,
+                    IdDireccion = direccionEnvio.IdDireccion,
+                    IdEstado = 1, // Por ejemplo "Pendiente"
+                    Costo = EnvioVM.Costo,
+                    FechaDespacho = null,
+                    IdTransporte = TransporteVM.TransporteSeleccionado.IdTransporte
+
+                };
+
+                _context.Envios.Add(envio);
+                _context.SaveChanges();
             }
 
             // Mostrar mensaje de éxito
@@ -151,6 +185,17 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             );
         }
 
+        //calcular nro de venta
+        private int _proximoIdVenta;
+        public int ProximoIdVenta
+        {
+            get => _proximoIdVenta;
+            set
+            {
+                _proximoIdVenta = value;
+                OnPropertyChanged(nameof(ProximoIdVenta));
+            }
+        }
 
         // --- Envío ---
         private bool _envioHabilitado;
@@ -167,17 +212,14 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
         }
 
-        //calcular nro de venta
-        private int _proximoIdVenta;
-        public int ProximoIdVenta
+        private void SincronizarDireccionesCliente()
         {
-            get => _proximoIdVenta;
-            set
+            if (ClienteVM.DireccionesCliente != null)
             {
-                _proximoIdVenta = value;
-                OnPropertyChanged(nameof(ProximoIdVenta));
+                EnvioVM.DireccionesCliente = ClienteVM.DireccionesCliente;
             }
         }
+
 
         // --- Notificación de cambios ---
         public event PropertyChangedEventHandler PropertyChanged;

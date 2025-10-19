@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Proyecto_Isasi_Montanaro.Models;
 
@@ -11,9 +12,11 @@ using Proyecto_Isasi_Montanaro.Models;
 namespace Proyecto_Isasi_Montanaro.Migrations
 {
     [DbContext(typeof(ProyectoTallerContext))]
-    partial class ProyectoTallerContextModelSnapshot : ModelSnapshot
+    [Migration("20251019024145_AddDescripcionToEstado")]
+    partial class AddDescripcionToEstado
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -293,44 +296,6 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                         .HasName("PK__estado__86989FB20C055FB1");
 
                     b.ToTable("estado", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            IdEstado = 1,
-                            Descripcion = "Pedido confirmado, preparando para envío",
-                            Nombre = "En preparación"
-                        },
-                        new
-                        {
-                            IdEstado = 2,
-                            Descripcion = "Pedido despachado, en tránsito",
-                            Nombre = "En camino"
-                        },
-                        new
-                        {
-                            IdEstado = 3,
-                            Descripcion = "Pedido recibido por el cliente",
-                            Nombre = "Entregado"
-                        },
-                        new
-                        {
-                            IdEstado = 4,
-                            Descripcion = "A la espera de procesamiento",
-                            Nombre = "Pendiente"
-                        },
-                        new
-                        {
-                            IdEstado = 5,
-                            Descripcion = "Envío cancelado antes del despacho",
-                            Nombre = "Cancelado"
-                        },
-                        new
-                        {
-                            IdEstado = 6,
-                            Descripcion = "El pedido fue devuelto al origen",
-                            Nombre = "Devuelto"
-                        });
                 });
 
             modelBuilder.Entity("Proyecto_Isasi_Montanaro.Models.EstadoVenta", b =>

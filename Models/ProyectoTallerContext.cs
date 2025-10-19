@@ -456,6 +456,45 @@ public partial class ProyectoTallerContext : DbContext
             }
         );
 
+        modelBuilder.Entity<Estado>().HasData(
+            new Estado
+            {
+                IdEstado = 1,
+                Nombre = "En preparación",
+                Descripcion = "Pedido confirmado, preparando para envío"
+            },
+            new Estado
+            {
+                IdEstado = 2,
+                Nombre = "En camino",
+                Descripcion = "Pedido despachado, en tránsito"
+            },
+            new Estado
+            {
+                IdEstado = 3,
+                Nombre = "Entregado",
+                Descripcion = "Pedido recibido por el cliente"
+            },
+            new Estado
+            {
+                IdEstado = 4,
+                Nombre = "Pendiente",
+                Descripcion = "A la espera de procesamiento"
+            },
+            new Estado
+            {
+                IdEstado = 5,
+                Nombre = "Cancelado",
+                Descripcion = "Envío cancelado antes del despacho"
+            },
+            new Estado
+            {
+                IdEstado = 6,
+                Nombre = "Devuelto",
+                Descripcion = "El pedido fue devuelto al origen"
+            }
+        );
+
         OnModelCreatingPartial(modelBuilder);
     }
 

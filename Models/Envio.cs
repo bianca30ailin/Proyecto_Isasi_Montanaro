@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Proyecto_Isasi_Montanaro.Models;
 
@@ -19,9 +20,14 @@ public partial class Envio
 
     public int IdNroVenta { get; set; }
 
+    public int IdDireccion { get; set; }
+
     public virtual Estado IdEstadoNavigation { get; set; } = null!;
 
     public virtual Ventum IdNroVentaNavigation { get; set; } = null!;
 
     public virtual Transporte IdTransporteNavigation { get; set; } = null!;
+
+    [ForeignKey (nameof(IdDireccion))]
+    public virtual Direccion IdDireccionNavigation { get; set; } = null!;
 }

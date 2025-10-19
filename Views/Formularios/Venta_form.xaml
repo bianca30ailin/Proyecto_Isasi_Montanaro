@@ -273,19 +273,29 @@
                            Style="{StaticResource FormLabel}" 
                            Grid.Row="7" Grid.Column="0"/>
                 <ComboBox Style="{StaticResource FormComboBox}" 
+                           ItemsSource="{Binding EnvioVM.DireccionesCliente}"
+                           DisplayMemberPath="DireccionCompleta" 
+                           SelectedItem="{Binding EnvioVM.DireccionSeleccionada, Mode=TwoWay}"
                           Margin="0,30,0,10"
-                          Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3"
+                          Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"
                           IsEnabled="{Binding EnvioHabilitado}">
                 </ComboBox>
+                <Button Content="+ Nueva dirección"
+                    Style="{StaticResource BtnSecondary}"
+                    Margin="0,30,0,10"
+                    Grid.Row="7" Grid.Column="3"
+                    Command="{Binding EnvioVM.NuevaDireccionCommand}"
+                    IsEnabled="{Binding EnvioHabilitado}" />
 
-                <!-- Calle -->
+                    <!-- Calle -->
                 <TextBlock Text="Calle" 
                            Style="{StaticResource FormLabel}"
                            Grid.Row="8" Grid.Column="0" />
                 <TextBox Style="{StaticResource FormTextBox}" 
-                           Margin="0,30,0,10"
-                           Grid.Row="8" Grid.Column="0"
-                           IsEnabled="{Binding EnvioHabilitado}"/>
+                         Margin="0,30,0,10"
+                         Grid.Row="8" Grid.Column="0"
+                         Text="{Binding EnvioVM.DireccionSeleccionada.NombreCalle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         IsEnabled="{Binding EnvioHabilitado}"/>
 
                 <!-- Altura -->
                 <TextBlock Text="Altura" 
@@ -294,6 +304,7 @@
                 <TextBox Style="{StaticResource FormTextBox}" 
                          Margin="0,30,0,10"
                          Grid.Row="8" Grid.Column="2"
+                         Text="{Binding EnvioVM.DireccionSeleccionada.Altura, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          IsEnabled="{Binding EnvioHabilitado}"/>
 
                 <!-- Provincia -->
@@ -303,6 +314,7 @@
                 <TextBox Style="{StaticResource FormTextBox}" 
                          Margin="0,30,0,10"
                          Grid.Row="9" Grid.Column="0"
+                         Text="{Binding EnvioVM.DireccionSeleccionada.IdCiudadNavigation.IdProvinciaNavigation.Nombre, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          IsEnabled="{Binding EnvioHabilitado}"/>
 
                 <!-- Ciudad -->
@@ -312,24 +324,29 @@
                 <TextBox Style="{StaticResource FormTextBox}" 
                          Margin="0,30,0,10"
                          Grid.Row="9" Grid.Column="2"
+                         Text="{Binding EnvioVM.DireccionSeleccionada.IdCiudadNavigation.Nombre, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          IsEnabled="{Binding EnvioHabilitado}"/>
 
                 <!-- Servicio -->
-                <TextBlock Text="Provincia" 
+                <TextBlock Text="Servicio" 
                            Style="{StaticResource FormLabel}"
                            Grid.Row="10" Grid.Column="0" />
-                <TextBox Style="{StaticResource FormTextBox}" 
-                         Margin="0,30,0,10"
-                         Grid.Row="10" Grid.Column="0"
-                         IsEnabled="{Binding EnvioHabilitado}"/>
+                <ComboBox Style="{StaticResource FormComboBox}" 
+                          ItemsSource="{Binding TransporteVM.Transportes}" 
+                          DisplayMemberPath="Nombre"
+                          SelectedItem="{Binding TransporteVM.TransporteSeleccionado, Mode=TwoWay}"
+                          Margin="0,30,0,10"
+                          Grid.Row="10" Grid.Column="0" 
+                          IsEnabled="{Binding EnvioHabilitado}" />
 
-                <!-- Costo servicio -->
+                    <!-- Costo servicio -->
                 <TextBlock Text="Costo" 
                            Style="{StaticResource FormLabel}"
                            Grid.Row="10" Grid.Column="2" />
                 <TextBox Style="{StaticResource FormTextBox}" 
                          Margin="0,30,0,10"
                          Grid.Row="10" Grid.Column="2"
+                         Text="{Binding EnvioVM.Costo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          IsEnabled="{Binding EnvioHabilitado}"/>
 
             </Grid>

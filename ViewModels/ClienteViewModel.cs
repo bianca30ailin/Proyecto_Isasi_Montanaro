@@ -120,6 +120,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             if (cliente != null)
             {
                 ClienteActual = cliente;
+                CargarDirecciones();
                 MessageBox.Show($"Cliente encontrado: {cliente.Nombre} {cliente.Apellido}");
             }
             else
@@ -152,16 +153,20 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
         }
 
-        private void CargarDirecciones()
+        public void CargarDirecciones()
         {
             if (ClienteActual == null) return;
 
             var direcciones = _context.Direccions
                 .Include(d => d.IdCiudadNavigation)
+                 .ThenInclude(c => c.IdProvinciaNavigation)
                 .Where(d => d.DniCliente == ClienteActual.DniCliente)
                 .ToList();
 
             DireccionesCliente = new ObservableCollection<Direccion>(direcciones);
+
+            //para notificar a ventas
+            OnPropertyChanged(nameof(DireccionesCliente));
         }
 
         public void Reiniciar()
