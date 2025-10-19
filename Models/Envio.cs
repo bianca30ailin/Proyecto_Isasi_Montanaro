@@ -10,7 +10,7 @@ public partial class Envio
 
     public DateOnly? FechaDespacho { get; set; }
 
-    public string NumSeguimiento { get; set; } = null!;
+    public string? NumSeguimiento { get; set; }
 
     public double Costo { get; set; }
 

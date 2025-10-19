@@ -258,7 +258,7 @@
                                 VerticalAlignment="Center"
                                Margin="0,0,10,0"/>
                     <CheckBox Name="CkEnvio"
-                              IsChecked="{Binding EnvioHabilitado, Mode=TwoWay}"
+                              IsChecked="{Binding EnvioVM.EnvioHabilitado, Mode=TwoWay}"
                               VerticalAlignment="Center"/>
                     </StackPanel>
 
@@ -278,14 +278,14 @@
                            SelectedItem="{Binding EnvioVM.DireccionSeleccionada, Mode=TwoWay}"
                           Margin="0,30,0,10"
                           Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"
-                          IsEnabled="{Binding EnvioHabilitado}">
+                          IsEnabled="{Binding  EnvioVM.EnvioHabilitado}">
                 </ComboBox>
                 <Button Content="+ Nueva dirección"
                     Style="{StaticResource BtnSecondary}"
                     Margin="0,30,0,10"
                     Grid.Row="7" Grid.Column="3"
                     Command="{Binding EnvioVM.NuevaDireccionCommand}"
-                    IsEnabled="{Binding EnvioHabilitado}" />
+                    IsEnabled="{Binding  EnvioVM.EnvioHabilitado}" />
 
                     <!-- Calle -->
                 <TextBlock Text="Calle" 
@@ -295,7 +295,7 @@
                          Margin="0,30,0,10"
                          Grid.Row="8" Grid.Column="0"
                          Text="{Binding EnvioVM.DireccionSeleccionada.NombreCalle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         IsEnabled="{Binding EnvioHabilitado}"/>
+                         IsEnabled="{Binding  EnvioVM.EnvioHabilitado}"/>
 
                 <!-- Altura -->
                 <TextBlock Text="Altura" 
@@ -305,7 +305,7 @@
                          Margin="0,30,0,10"
                          Grid.Row="8" Grid.Column="2"
                          Text="{Binding EnvioVM.DireccionSeleccionada.Altura, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         IsEnabled="{Binding EnvioHabilitado}"/>
+                         IsEnabled="{Binding  EnvioVM.EnvioHabilitado}"/>
 
                 <!-- Provincia -->
                 <TextBlock Text="Provincia" 
@@ -315,7 +315,7 @@
                          Margin="0,30,0,10"
                          Grid.Row="9" Grid.Column="0"
                          Text="{Binding EnvioVM.DireccionSeleccionada.IdCiudadNavigation.IdProvinciaNavigation.Nombre, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         IsEnabled="{Binding EnvioHabilitado}"/>
+                         IsEnabled="{Binding  EnvioVM.EnvioHabilitado}"/>
 
                 <!-- Ciudad -->
                 <TextBlock Text="Ciudad" 
@@ -325,7 +325,7 @@
                          Margin="0,30,0,10"
                          Grid.Row="9" Grid.Column="2"
                          Text="{Binding EnvioVM.DireccionSeleccionada.IdCiudadNavigation.Nombre, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         IsEnabled="{Binding EnvioHabilitado}"/>
+                         IsEnabled="{Binding  EnvioVM.EnvioHabilitado}"/>
 
                 <!-- Servicio -->
                 <TextBlock Text="Servicio" 
@@ -337,7 +337,7 @@
                           SelectedItem="{Binding TransporteVM.TransporteSeleccionado, Mode=TwoWay}"
                           Margin="0,30,0,10"
                           Grid.Row="10" Grid.Column="0" 
-                          IsEnabled="{Binding EnvioHabilitado}" />
+                          IsEnabled="{Binding  EnvioVM.EnvioHabilitado}" />
 
                     <!-- Costo servicio -->
                 <TextBlock Text="Costo" 
@@ -347,7 +347,7 @@
                          Margin="0,30,0,10"
                          Grid.Row="10" Grid.Column="2"
                          Text="{Binding EnvioVM.Costo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         IsEnabled="{Binding EnvioHabilitado}"/>
+                         IsEnabled="{Binding  EnvioVM.EnvioHabilitado}"/>
 
             </Grid>
 

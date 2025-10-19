@@ -4,10 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Proyecto_Isasi_Montanaro.Views"
+              xmlns:vm="clr-namespace:Proyecto_Isasi_Montanaro.ViewModels"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              Background="#F3EDF7">
-    
+
+    <UserControl.DataContext>
+        <vm:EnvioViewModel />
+    </UserControl.DataContext>
+
+
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <!-- Encabezado -->
@@ -124,22 +131,28 @@
 
         <!-- FILA 4: TABLA -->
         <DataGrid Grid.Row="4" Style="{StaticResource AppDataGrid}" Margin="0,2,0,0"
-              ItemsSource="{Binding Productos}">
+              ItemsSource="{Binding Envios}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Codigo"    Binding="{Binding Codigo_envio}" Width="Auto"/>
-                <DataGridTextColumn Header="ID venta"  Binding="{Binding Envio_venta}" Width="Auto"/>
-                <DataGridTextColumn Header="Costo" Binding="{Binding Costo_envio, StringFormat=C}" Width="Auto"/>
-                <DataGridTextColumn Header="Destinatario"     Binding="{Binding Destinatario}" Width="*"/>
-                <DataGridTextColumn Header="Servicio"    Binding="{Binding Servicio}" Width="*"/>
+                <DataGridTextColumn Header="Codigo"    Binding="{Binding IdEnvio}" Width="Auto"/>
+                <DataGridTextColumn Header="ID venta"  Binding="{Binding IdNroVenta}" Width="Auto"/>
+                <DataGridTextColumn Header="Costo" Binding="{Binding Costo, StringFormat=C}" Width="Auto"/>
+                <DataGridTextColumn Header="Destinatario"     Binding="{Binding IdNroVentaNavigation.DniClienteNavigation.NombreCompleto}" Width="*"/>
+                <DataGridTextColumn Header="Servicio"    Binding="{Binding IdTransporteNavigation.Nombre}" Width="*"/>
                 <DataGridTextColumn Header="Fecha envio"    Binding="{Binding Fecha_envio}" Width="1*"/>
-                <DataGridTextColumn Header="Fecha recepcion" Binding="{Binding Recepcion_envio}" Width="1*"/>
-                <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="*"/>
-                <DataGridTemplateColumn Header="Acciones">
+                <DataGridTextColumn Header="Fecha despacho" Binding="{Binding FechaDespacho}" Width="1*"/>
+                <DataGridTextColumn Header="Estado" Binding="{Binding IdEstadoNavigation.Nombre}" Width="*"/>
+                <DataGridTemplateColumn Header="Acciones" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Button Content="Editar"   Style="{StaticResource BtnSecondary}" Margin="0,0,6,0"/>
-                                <Button Content="Eliminar" Style="{StaticResource BtnSecondary}"/>
+                            <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center">
+                                <!-- Ver -->
+                                <Button Style="{StaticResource BtnSecondary}" Height="15" MinWidth="15" Margin="2,2,4,2">
+                                    <iconPacks:PackIconMaterial Kind="Eye" Width="16" Height="16" Foreground="#F5A623"/>
+                                </Button>
+                                <!-- Eliminar -->
+                                <Button Style="{StaticResource BtnSecondary}" Height="15" MinWidth="15" Margin="4,2,2,2">
+                                    <iconPacks:PackIconMaterial Kind="DeleteEmpty" Width="16" Height="16" Foreground="#D64545"/>
+                                </Button>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

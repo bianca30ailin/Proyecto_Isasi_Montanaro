@@ -50,9 +50,6 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                     OnPropertyChanged(nameof(EnvioVM));
                 }
             };
-
-            // Inicialización de envío por defecto deshabilitado
-            EnvioHabilitado = false;
            
             // Calcular número próximo (solo para mostrar)
             int ultimoId = _context.Venta.Any() ? _context.Venta.Max(v => v.IdNroVenta) : 0;
@@ -113,49 +110,10 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             _context.Venta.Add(VentaActual);
             _context.SaveChanges(); // primero guardamos la venta
 
-            // Si el envío está habilitado, crear dirección + envío
+            // Guardar envío si corresponde
             if (EnvioVM.EnvioHabilitado)
             {
-                var direccionEnvio = EnvioVM.DireccionSeleccionada;
-
-                //verificar que se haya elegido una direccion antes de crear el envio
-                if (direccionEnvio == null)
-                {
-                    MessageBox.Show("Debe seleccionar una dirección para el envío.", "Aviso",
-                                    MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                // Verificar que se haya elegido transporte antes de crear el envío
-                if (TransporteVM.TransporteSeleccionado == null)
-                {
-                    MessageBox.Show("Debe seleccionar un transporte para el envío.", "Aviso",
-                                    MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                //Verificar que el costo sea valido
-                if (EnvioVM.Costo <= 0)
-                {
-                    MessageBox.Show("Debe ingresar un costo válido para el envío.", "Aviso",
-                                    MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-
-                //Crear el envio
-                var envio = new Envio
-                {
-                    IdNroVenta = VentaActual.IdNroVenta,
-                    IdDireccion = direccionEnvio.IdDireccion,
-                    IdEstado = 1, // Por ejemplo "Pendiente"
-                    Costo = EnvioVM.Costo,
-                    FechaDespacho = null,
-                    IdTransporte = TransporteVM.TransporteSeleccionado.IdTransporte
-
-                };
-
-                _context.Envios.Add(envio);
-                _context.SaveChanges();
+                EnvioVM.RegistrarEnvio(VentaActual.IdNroVenta, TransporteVM.TransporteSeleccionado);
             }
 
             // Mostrar mensaje de éxito
@@ -168,6 +126,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             // Reiniciar formularios
             DetalleVM.Reiniciar();
             ClienteVM.Reiniciar();
+            EnvioVM.Reiniciar();
             VentaActual = new Ventum();
         }
 
@@ -197,20 +156,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
         }
 
-        // --- Envío ---
-        private bool _envioHabilitado;
-        public bool EnvioHabilitado
-        {
-            get => _envioHabilitado;
-            set
-            {
-                if (_envioHabilitado != value)
-                {
-                    _envioHabilitado = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+   
 
         private void SincronizarDireccionesCliente()
         {
