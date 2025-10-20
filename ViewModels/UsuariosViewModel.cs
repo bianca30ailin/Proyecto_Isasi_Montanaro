@@ -229,13 +229,13 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
             var filtrados = _usuariosTodos.AsEnumerable();
 
-            // 🔸 Filtro por estado
+            // Filtro por estado
             if (_estadoFiltro == "Activos")
                 filtrados = filtrados.Where(u => u.Baja.Equals("no", StringComparison.OrdinalIgnoreCase));
             else if (_estadoFiltro == "Inactivos")
                 filtrados = filtrados.Where(u => u.Baja.Equals("sí", StringComparison.OrdinalIgnoreCase));
 
-            // 🔸 Filtro por perfil (muchos a muchos)
+            // Filtro por perfil (muchos a muchos)
             if (!string.IsNullOrWhiteSpace(PerfilSeleccionado) && PerfilSeleccionado != "Todos")
             {
                 filtrados = filtrados.Where(u =>
@@ -244,7 +244,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 );
             }
 
-            // 🔸 Filtro por texto (nombre, apellido, DNI)
+            // Filtro por texto (nombre, apellido, DNI)
             if (!string.IsNullOrWhiteSpace(TextoBusqueda))
             {
                 string busqueda = TextoBusqueda.ToLower();
@@ -255,7 +255,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 );
             }
 
-            // 🔸 Actualizamos la lista visible
+            // Actualizamos la lista visible
             Usuarios.Clear();
             foreach (var usuario in filtrados)
                 Usuarios.Add(usuario);
