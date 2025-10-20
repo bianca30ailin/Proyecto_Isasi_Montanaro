@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Proyecto_Isasi_Montanaro.Views"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              xmlns:vm="clr-namespace:Proyecto_Isasi_Montanaro.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
@@ -26,7 +27,7 @@
             <!-- Tabla -->
             <RowDefinition/>
         </Grid.RowDefinitions>
-        
+
         <!-- FILA 0: TÍTULO -->
         <StackPanel Grid.Row="0" Style="{StaticResource HeaderWithIcon}">
             <Image Source="/Assets/box/bi--box.png" Style="{StaticResource HeaderIcon}"/>
@@ -41,16 +42,19 @@
 
             <!-- Chips a la izquierda -->
             <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left">
-                <Button Content="Activos" Style="{StaticResource ChipActivos}" Margin="0,0,10,0"/>
-                <Button Content="Inactivos" Style="{StaticResource ChipInactivos}"/>
+                <Button Content="Activos" Style="{StaticResource ChipActivos}" 
+                        Command="{Binding FiltrarActivosCommand}" Margin="0,0,10,0"/>
+                <Button Content="Inactivos" Style="{StaticResource ChipInactivos}" 
+                        Command="{Binding FiltrarInactivosCommand}"/>
             </StackPanel>
 
-            <!-- Botón a la derecha -->
+            <!-- Botón Nuevo Producto - SOLO VISIBLE CON PERMISOS -->
             <Button x:Name="NuevoProducto" Content="Nuevo Producto"
                 Style="{StaticResource BtnPrimary}"
                 Grid.Column="1"
                 HorizontalAlignment="Right"
-                Command="{Binding NuevoProductoCommand}"/>
+                Command="{Binding AbrirFormularioProductoCommand}"
+                Visibility="{Binding PuedeCrearProducto, Converter={StaticResource BoolToVis}}"/>
         </Grid>
 
 
@@ -72,13 +76,11 @@
 
                 <!-- ComboBox Categorías -->
                 <ComboBox Grid.Column="0"
-                  Style="{StaticResource FormCombo}"
-                  Margin="0,0,10,0"
-                  SelectedIndex="0">
-                    <ComboBoxItem IsEnabled="False" Foreground="Gray">
-                        Seleccione una categoria...
-                    </ComboBoxItem>
-                </ComboBox>
+                          ItemsSource="{Binding Categorias}"
+                          SelectedItem="{Binding CategoriaSeleccionada, Mode=TwoWay}"
+                          DisplayMemberPath="Nombre"
+                          SelectedIndex="0"
+                          Margin="0,0,10,0"/>
 
                 <!-- DatePickers -->
                 <DatePicker Grid.Column="1" 
@@ -96,8 +98,9 @@
                 MinWidth="100"/>
 
                 <Button Grid.Column="4" 
-                Content="Limpiar" 
+                Content="Limpiar"
                 Style="{StaticResource BtnSecondary}" 
+                Command="{Binding LimpiarFiltroCommand}"
                 Margin="0,0,0,0"
                 MinWidth="100"/>
             </Grid>
@@ -122,15 +125,17 @@
                     <TextBlock Text="Listado de Productos" Style="{StaticResource TableHeaderTitle}"/>
                 </StackPanel>
 
-                <!-- Buscador -->
-                <TextBox Grid.Column="1"
-                 Style="{StaticResource TableSearchBox}"/>
+                <!-- Cuadro de búsqueda -->
+                <TextBox
+                         Text="{Binding TextoBusqueda, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="540,0,0,0" Cursor="" Grid.ColumnSpan="2"
+                         />
             </Grid>
         </Border>
 
         <!-- FILA 4: TABLA -->
         <DataGrid Grid.Row="4" Style="{StaticResource AppDataGrid}" Margin="0,2,0,0"
-              ItemsSource="{Binding Productos}">
+              ItemsSource="{Binding Productos}" SelectionChanged="DataGrid_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Código"    Binding="{Binding IdProducto}" Width="Auto"/>
                 <DataGridTextColumn Header="Producto"  Binding="{Binding Nombre}" Width="*"/>
@@ -142,9 +147,30 @@
                 <DataGridTemplateColumn Header="Acciones">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Button Content="Editar"   Style="{StaticResource BtnSecondary}" Margin="0,0,6,0"/>
-                                <Button Content="Eliminar" Style="{StaticResource BtnSecondary}"/>
+                            <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center">
+                                <!-- Botón Editar - SOLO VISIBLE CON PERMISOS -->
+                                <Button Style="{StaticResource BtnSecondary}" 
+                                        Height="15" MinWidth="15" Margin="2,2,4,2"
+                                        Command="{Binding DataContext.EditarProductoCommand,
+                                                  RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}"
+                                        Visibility="{Binding DataContext.PuedeEditarProducto,
+                                                     RelativeSource={RelativeSource AncestorType=DataGrid},
+                                                     Converter={StaticResource BoolToVis}}">
+                                    <iconPacks:PackIconMaterial Kind="Eye" Width="16" Height="16" Foreground="#F5A623"/>
+                                </Button>
+
+                                <!-- Botón Eliminar - SOLO VISIBLE CON PERMISOS -->
+                                <Button Style="{StaticResource BtnSecondary}" 
+                                        Height="15" MinWidth="15" Margin="4,2,2,2"
+                                        Command="{Binding DataContext.EliminarProductoCommand,
+                                                  RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}"
+                                        Visibility="{Binding DataContext.PuedeEliminarProducto,
+                                                     RelativeSource={RelativeSource AncestorType=DataGrid},
+                                                     Converter={StaticResource BoolToVis}}">
+                                    <iconPacks:PackIconMaterial Kind="DeleteEmpty" Width="16" Height="16" Foreground="#D64545"/>
+                                </Button>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
