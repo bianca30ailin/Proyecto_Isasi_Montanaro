@@ -21,7 +21,11 @@ public partial class Producto
 
     public int IdCategoria { get; set; }
 
+    public int IdUsuarioCreacion { get; set; }
+    public DateTime FechaCreacion { get; set; } = DateTime.Now;
+
     public virtual ICollection<DetalleVentaProducto> DetalleVentaProductos { get; set; } = new List<DetalleVentaProducto>();
 
+    public virtual Usuario UsuarioCreacion { get; set; } = null!;
     public virtual Categorium IdCategoriaNavigation { get; set; } = null!;
 }

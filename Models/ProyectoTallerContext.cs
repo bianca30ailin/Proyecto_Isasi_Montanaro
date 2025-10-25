@@ -259,11 +259,23 @@ public partial class ProyectoTallerContext : DbContext
                 .HasColumnName("nombre");
             entity.Property(e => e.Precio).HasColumnName("precio");
             entity.Property(e => e.StockMinimo).HasColumnName("stock_minimo");
+            entity.Property(e => e.IdUsuarioCreacion)
+                .HasColumnName("id_usuario_creacion");
+
+            entity.Property(e => e.FechaCreacion)
+                .HasColumnName("fecha_creacion")
+                .HasDefaultValueSql("GETDATE()");
 
             entity.HasOne(d => d.IdCategoriaNavigation).WithMany(p => p.Productos)
                 .HasForeignKey(d => d.IdCategoria)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__producto__id_cat__6B24EA82");
+
+            entity.HasOne(d => d.UsuarioCreacion)
+                .WithMany(p => p.ProductosCreados)
+                .HasForeignKey(d => d.IdUsuarioCreacion)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_producto_usuario_creacion");
         });
 
         modelBuilder.Entity<Provincium>(entity =>
