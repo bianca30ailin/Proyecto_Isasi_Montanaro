@@ -403,6 +403,9 @@ public partial class ProyectoTallerContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("nombre");
+            entity.Property(e => e.FechaCreacion)
+                .HasColumnName("fecha_creacion")
+                .HasDefaultValueSql("GETDATE()");
         });
 
         modelBuilder.Entity<Ventum>(entity =>

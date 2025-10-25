@@ -27,6 +27,8 @@ public partial class Usuario
 
     public DateTime? FechaNacimiento { get; set; }
 
+    public DateTime FechaCreacion { get; set; } = DateTime.Now;
+
     //Propiedad de navegacion. Relacion uno a muchos. Un usuario puede registrar muchas ventas
     public virtual ICollection<Ventum> Venta { get; set; } = new List<Ventum>();
 
