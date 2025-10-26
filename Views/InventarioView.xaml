@@ -76,6 +76,7 @@
 
                 <!-- ComboBox Categorías -->
                 <ComboBox Grid.Column="0"
+                          Style="{StaticResource FormCombo}"
                           ItemsSource="{Binding Categorias}"
                           SelectedItem="{Binding CategoriaSeleccionada, Mode=TwoWay}"
                           DisplayMemberPath="Nombre"
@@ -143,7 +144,18 @@
                 <DataGridTextColumn Header="Stock"     Binding="{Binding Cantidad}" Width="Auto"/>
                 <DataGridTextColumn Header="Precio"    Binding="{Binding Precio, StringFormat=C}" Width="Auto"/>
                 <DataGridTextColumn Header="Estado"    Binding="{Binding Baja}" Width="*"/>
-                <DataGridTextColumn Header="Creado por" Binding="{Binding CreadoPor}" Width="*"/>
+                <DataGridTextColumn Header="Creado por" 
+                    Width="Auto">
+                    <DataGridTextColumn.Binding>
+                        <MultiBinding StringFormat="{}{0} {1}">
+                            <Binding Path="UsuarioCreacion.Nombre"/>
+                            <Binding Path="UsuarioCreacion.Apellido"/>
+                        </MultiBinding>
+                    </DataGridTextColumn.Binding>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Fecha Creación" 
+                        Binding="{Binding FechaCreacion, StringFormat='{}{0:dd/MM/yyyy}'}" 
+                        Width="Auto"/>
                 <DataGridTemplateColumn Header="Acciones">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

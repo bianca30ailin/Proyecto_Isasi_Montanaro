@@ -1,4 +1,5 @@
 ﻿using Proyecto_Isasi_Montanaro.Commands;
+using Proyecto_Isasi_Montanaro.Helpers;
 using Proyecto_Isasi_Montanaro.Models;
 using System;
 using System.Collections.ObjectModel;
@@ -14,6 +15,8 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
     {
         private Categorium _categoriaSeleccionada;
         private readonly ProyectoTallerContext _context;
+        private bool _isEditable;
+        private bool _esNuevo;
         private bool _esEdicion = false;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -25,12 +28,44 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         // Propiedad del producto
         private Producto _nuevoProducto;
         public Producto NuevoProducto
-        {// Devuelve el valor del campo
+        {
             get => _nuevoProducto;
             set
             {
                 _nuevoProducto = value;
                 OnPropertyChanged(nameof(NuevoProducto));
+                OnPropertyChanged(nameof(IdSimulado)); 
+            }
+        }
+
+        private int _idSimulado;
+        public int IdSimulado
+        {
+            get => _idSimulado;
+            set
+            {
+                _idSimulado = value;
+                OnPropertyChanged(nameof(IdSimulado));
+            }
+        }
+        public bool IsEditable
+        {
+            get => _isEditable;
+            set
+            {
+                _isEditable = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool EsNuevo
+        {
+            get => _esNuevo;
+            set
+            {
+                _esNuevo = value;
+                OnPropertyChanged(nameof(EsNuevo));
+                OnPropertyChanged(nameof(IdSimulado)); // <-- idem
             }
         }
 
@@ -65,18 +100,30 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         // Comandos
         public ICommand GuardarCommand { get; }
         public ICommand CancelarCommand { get; }
+        public ICommand ModificarCommand { get; }
 
         //CONSTRUCTOR ALTA
         public ProductoFormViewModel()
         {
             _context = new ProyectoTallerContext();
+            //Obtiene el proximo id disponible para visualizarlo en el form
+
+
             NuevoProducto = new Producto
             {
                 Baja = "NO" // valor por defecto
             };
             _esEdicion = false;
+            EsNuevo = true;
+            IsEditable = true;
+            // Asignar el próximo ID para visualización
+            IdSimulado = _context.Productos.Any()
+                ? _context.Productos.Max(p => p.IdProducto) + 1
+                : 1;
+
             GuardarCommand = new RelayCommand(GuardarProducto);
             CancelarCommand = new RelayCommand(Cancelar);
+            ModificarCommand = new RelayCommand(ModificarProducto);
             CargarCategorias();
         }
 
@@ -94,11 +141,19 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 Precio = productoExistente.Precio,
                 Cantidad = productoExistente.Cantidad,
                 IdCategoria = productoExistente.IdCategoria,
+                StockMinimo = productoExistente.StockMinimo,
                 Baja = productoExistente.Baja
             };
 
             _esEdicion = true;
+            EsNuevo = false;
+            IsEditable = false;
+
+            // En edición, mostramos el ID real del producto
+            IdSimulado = productoExistente.IdProducto;
+
             GuardarCommand = new RelayCommand(GuardarProducto);
+            ModificarCommand = new RelayCommand(ModificarProducto);
             CancelarCommand = new RelayCommand(Cancelar);
             CargarCategorias();
 
@@ -115,6 +170,11 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
         }
 
+        private void ModificarProducto(object parameter)
+        {
+            IsEditable = true;
+        }
+
         // <summary>
         /// Valida todos los campos del producto antes de guardar
         /// </summary>
@@ -127,6 +187,15 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                     "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
+
+            // Validación: Descripcion obligatoria
+            if (string.IsNullOrWhiteSpace(NuevoProducto.Descripcion))
+            {
+                MessageBox.Show("La descripción es obligatoria.",
+                    "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
 
             // Validación: Nombre con longitud mínima
             if (NuevoProducto.Nombre.Trim().Length < 3)
@@ -176,8 +245,8 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 return false;
             }
 
-            // Validación: Stock mínimo no negativo
-            if (NuevoProducto.StockMinimo < 0)
+            // Validación: Stock mínimo no negativo ni cero
+            if (NuevoProducto.StockMinimo <= 0)
             {
                 MessageBox.Show("El stock mínimo no puede ser negativo.",
                     "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -239,13 +308,19 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 // Limpiar espacios del nombre
                 NuevoProducto.Nombre = NuevoProducto.Nombre.Trim();
 
+
                 // Asignar categoría
                 NuevoProducto.IdCategoria = CategoriaSeleccionada.IdCategoria;
+
 
                 if (NuevoProducto.IdProducto == 0)
                 {
                     // --- NUEVO PRODUCTO ---
                     NuevoProducto.Baja = "NO";
+                    NuevoProducto.IdUsuarioCreacion = Sesion.UsuarioActual.IdUsuario;
+
+                    NuevoProducto.IdProducto = 0;
+
 
                     _context.Productos.Add(NuevoProducto);
                     MessageBox.Show("Producto creado con éxito.", "Éxito",
@@ -295,4 +370,3 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
     }
 }
-

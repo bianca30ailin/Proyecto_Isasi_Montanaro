@@ -83,22 +83,24 @@
                   Style="{StaticResource FormCombo}"
                   ItemsSource="{Binding Perfiles}"
                   SelectedItem="{Binding PerfilSeleccionado, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                  Margin="0,0,10,0"
-                  >
+                  Margin="0,0,10,0">
                 </ComboBox>
 
                 <!-- DatePickers -->
                 <DatePicker Grid.Column="1" 
                     Style="{StaticResource FormDate}" 
+                    SelectedDate="{Binding FechaDesde, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     Margin="0,0,10,0"/>
                 <DatePicker Grid.Column="2" 
                     Style="{StaticResource FormDate}" 
+                    SelectedDate="{Binding FechaHasta, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     Margin="0,0,16,0"/>
 
                 <!-- Botones -->
                 <Button Grid.Column="3" 
                     Content="Filtrar" 
                     Style="{StaticResource BtnPrimary}" 
+                    Command="{Binding FiltrarPorFechasCommand}"
                     Margin="0,0,8,0"
                     MinWidth="100"/>
 
@@ -158,6 +160,9 @@
                 <DataGridTextColumn Header="Dni"    Binding="{Binding Dni}" Width="Auto"/>
                 <DataGridTextColumn Header="Nombre"  Binding="{Binding Nombre}" Width="*"/>
                 <DataGridTextColumn Header="Rol/es" Binding="{Binding PerfilesAsignados}" Width="*" />
+                <DataGridTextColumn Header="Fecha Creación" 
+                        Binding="{Binding FechaCreacion, StringFormat='{}{0:dd/MM/yyyy}'}" 
+                        Width="Auto"/>
                 <DataGridTextColumn Header="Baja"    Binding="{Binding Baja, Converter={StaticResource ToLowerConverter}}" Width="*"/>
                 <DataGridTemplateColumn Header="Acciones" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>

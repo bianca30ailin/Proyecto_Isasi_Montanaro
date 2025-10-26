@@ -47,7 +47,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             {
                 _categoriaSeleccionada = value;
                 OnPropertyChanged(nameof(CategoriaSeleccionada));
-                AplicarFiltros();
+
             }
         }
 
@@ -95,6 +95,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
                 var productosDb = _context.Productos
                     .Include(p => p.IdCategoriaNavigation)
+                    .Include(p => p.UsuarioCreacion)
                     .ToList();
 
                 _productosTodos = productosDb;
@@ -113,7 +114,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             try
             {
                 Categorias.Clear();
-                Categorias.Add(new Categorium { IdCategoria = 0, Nombre = "Todas" });
+                Categorias.Add(new Categorium { IdCategoria = 0, Nombre = "Todos" });
 
                 var categoriasDb = _context.Categoria.ToList();
                 foreach (var c in categoriasDb)
@@ -195,7 +196,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         private void LimpiarFiltro(object parameter)
         {
             _estadoFiltro = "Todos";
-            CategoriaSeleccionada = Categorias.FirstOrDefault(c => c.Nombre == "Todas");
+            CategoriaSeleccionada = Categorias.FirstOrDefault(c => c.Nombre == "Todos");
             TextoBusqueda = string.Empty;
             AplicarFiltros();
         }
@@ -238,4 +239,3 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
-

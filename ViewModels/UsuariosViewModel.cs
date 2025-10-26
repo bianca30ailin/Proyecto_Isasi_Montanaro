@@ -32,8 +32,10 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         public ICommand FiltrarActivosCommand { get; }
         public ICommand FiltrarInactivosCommand { get; }
         public ICommand LimpiarFiltroCommand { get; }
+        public ICommand FiltrarPorFechasCommand { get; }
 
-// Propiedad para el contexto de la base de datos (para simplificar)
+
+        // Propiedad para el contexto de la base de datos (para simplificar)
         private readonly ProyectoTallerContext _context;
 
         public UsuariosViewModel()
@@ -45,12 +47,15 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             CargarUsuarios();
             CargarPerfiles();
 
+            PerfilSeleccionado = "Todos";
+
             AbrirFormularioUsuarioCommand = new RelayCommand(AbrirFormularioUsuario);
             EditarUsuarioCommand = new RelayCommand(EditarUsuario);
             EliminarUsuarioCommand = new RelayCommand(EliminarUsuario);
             FiltrarActivosCommand = new RelayCommand(FiltrarActivos);
             FiltrarInactivosCommand = new RelayCommand(FiltrarInactivos);
             LimpiarFiltroCommand = new RelayCommand(LimpiarFiltro);
+            FiltrarPorFechasCommand = new RelayCommand(FiltrarPorFechas);
         }
 
         // Método para cargar los datos de la base de datos
@@ -180,6 +185,8 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         private string _estadoFiltro = "Todos";
         private string _perfilSeleccionado;
         private string _textoBusqueda;
+        private DateTime? _fechaDesde;
+        private DateTime? _fechaHasta;
 
         public string PerfilSeleccionado
         {
@@ -188,7 +195,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             {
                 _perfilSeleccionado = value;
                 OnPropertyChanged(nameof(PerfilSeleccionado));
-                AplicarFiltros();
+                
             }
         }
 
@@ -200,6 +207,28 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 _textoBusqueda = value;
                 OnPropertyChanged(nameof(TextoBusqueda));
                 AplicarFiltros();
+            }
+        }
+
+        public DateTime? FechaDesde
+        {
+            get => _fechaDesde;
+            set
+            {
+                _fechaDesde = value;
+                OnPropertyChanged(nameof(FechaDesde));
+                // No llamamos AplicarFiltros aquí, solo cuando se presione "Filtrar"
+            }
+        }
+
+        public DateTime? FechaHasta
+        {
+            get => _fechaHasta;
+            set
+            {
+                _fechaHasta = value;
+                OnPropertyChanged(nameof(FechaHasta));
+                // No llamamos AplicarFiltros aquí, solo cuando se presione "Filtrar"
             }
         }
 
@@ -220,6 +249,13 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             _estadoFiltro = "Todos";
             PerfilSeleccionado = "Todos";
             TextoBusqueda = string.Empty;
+            FechaDesde = null; 
+            FechaHasta = null; 
+            AplicarFiltros();
+        }
+
+        private void FiltrarPorFechas(object parameter)
+        {
             AplicarFiltros();
         }
 
@@ -243,6 +279,19 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                     u.IdTipoUsuarios.Any(t => t.Tipo.Equals(PerfilSeleccionado, StringComparison.OrdinalIgnoreCase))
                 );
             }
+
+            // Filtro por fecha desde
+            if (FechaDesde.HasValue)
+            {
+                filtrados = filtrados.Where(u => u.FechaCreacion.Date >= FechaDesde.Value.Date);
+            }
+
+            // Filtro por fecha hasta
+            if (FechaHasta.HasValue)
+            {
+                filtrados = filtrados.Where(u => u.FechaCreacion.Date <= FechaHasta.Value.Date);
+            }
+
 
             // Filtro por texto (nombre, apellido, DNI)
             if (!string.IsNullOrWhiteSpace(TextoBusqueda))
