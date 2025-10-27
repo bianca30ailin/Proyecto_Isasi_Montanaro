@@ -28,6 +28,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         public ICommand FiltrarActivosCommand { get; }
         public ICommand FiltrarInactivosCommand { get; }
         public ICommand LimpiarFiltroCommand { get; }
+        public ICommand FiltrarPorFechasCommand { get; }
 
         // --- Permisos ---
         public bool PuedeCrearProducto => Sesion.UsuarioActual?.IdTipoUsuarios.Any(t => t.IdTipoUsuario == 4) ?? false;
@@ -39,6 +40,9 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         private string _estadoFiltro = "Todos";
         private Categorium _categoriaSeleccionada;
         private string _textoBusqueda;
+        private DateTime? _fechaDesde;  
+        private DateTime? _fechaHasta;  
+
 
         public Categorium CategoriaSeleccionada
         {
@@ -62,6 +66,26 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
         }
 
+        public DateTime? FechaDesde
+        {
+            get => _fechaDesde;
+            set
+            {
+                _fechaDesde = value;
+                OnPropertyChanged(nameof(FechaDesde));
+            }
+        }
+
+        public DateTime? FechaHasta
+        {
+            get => _fechaHasta;
+            set
+            {
+                _fechaHasta = value;
+                OnPropertyChanged(nameof(FechaHasta));
+            }
+        }
+
         // --- Constructor ---
         public InventarioViewModel()
         {
@@ -72,12 +96,14 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             CargarProductos();
             CargarCategorias();
 
+            // Inicializar comandos
             AbrirFormularioProductoCommand = new RelayCommand(AbrirFormularioProducto);
             EditarProductoCommand = new RelayCommand(EditarProducto);
             EliminarProductoCommand = new RelayCommand(EliminarProducto);
             FiltrarActivosCommand = new RelayCommand(FiltrarActivos);
             FiltrarInactivosCommand = new RelayCommand(FiltrarInactivos);
             LimpiarFiltroCommand = new RelayCommand(LimpiarFiltro);
+            FiltrarPorFechasCommand = new RelayCommand(FiltrarPorFechas);
         }
 
         // --- Validación de permisos ---
@@ -193,11 +219,18 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             AplicarFiltros();
         }
 
+        private void FiltrarPorFechas(object parameter)
+        {
+            AplicarFiltros();
+        }
+
         private void LimpiarFiltro(object parameter)
         {
             _estadoFiltro = "Todos";
             CategoriaSeleccionada = Categorias.FirstOrDefault(c => c.Nombre == "Todos");
             TextoBusqueda = string.Empty;
+            FechaDesde = null;   
+            FechaHasta = null;   
             AplicarFiltros();
         }
 
@@ -216,6 +249,19 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             // Categoría
             if (CategoriaSeleccionada != null && CategoriaSeleccionada.IdCategoria != 0)
                 filtrados = filtrados.Where(p => p.IdCategoria == CategoriaSeleccionada.IdCategoria);
+
+            // Filtro por fecha desde
+            if (FechaDesde.HasValue)
+            {
+                filtrados = filtrados.Where(p => p.FechaCreacion.Date >= FechaDesde.Value.Date);
+            }
+
+            //
+            // Filtro por fecha hasta
+            if (FechaHasta.HasValue)
+            {
+                filtrados = filtrados.Where(p => p.FechaCreacion.Date <= FechaHasta.Value.Date);
+            }
 
             // Búsqueda
             if (!string.IsNullOrWhiteSpace(TextoBusqueda))
