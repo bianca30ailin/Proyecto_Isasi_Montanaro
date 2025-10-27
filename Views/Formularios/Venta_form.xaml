@@ -132,7 +132,7 @@
                                          Text="{Binding DetalleVM.CantidadSeleccionada, UpdateSourceTrigger=PropertyChanged}" />
 
                                 <!-- Botón agregar -->
-                                <Button Content="+ Agregar"
+                                <Button Content="Añadir"
                                         Style="{StaticResource BtnSecondary}"
                                         Command="{Binding DetalleVM.AgregarProductoCommand}" />
                             </StackPanel>
@@ -214,21 +214,29 @@
                 <TextBlock Text="Nombre" 
                      Style="{StaticResource FormLabel}"
                      Grid.Row="4" Grid.Column="0" />
-                <TextBox Style="{StaticResource FormTextBox}" 
-                   Margin="0,30,0,10"
-                   Grid.Row="4" Grid.Column="0"
-                   Text="{Binding ClienteVM.ClienteActual.Nombre, UpdateSourceTrigger=PropertyChanged}" />
+                <StackPanel Grid.Row="4" Grid.Column="0" Margin="0,30,0,10">
+                     <TextBox Style="{StaticResource FormTextBox}" 
+                              Text="{Binding ClienteVM.Nombre, UpdateSourceTrigger=PropertyChanged}" />
+                     <TextBlock Text="{Binding ClienteVM.ErrorNombre}"
+                                Foreground="#E35802"
+                                FontSize="11"
+                                Margin="4,2,0,0"/>
+                </StackPanel>
 
-                <!-- Apellido -->
+                    <!-- Apellido -->
                 <TextBlock Text="Apellido" 
                            Style="{StaticResource FormLabel}"
                            Grid.Row="4" Grid.Column="2" />
-                <TextBox Style="{StaticResource FormTextBox}" 
-                         Margin="0,30,0,10"
-                         Grid.Row="4" Grid.Column="2"
-                         Text="{Binding ClienteVM.ClienteActual.Apellido, UpdateSourceTrigger=PropertyChanged}"/>
+                <StackPanel Grid.Row="4" Grid.Column="2" Margin="0,30,0,10">
+                        <TextBox Style="{StaticResource FormTextBox}" 
+                                 Text="{Binding ClienteVM.Apellido, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Text="{Binding ClienteVM.ErrorApellido}"
+                                   Foreground="#E35802"
+                                   FontSize="11"
+                                   Margin="4,2,0,0"/>       
+                </StackPanel>
 
-                <!-- Dni -->
+                    <!-- Dni -->
                 <TextBlock Text="DNI" 
                            Style="{StaticResource FormLabel}"
                            Grid.Row="3" Grid.Column="0" />
@@ -258,19 +266,28 @@
                 <TextBlock Text="Telefono" 
                            Style="{StaticResource FormLabel}"
                            Grid.Row="5" Grid.Column="2" />
-                <TextBox Style="{StaticResource FormTextBox}" 
-                         Margin="0,30,0,10"
-                         Grid.Row="5" Grid.Column="2"
-                         Text="{Binding ClienteVM.ClienteActual.Telefono, UpdateSourceTrigger=PropertyChanged}"/>
+                <StackPanel Grid.Row="5" Grid.Column="2" Margin="0,30,0,10">
+                        <TextBox Style="{StaticResource FormTextBox}" 
+                                 Text="{Binding ClienteVM.Telefono, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Text="{Binding ClienteVM.ErrorTelefono}"
+                                   Foreground="#E35802"
+                                   FontSize="11"
+                                   Margin="4,2,0,0"/>       
+                </StackPanel>
 
-                <!-- Correo -->
+                    <!-- Correo -->
                 <TextBlock Text="Correo electronico" 
                           Style="{StaticResource FormLabel}"
                           Grid.Row="5" Grid.Column="0" />
-                <TextBox Style="{StaticResource FormTextBox}" 
-                         Margin="0,30,0,10"
-                         Grid.Row="5" Grid.Column="0"
-                         Text="{Binding ClienteVM.ClienteActual.Email, UpdateSourceTrigger=PropertyChanged}"/>
+                <StackPanel Grid.Row="5" Grid.Column="0" Margin="0,30,0,10">
+                        <TextBox Style="{StaticResource FormTextBox}" 
+                                Text="{Binding ClienteVM.Email, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Text="{Binding ClienteVM.ErrorEmail}"
+                                   Foreground="#E35802"
+                                   FontSize="11"
+                                   Margin="4,2,0,0"/>   
+                </StackPanel>
+
 
                     <!-- Envio -->
                 <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10,0,0" Orientation="Horizontal">

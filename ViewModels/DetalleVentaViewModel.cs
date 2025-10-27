@@ -90,14 +90,6 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             if (ProductoSeleccionado == null || CantidadSeleccionada <= 0)
                 return;
 
-            // Validar stock disponible en memoria (sin modificar BD)
-            if (ProductoSeleccionado.Cantidad < CantidadSeleccionada)
-            {
-                MessageBox.Show($"Stock insuficiente para {ProductoSeleccionado.Nombre}. Disponible: {ProductoSeleccionado.Cantidad}",
-                                "Stock insuficiente", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
             // Verificar si el producto ya está en el detalle → sumamos cantidades
             var existente = DetalleProductos.FirstOrDefault(d => d.IdProducto == ProductoSeleccionado.IdProducto);
             if (existente != null)
@@ -115,6 +107,13 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
             else
             {
+                // Validar stock disponible en memoria (sin modificar BD)
+                if (ProductoSeleccionado.Cantidad < CantidadSeleccionada)
+                {
+                    MessageBox.Show($"Stock insuficiente para {ProductoSeleccionado.Nombre}. Disponible: {ProductoSeleccionado.Cantidad}",
+                                    "Stock insuficiente", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
                 // Crear nuevo detalle
                 var subtotal = ProductoSeleccionado.Precio * CantidadSeleccionada;
                 var detalle = new DetalleVentaProducto
@@ -127,6 +126,8 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
                 DetalleProductos.Add(detalle);
             }
+
+            
 
             CalcularTotal();
             CantidadSeleccionada = 0;
