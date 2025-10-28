@@ -22,10 +22,21 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                 DROP INDEX IX_envio_IdDireccionNavigationIdDireccion ON envio;
             ");
 
-            // 3) Borrar columna fantasma si existe
+            //3) Borrar constraint por defecto y luego la columna fantasma si existe
             migrationBuilder.Sql(@"
             IF COL_LENGTH('envio','IdDireccionNavigationIdDireccion') IS NOT NULL
+            BEGIN
+                DECLARE @ConstraintName NVARCHAR(200);
+                SELECT @ConstraintName = d.name
+                FROM sys.default_constraints d
+                JOIN sys.columns c ON d.parent_object_id = c.object_id AND d.parent_column_id = c.column_id
+                WHERE d.parent_object_id = OBJECT_ID('envio') AND c.name = 'IdDireccionNavigationIdDireccion';
+
+                IF @ConstraintName IS NOT NULL
+                    EXEC('ALTER TABLE envio DROP CONSTRAINT ' + @ConstraintName);
+
                 ALTER TABLE envio DROP COLUMN IdDireccionNavigationIdDireccion;
+            END
             ");
 
             // 4) Crear índice correcto si NO existe
