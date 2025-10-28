@@ -103,27 +103,49 @@
                                    Margin="0,0,0,5"/>
                         <Separator Background="#E5E7EB" Height="1" Margin="0,0,0,10" />
 
-                        <!-- Selección de producto y cantidad -->
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                            <ComboBox Width="250"
-                                      Margin="0,0,10,0"
-                                      ItemsSource="{Binding DetalleVM.ProductosFiltrados}"
-                                      DisplayMemberPath="Nombre"
-                                      IsEditable="True"
-                                      IsTextSearchEnabled="False"
-                                      SelectedItem="{Binding DetalleVM.ProductoSeleccionado, Mode=TwoWay}"
-                                      Text="{Binding DetalleVM.TextoBusqueda, UpdateSourceTrigger=PropertyChanged}"/>
+                        <!-- Selector y controles -->
+                        <Grid>
+                            <!-- Definimos dos filas: una para el selector, otra para el stock -->
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                            <TextBox Width="80"
-                                     Margin="0"
-                                     Style="{StaticResource FormTextBox}"
-                                     Text="{Binding DetalleVM.CantidadSeleccionada, UpdateSourceTrigger=PropertyChanged}" />
+                            <!-- Fila 0: ComboBox, cantidad y botón -->
+                            <StackPanel Orientation="Horizontal"
+                                        Grid.Row="0"
+                                        Margin="0,0,0,5">
+                                <!-- ComboBox de productos -->
+                                <ComboBox Width="250"
+                                          Margin="0,0,8,0"
+                                          ItemsSource="{Binding DetalleVM.ProductosFiltrados}"
+                                          DisplayMemberPath="Nombre"
+                                          IsEditable="True"
+                                          IsTextSearchEnabled="False"
+                                          SelectedItem="{Binding DetalleVM.ProductoSeleccionado, Mode=TwoWay}"
+                                          Text="{Binding DetalleVM.TextoBusqueda, UpdateSourceTrigger=PropertyChanged}"/>
 
-                            <Button Content="+ Agregar"
-                                    Style="{StaticResource BtnSecondary}"
-                                    Width="10"
-                                    Command="{Binding DetalleVM.AgregarProductoCommand}" />
-                        </StackPanel>
+                                <!-- Campo cantidad -->
+                                <TextBox Width="80"
+                                         Margin="0,0,0,0"
+                                         Style="{StaticResource FormTextBox}"
+                                         Text="{Binding DetalleVM.CantidadSeleccionada, UpdateSourceTrigger=PropertyChanged}" />
+
+                                <!-- Botón agregar -->
+                                <Button Content="Añadir"
+                                        Style="{StaticResource BtnSecondary}"
+                                        Command="{Binding DetalleVM.AgregarProductoCommand}" />
+                            </StackPanel>
+
+                            <!-- Fila 1: stock debajo del ComboBox -->
+                            <TextBlock Text="{Binding DetalleVM.ProductoSeleccionado.Cantidad, StringFormat='Stock disponible: {0}'}"
+                                       Foreground="#E35802"
+                                       FontWeight="Normal"
+                                       FontSize="12"
+                                       Margin="5,0,0,10"
+                                       Grid.Row="1"
+                                       Visibility="{Binding DetalleVM.ProductoSeleccionado, Converter={StaticResource NullToVisibilityConverter}}"/>
+                        </Grid>
 
                         <!-- Lista de productos agregados -->
                         <DataGrid ItemsSource="{Binding DetalleVM.DetalleProductos}"
@@ -135,7 +157,7 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Producto" Binding="{Binding IdProductoNavigation.Nombre}" Width="*"/>
                                 <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="100"/>
-                                <DataGridTextColumn Header="Subtotal" Binding="{Binding Subtotal}" Width="120"/>
+                                <DataGridTextColumn Header="Subtotal" Binding="{Binding Subtotal, StringFormat={}{0:C}}" Width="120"/>
                                 <!-- Columna de Acciones -->
                                 <DataGridTemplateColumn Header="Acciones" Width="Auto">
                                     <DataGridTemplateColumn.CellTemplate>
@@ -176,7 +198,7 @@
                         <!-- Total -->
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <TextBlock Text="Total: " FontWeight="Bold" FontSize="14" />
-                            <TextBlock Text="{Binding DetalleVM.Total}" FontWeight="Bold" FontSize="14" Margin="5,0,0,0" />
+                            <TextBlock Text="{Binding DetalleVM.Total, StringFormat={}{0:C}}" FontWeight="Bold" FontSize="14" Margin="5,0,0,0" />
                         </StackPanel>
                     </StackPanel>
 
@@ -192,21 +214,29 @@
                 <TextBlock Text="Nombre" 
                      Style="{StaticResource FormLabel}"
                      Grid.Row="4" Grid.Column="0" />
-                <TextBox Style="{StaticResource FormTextBox}" 
-                   Margin="0,30,0,10"
-                   Grid.Row="4" Grid.Column="0"
-                   Text="{Binding ClienteVM.ClienteActual.Nombre, UpdateSourceTrigger=PropertyChanged}" />
+                <StackPanel Grid.Row="4" Grid.Column="0" Margin="0,30,0,10">
+                     <TextBox Style="{StaticResource FormTextBox}" 
+                              Text="{Binding ClienteVM.Nombre, UpdateSourceTrigger=PropertyChanged}" />
+                     <TextBlock Text="{Binding ClienteVM.ErrorNombre}"
+                                Foreground="#E35802"
+                                FontSize="11"
+                                Margin="4,2,0,0"/>
+                </StackPanel>
 
-                <!-- Apellido -->
+                    <!-- Apellido -->
                 <TextBlock Text="Apellido" 
                            Style="{StaticResource FormLabel}"
                            Grid.Row="4" Grid.Column="2" />
-                <TextBox Style="{StaticResource FormTextBox}" 
-                         Margin="0,30,0,10"
-                         Grid.Row="4" Grid.Column="2"
-                         Text="{Binding ClienteVM.ClienteActual.Apellido, UpdateSourceTrigger=PropertyChanged}"/>
+                <StackPanel Grid.Row="4" Grid.Column="2" Margin="0,30,0,10">
+                        <TextBox Style="{StaticResource FormTextBox}" 
+                                 Text="{Binding ClienteVM.Apellido, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Text="{Binding ClienteVM.ErrorApellido}"
+                                   Foreground="#E35802"
+                                   FontSize="11"
+                                   Margin="4,2,0,0"/>       
+                </StackPanel>
 
-                <!-- Dni -->
+                    <!-- Dni -->
                 <TextBlock Text="DNI" 
                            Style="{StaticResource FormLabel}"
                            Grid.Row="3" Grid.Column="0" />
@@ -236,19 +266,28 @@
                 <TextBlock Text="Telefono" 
                            Style="{StaticResource FormLabel}"
                            Grid.Row="5" Grid.Column="2" />
-                <TextBox Style="{StaticResource FormTextBox}" 
-                         Margin="0,30,0,10"
-                         Grid.Row="5" Grid.Column="2"
-                         Text="{Binding ClienteVM.ClienteActual.Telefono, UpdateSourceTrigger=PropertyChanged}"/>
+                <StackPanel Grid.Row="5" Grid.Column="2" Margin="0,30,0,10">
+                        <TextBox Style="{StaticResource FormTextBox}" 
+                                 Text="{Binding ClienteVM.Telefono, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Text="{Binding ClienteVM.ErrorTelefono}"
+                                   Foreground="#E35802"
+                                   FontSize="11"
+                                   Margin="4,2,0,0"/>       
+                </StackPanel>
 
-                <!-- Correo -->
+                    <!-- Correo -->
                 <TextBlock Text="Correo electronico" 
                           Style="{StaticResource FormLabel}"
                           Grid.Row="5" Grid.Column="0" />
-                <TextBox Style="{StaticResource FormTextBox}" 
-                         Margin="0,30,0,10"
-                         Grid.Row="5" Grid.Column="0"
-                         Text="{Binding ClienteVM.ClienteActual.Email, UpdateSourceTrigger=PropertyChanged}"/>
+                <StackPanel Grid.Row="5" Grid.Column="0" Margin="0,30,0,10">
+                        <TextBox Style="{StaticResource FormTextBox}" 
+                                Text="{Binding ClienteVM.Email, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Text="{Binding ClienteVM.ErrorEmail}"
+                                   Foreground="#E35802"
+                                   FontSize="11"
+                                   Margin="4,2,0,0"/>   
+                </StackPanel>
+
 
                     <!-- Envio -->
                 <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,10,0,0" Orientation="Horizontal">

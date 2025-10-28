@@ -92,43 +92,76 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         // --- METODOS ---
         private void ConfirmarVenta()
         {
-            // Guardar cliente si no existe
-            ClienteVM.GuardarClienteSiNoExiste();
-
-            // Asociar cliente y detalles
-            VentaActual.DniCliente = ClienteVM.ClienteActual.DniCliente;
-            VentaActual.FechaHora = DateOnly.FromDateTime(DateTime.Now);
-            VentaActual.Total = DetalleVM.Total;
-
-            foreach (var d in DetalleVM.DetalleProductos)
-                VentaActual.DetalleVentaProductos.Add(d);
-
-            VentaActual.IdUsuario = Sesion.UsuarioActual.IdUsuario;
-
-
-            // Guardar venta
-            _context.Venta.Add(VentaActual);
-            _context.SaveChanges(); // primero guardamos la venta
-
-            // Guardar envío si corresponde
-            if (EnvioVM.EnvioHabilitado)
+            using var transaction = _context.Database.BeginTransaction();
+            try
             {
-                EnvioVM.RegistrarEnvio(VentaActual.IdNroVenta, TransporteVM.TransporteSeleccionado);
+                // 1️⃣ Guardar cliente si no existe
+                ClienteVM.GuardarClienteSiNoExiste();
+
+                // 2️⃣ Validar stock actual en base de datos
+                foreach (var detalle in DetalleVM.DetalleProductos)
+                {
+                    var productoDb = _context.Productos.FirstOrDefault(p => p.IdProducto == detalle.IdProducto);
+                    if (productoDb == null)
+                    {
+                        MessageBox.Show($"Producto {detalle.IdProductoNavigation.Nombre} no encontrado.",
+                                        "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        transaction.Rollback();
+                        return;
+                    }
+
+                    if (productoDb.Cantidad < detalle.Cantidad)
+                    {
+                        MessageBox.Show($"Stock insuficiente para {productoDb.Nombre}. Disponible: {productoDb.Cantidad}",
+                                        "Error de stock", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        transaction.Rollback();
+                        return;
+                    }
+
+                    // Descontar stock real
+                    productoDb.Cantidad -= detalle.Cantidad;
+                    _context.Productos.Update(productoDb);
+                }
+
+                // 3️⃣ Crear y guardar la venta
+                VentaActual.DniCliente = ClienteVM.ClienteActual.DniCliente;
+                VentaActual.FechaHora = DateOnly.FromDateTime(DateTime.Now);
+                VentaActual.Total = DetalleVM.Total;
+                VentaActual.IdUsuario = Sesion.UsuarioActual.IdUsuario;
+                VentaActual.EstadoVentaId = 1; // 1 = "Activa"
+
+                foreach (var d in DetalleVM.DetalleProductos)
+                    VentaActual.DetalleVentaProductos.Add(d);
+
+                _context.Venta.Add(VentaActual);
+                _context.SaveChanges();
+
+                // 4️⃣ Confirmar transacción
+                transaction.Commit();
+
+                // 5️⃣ Registrar envío si corresponde
+                if (EnvioVM.EnvioHabilitado)
+                    EnvioVM.RegistrarEnvio(VentaActual.IdNroVenta, TransporteVM.TransporteSeleccionado);
+
+                // 6️⃣ Mostrar mensaje de éxito
+                MessageBox.Show($"Venta registrada correctamente. N° {VentaActual.IdNroVenta}",
+                                "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // 7️⃣ Refrescar vistas y limpiar formularios
+                CargarVentas();
+                DetalleVM.Reiniciar();
+                ClienteVM.Reiniciar();
+                EnvioVM.Reiniciar();
+                VentaActual = new Ventum();
             }
-
-            // Mostrar mensaje de éxito
-            MessageBox.Show($"Venta registrada correctamente. N° {VentaActual.IdNroVenta}",
-                            "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-
-            // Recargar lista de ventas
-            CargarVentas();
-
-            // Reiniciar formularios
-            DetalleVM.Reiniciar();
-            ClienteVM.Reiniciar();
-            EnvioVM.Reiniciar();
-            VentaActual = new Ventum();
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                MessageBox.Show($"Error al confirmar la venta: {ex.Message}",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
+
 
 
         public void CargarVentas()

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Proyecto_Isasi_Montanaro.ViewModels
@@ -86,18 +87,48 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         // --- METODOS ---
         private void AgregarProducto()
         {
-            if (ProductoSeleccionado == null || CantidadSeleccionada <= 0) return;
+            if (ProductoSeleccionado == null || CantidadSeleccionada <= 0)
+                return;
 
-            var subtotal = ProductoSeleccionado.Precio * CantidadSeleccionada;
-            var detalle = new DetalleVentaProducto
+            // Verificar si el producto ya está en el detalle → sumamos cantidades
+            var existente = DetalleProductos.FirstOrDefault(d => d.IdProducto == ProductoSeleccionado.IdProducto);
+            if (existente != null)
             {
-                IdProducto = ProductoSeleccionado.IdProducto,
-                Cantidad = CantidadSeleccionada,
-                Subtotal = subtotal,
-                IdProductoNavigation = ProductoSeleccionado
-            };
+                // Validar stock total (por si intenta sumar más de lo disponible)
+                if (ProductoSeleccionado.Cantidad < (existente.Cantidad + CantidadSeleccionada))
+                {
+                    MessageBox.Show($"Stock insuficiente para {ProductoSeleccionado.Nombre}. Disponible: {ProductoSeleccionado.Cantidad}",
+                                    "Stock insuficiente", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
 
-            DetalleProductos.Add(detalle);
+                existente.Cantidad += CantidadSeleccionada;
+                existente.Subtotal = existente.Cantidad * ProductoSeleccionado.Precio;
+            }
+            else
+            {
+                // Validar stock disponible en memoria (sin modificar BD)
+                if (ProductoSeleccionado.Cantidad < CantidadSeleccionada)
+                {
+                    MessageBox.Show($"Stock insuficiente para {ProductoSeleccionado.Nombre}. Disponible: {ProductoSeleccionado.Cantidad}",
+                                    "Stock insuficiente", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+                // Crear nuevo detalle
+                var subtotal = ProductoSeleccionado.Precio * CantidadSeleccionada;
+                var detalle = new DetalleVentaProducto
+                {
+                    IdProducto = ProductoSeleccionado.IdProducto,
+                    Cantidad = CantidadSeleccionada,
+                    Subtotal = subtotal,
+                    IdProductoNavigation = ProductoSeleccionado
+                };
+
+                DetalleProductos.Add(detalle);
+            }
+
+            
+
             CalcularTotal();
             CantidadSeleccionada = 0;
         }
@@ -110,8 +141,11 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         private void EditarProducto(DetalleVentaProducto detalle)
         {
             if (detalle == null) return;
+
             ProductoSeleccionado = detalle.IdProductoNavigation;
             CantidadSeleccionada = detalle.Cantidad;
+
+            // Lo quitamos del detalle para luego volver a agregarlo con la cantidad corregida
             DetalleProductos.Remove(detalle);
             CalcularTotal();
         }
@@ -119,8 +153,17 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         private void EliminarProducto(DetalleVentaProducto detalle)
         {
             if (detalle == null) return;
-            DetalleProductos.Remove(detalle);
-            CalcularTotal();
+
+            var result = MessageBox.Show($"¿Deseas quitar {detalle.IdProductoNavigation.Nombre} del detalle?",
+                                         "Confirmar eliminación",
+                                         MessageBoxButton.YesNo,
+                                         MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                DetalleProductos.Remove(detalle);
+                CalcularTotal();
+            }
         }
 
         public void Reiniciar()

@@ -29,6 +29,8 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             CargarClientes();
         }
 
+
+        //Propiedades
         private string _dniClienteInput;
 
         public Direccion? DireccionActual { get; set; }
@@ -42,7 +44,21 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         public Cliente ClienteActual
         {
             get => _clienteActual;
-            set { _clienteActual = value; OnPropertyChanged(); }
+            set
+            {
+                _clienteActual = value;
+                OnPropertyChanged();
+
+                if (_clienteActual != null)
+                {
+                    // 🔹 Sincronizar los campos visibles
+                    OnPropertyChanged(nameof(Nombre));
+                    OnPropertyChanged(nameof(Apellido));
+                    OnPropertyChanged(nameof(Email));
+                    OnPropertyChanged(nameof(Telefono));
+                    OnPropertyChanged(nameof(DniCliente));
+                }
+            }
         }
 
         // Lista de direcciones del cliente actual
@@ -59,6 +75,42 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         {
             get => _clientes;
             set { _clientes = value; OnPropertyChanged(); }
+        }
+
+        //Preopiedaddes de error para validaciones
+        private string _errorNombre;
+        public string ErrorNombre
+        {
+            get => _errorNombre;
+            set { _errorNombre = value; OnPropertyChanged(); }
+        }
+
+        private string _errorApellido;
+        public string ErrorApellido
+        {
+            get => _errorApellido;
+            set { _errorApellido = value; OnPropertyChanged(); }
+        }
+
+        private string _errorEmail;
+        public string ErrorEmail
+        {
+            get => _errorEmail;
+            set { _errorEmail = value; OnPropertyChanged(); }
+        }
+
+        private string _errorTelefono;
+        public string ErrorTelefono
+        {
+            get => _errorTelefono;
+            set { _errorTelefono = value; OnPropertyChanged(); }
+        }
+
+        private string _errorDni;
+        public string ErrorDni
+        {
+            get => _errorDni;
+            set { _errorDni = value; OnPropertyChanged(); }
         }
 
 
@@ -134,6 +186,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
         public void GuardarClienteSiNoExiste()
         {
+
             var existente = _context.Clientes.FirstOrDefault(c => c.DniCliente == ClienteActual.DniCliente);
 
             if (existente == null)
@@ -144,6 +197,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
             else
             {
+                existente.DniCliente = ClienteActual.DniCliente;
                 existente.Nombre = ClienteActual.Nombre;
                 existente.Apellido = ClienteActual.Apellido;
                 existente.Telefono = ClienteActual.Telefono;
@@ -177,6 +231,93 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             OnPropertyChanged(nameof(DniClienteInput));
             OnPropertyChanged(nameof(ClienteActual));
         }
+
+        // Validaciones
+        public string Nombre
+        {
+            get => ClienteActual.Nombre;
+            set
+            {
+                ClienteActual.Nombre = value;
+                OnPropertyChanged();
+
+                // validación inmediata
+                if (string.IsNullOrWhiteSpace(value))
+                    ErrorNombre = "El nombre no puede estar vacío.";
+                else if (!value.All(c => char.IsLetter(c) || c == ' '))
+                    ErrorNombre = "Solo se permiten letras.";
+                else
+                    ErrorNombre = string.Empty;
+            }
+        }
+
+        public string Apellido
+        {
+            get => ClienteActual.Apellido;
+            set
+            {
+                ClienteActual.Apellido = value;
+                OnPropertyChanged();
+
+                if (string.IsNullOrWhiteSpace(value))
+                    ErrorApellido = "El apellido no puede estar vacío.";
+                else if (!value.All(c => char.IsLetter(c) || c == ' '))
+                    ErrorApellido = "Solo se permiten letras.";
+                else
+                    ErrorApellido = string.Empty;
+            }
+        }
+
+        public string Email
+        {
+            get => ClienteActual.Email;
+            set
+            {
+                ClienteActual.Email = value;
+                OnPropertyChanged();
+
+                if (string.IsNullOrWhiteSpace(value))
+                    ErrorEmail = "El email es obligatorio.";
+                else if (!value.Contains("@"))
+                    ErrorEmail = "Debe contener '@'.";
+                else
+                    ErrorEmail = string.Empty;
+            }
+        }
+
+        public string Telefono
+        {
+            get => ClienteActual.Telefono;
+            set
+            {
+                ClienteActual.Telefono = value;
+                OnPropertyChanged();
+
+                if (string.IsNullOrWhiteSpace(value))
+                    ErrorTelefono = "El teléfono es obligatorio.";
+                else if (!value.All(char.IsDigit))
+                    ErrorTelefono = "Solo se permiten números.";
+                else
+                    ErrorTelefono = string.Empty;
+            }
+        }
+
+        public int DniCliente
+        {
+            get => ClienteActual.DniCliente;
+            set
+            {
+                ClienteActual.DniCliente = value;
+                OnPropertyChanged();
+
+                if (value.ToString().Length != 8)
+                    ErrorDni = "El DNI debe tener 8 dígitos.";
+                else
+                    ErrorDni = string.Empty;
+            }
+        }
+
+
 
 
         // --- Notificación de cambios ---
