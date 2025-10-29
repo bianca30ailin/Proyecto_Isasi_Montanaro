@@ -45,6 +45,8 @@ public partial class ProyectoTallerContext : DbContext
 
     public DbSet<EstadoVenta> EstadoVenta { get; set; }
 
+    public virtual DbSet<FormaPago> FormaPago { get; set; } = null!;
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
@@ -433,6 +435,8 @@ public partial class ProyectoTallerContext : DbContext
             entity.Property(e => e.FechaHora).HasColumnName("fechaHora");
             entity.Property(e => e.IdUsuario).HasColumnName("id_usuario");
             entity.Property(e => e.Total).HasColumnName("total");
+            entity.Property(e => e.IdFormaPago).HasColumnName("id_forma_pago").HasDefaultValue(1); ;
+            entity.Property(e => e.TotalCuotas).HasColumnName("total_cuotas");
 
             entity.HasOne(d => d.DniClienteNavigation).WithMany(p => p.Venta)
                 .HasForeignKey(d => d.DniCliente)
@@ -442,6 +446,12 @@ public partial class ProyectoTallerContext : DbContext
             entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.Venta)
                 .HasForeignKey(d => d.IdUsuario)
                 .HasConstraintName("FK__venta__id_usuari__6383C8BA");
+
+            entity.HasOne(d => d.IdFormaPagoNavigation)
+                  .WithMany(p => p.Ventas)
+                  .HasForeignKey(d => d.IdFormaPago)
+                  .OnDelete(DeleteBehavior.Restrict)
+                  .HasConstraintName("FK__venta__id_forma_pago");
         });
 
         modelBuilder.Entity<EstadoVenta>().HasData(
@@ -510,6 +520,52 @@ public partial class ProyectoTallerContext : DbContext
             }
         );
 
+        modelBuilder.Entity<FormaPago>(entity =>
+        {
+            entity.HasKey(e => e.IdFormaPago).HasName("PK__forma_pa__DD4926E39FCE6D1E");
+
+            entity.ToTable("forma_pago");
+
+            entity.Property(e => e.IdFormaPago)
+                .HasColumnName("id_forma_pago");
+
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("nombre");
+
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(150)
+                .IsUnicode(false)
+                .HasColumnName("descripcion");
+        });
+
+        modelBuilder.Entity<FormaPago>().HasData(
+            new FormaPago
+            {
+                IdFormaPago = 1,
+                Nombre = "Efectivo",
+                Descripcion = "Pago en efectivo"
+            },
+            new FormaPago
+            {
+                IdFormaPago = 2,
+                Nombre = "Débito",
+                Descripcion = "Pago con tarjeta de débito"
+            },
+            new FormaPago
+            {
+                IdFormaPago = 3,
+                Nombre = "Crédito",
+                Descripcion = "Pago con tarjeta de crédito con 10% de recargo"
+            },
+            new FormaPago
+            {
+                IdFormaPago = 4,
+                Nombre = "Transferencia",
+                Descripcion = "Pago mediante transferencia bancaria"
+            }
+        );
         OnModelCreatingPartial(modelBuilder);
     }
 
