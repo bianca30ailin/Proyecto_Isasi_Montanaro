@@ -29,6 +29,33 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             DetalleVM = new DetalleVentaViewModel(_context);
             EnvioVM = new EnvioViewModel(_context);
             TransporteVM = new TransporteViewModel(_context);
+            FormaPagoVM = new FormaPagoViewModel(_context);
+
+
+            // Recalcular totales al cambiar la forma de pago o cuotas
+            FormaPagoVM.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(FormaPagoVM.FormaPagoSeleccionada) ||
+                    e.PropertyName == nameof(FormaPagoVM.CuotaSeleccionada))
+                {
+                    OnPropertyChanged(nameof(EsCredito));
+                    OnPropertyChanged(nameof(MostrarMontoPorCuota));
+                    RecalcularTotales();
+                }
+            };
+
+            // Recalcular totales al cambiar el detalle (subtotal)
+            DetalleVM.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(DetalleVentaViewModel.Total))
+                {
+                    OnPropertyChanged(nameof(Subtotal));
+                    RecalcularTotales();
+                }
+            };
+
+            // Calcular al iniciar
+            RecalcularTotales();
 
             // lista de estados de venta
             ListaEstadosVenta = new ObservableCollection<EstadoVenta>(_context.EstadoVenta.ToList());
@@ -72,6 +99,8 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
         public EnvioViewModel EnvioVM { get; set; }
 
+        public FormaPagoViewModel FormaPagoVM { get; set; }
+
         public TransporteViewModel TransporteVM { get; set; }
 
         public ObservableCollection<EstadoVenta> ListaEstadosVenta { get; set; }
@@ -89,16 +118,45 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         public ICommand ConfirmarVentaCommand { get; set; }
 
 
+        // --- TOTALES Y CUOTAS --- //
+        public double Subtotal => DetalleVM?.Total ?? 0;
+
+        private double _recargo;
+        public double Recargo
+        {
+            get => _recargo;
+            set { _recargo = value; OnPropertyChanged(); }
+        }
+
+        private double _totalFinal;
+        public double TotalFinal
+        {
+            get => _totalFinal;
+            set { _totalFinal = value; OnPropertyChanged(); OnPropertyChanged(nameof(MontoPorCuota)); }
+        }
+
+        // Indica si el método de pago es crédito
+        public bool EsCredito => FormaPagoVM?.FormaPagoSeleccionada?.Nombre?.Equals("Crédito", StringComparison.OrdinalIgnoreCase) == true;
+
+        // Mostrar monto por cuota sólo si hay cuotas > 1
+        public bool MostrarMontoPorCuota => EsCredito && (FormaPagoVM?.CuotaSeleccionada ?? 1) > 1;
+
+        // Monto calculado por cuota
+        public double MontoPorCuota =>
+            EsCredito && FormaPagoVM.CuotaSeleccionada.HasValue
+                ? Math.Round(TotalFinal / FormaPagoVM.CuotaSeleccionada.Value, 2)
+                : TotalFinal;
+
         // --- METODOS ---
         private void ConfirmarVenta()
         {
             using var transaction = _context.Database.BeginTransaction();
             try
             {
-                // 1️⃣ Guardar cliente si no existe
+                // 1Guardar cliente si no existe
                 ClienteVM.GuardarClienteSiNoExiste();
 
-                // 2️⃣ Validar stock actual en base de datos
+                // Validar stock actual en base de datos
                 foreach (var detalle in DetalleVM.DetalleProductos)
                 {
                     var productoDb = _context.Productos.FirstOrDefault(p => p.IdProducto == detalle.IdProducto);
@@ -123,12 +181,14 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                     _context.Productos.Update(productoDb);
                 }
 
-                // 3️⃣ Crear y guardar la venta
+                // Crear y guardar la venta
                 VentaActual.DniCliente = ClienteVM.ClienteActual.DniCliente;
                 VentaActual.FechaHora = DateOnly.FromDateTime(DateTime.Now);
-                VentaActual.Total = DetalleVM.Total;
+                VentaActual.Total = TotalFinal;
                 VentaActual.IdUsuario = Sesion.UsuarioActual.IdUsuario;
                 VentaActual.EstadoVentaId = 1; // 1 = "Activa"
+                VentaActual.IdFormaPago = FormaPagoVM.FormaPagoSeleccionada.IdFormaPago;
+                VentaActual.TotalCuotas = FormaPagoVM.CuotaSeleccionada;
 
                 foreach (var d in DetalleVM.DetalleProductos)
                     VentaActual.DetalleVentaProductos.Add(d);
@@ -136,22 +196,27 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 _context.Venta.Add(VentaActual);
                 _context.SaveChanges();
 
-                // 4️⃣ Confirmar transacción
+                // Confirmar transacción
                 transaction.Commit();
 
-                // 5️⃣ Registrar envío si corresponde
+                // Registrar envío si corresponde
                 if (EnvioVM.EnvioHabilitado)
                     EnvioVM.RegistrarEnvio(VentaActual.IdNroVenta, TransporteVM.TransporteSeleccionado);
 
-                // 6️⃣ Mostrar mensaje de éxito
+                // Mostrar mensaje de éxito
                 MessageBox.Show($"Venta registrada correctamente. N° {VentaActual.IdNroVenta}",
                                 "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                // 7️⃣ Refrescar vistas y limpiar formularios
+                // Refrescar vistas y limpiar formularios
                 CargarVentas();
                 DetalleVM.Reiniciar();
                 ClienteVM.Reiniciar();
                 EnvioVM.Reiniciar();
+
+                // Recalcular totales y refrescar bindings visuales
+                RecalcularTotales();
+                OnPropertyChanged(nameof(EsCredito));
+                OnPropertyChanged(nameof(MostrarMontoPorCuota));
                 VentaActual = new Ventum();
             }
             catch (Exception ex)
@@ -189,7 +254,14 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
         }
 
-   
+        // Método de cálculo general
+        private void RecalcularTotales()
+        {
+            double sub = Subtotal;
+            Recargo = EsCredito ? Math.Round(sub * 0.10, 2) : 0;
+            TotalFinal = Math.Round(sub + Recargo, 2);
+        }
+
 
         private void SincronizarDireccionesCliente()
         {
