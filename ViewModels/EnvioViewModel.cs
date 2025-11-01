@@ -160,6 +160,8 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             if (!EnvioHabilitado)
                 return false;
 
+            var estadoPendiente = _context.Estados.FirstOrDefault(e => e.Nombre == "Pendiente");
+
             // Validaciones
             if (DireccionSeleccionada == null)
             {
@@ -187,7 +189,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             {
                 IdNroVenta = idVenta,
                 IdDireccion = DireccionSeleccionada.IdDireccion,
-                IdEstado = 1, // Pendiente por defecto
+                IdEstado = estadoPendiente?.IdEstado ?? 4, // Pendiente por defecto
                 Costo = Costo,
                 FechaDespacho = null,
                 NumSeguimiento = null,

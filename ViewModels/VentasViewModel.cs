@@ -44,6 +44,16 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 }
             };
 
+            // Recalcular totales al cambiar el envío
+            EnvioVM.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(EnvioVM.EnvioHabilitado) ||
+                    e.PropertyName == nameof(EnvioVM.Costo))
+                {
+                    RecalcularTotales();
+                }
+            };
+
             // Recalcular totales al cambiar el detalle (subtotal)
             DetalleVM.PropertyChanged += (s, e) =>
             {
@@ -90,6 +100,9 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 EstadoVentaId = 1
             };
 
+            EstadoVentaSeleccionado = ListaEstadosVenta
+                .FirstOrDefault(e => e.NombreEstado == "Activa");
+
             ConfirmarVentaCommand = new RelayCommand(_ => ConfirmarVenta(), _ => DetalleVM.DetalleProductos.Any());
             CargarVentas();
         }
@@ -135,6 +148,17 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             set { _totalFinal = value; OnPropertyChanged(); OnPropertyChanged(nameof(MontoPorCuota)); }
         }
 
+        private EstadoVenta _estadoVentaSeleccionado;
+        public EstadoVenta EstadoVentaSeleccionado
+        {
+            get => _estadoVentaSeleccionado;
+            set
+            {
+                _estadoVentaSeleccionado = value;
+                OnPropertyChanged();
+            }
+        }
+
         // Indica si el método de pago es crédito
         public bool EsCredito => FormaPagoVM?.FormaPagoSeleccionada?.Nombre?.Equals("Crédito", StringComparison.OrdinalIgnoreCase) == true;
 
@@ -153,7 +177,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             using var transaction = _context.Database.BeginTransaction();
             try
             {
-                // 1Guardar cliente si no existe
+                // Guardar cliente si no existe
                 ClienteVM.GuardarClienteSiNoExiste();
 
                 // Validar stock actual en base de datos
@@ -186,9 +210,10 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 VentaActual.FechaHora = DateOnly.FromDateTime(DateTime.Now);
                 VentaActual.Total = TotalFinal;
                 VentaActual.IdUsuario = Sesion.UsuarioActual.IdUsuario;
-                VentaActual.EstadoVentaId = 1; // 1 = "Activa"
                 VentaActual.IdFormaPago = FormaPagoVM.FormaPagoSeleccionada.IdFormaPago;
                 VentaActual.TotalCuotas = FormaPagoVM.CuotaSeleccionada;
+
+                AsignarEstadoVenta();
 
                 foreach (var d in DetalleVM.DetalleProductos)
                     VentaActual.DetalleVentaProductos.Add(d);
@@ -258,11 +283,56 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         private void RecalcularTotales()
         {
             double sub = Subtotal;
+
+            //recalcular recargo con credito
             Recargo = EsCredito ? Math.Round(sub * 0.10, 2) : 0;
-            TotalFinal = Math.Round(sub + Recargo, 2);
+
+            // Total parcial (productos + recargo)
+            double total = sub + Recargo;
+
+            // Si hay envío habilitado, se suma al total
+            if (EnvioVM != null && EnvioVM.EnvioHabilitado)
+                total += EnvioVM.Costo;
+
+            //total final redondeado
+            TotalFinal = Math.Round(total, 2);
         }
 
+        private void AsignarEstadoVenta()
+        {
+            bool tieneEnvio = EnvioVM.EnvioHabilitado;
+            string medioPago = FormaPagoVM.FormaPagoSeleccionada?.Nombre ?? "";
 
+            // Si no tiene envío
+            if (!tieneEnvio)
+            {
+                switch (medioPago)
+                {
+                    case "Efectivo":
+                    case "Débito":
+                    case "Transferencia":
+                        VentaActual.EstadoVentaId = ListaEstadosVenta
+                            .FirstOrDefault(e => e.NombreEstado == "Completada")?.IdEstadoVenta ?? 1;
+                        break;
+
+                    case "Crédito":
+                        VentaActual.EstadoVentaId = ListaEstadosVenta
+                            .FirstOrDefault(e => e.NombreEstado == "Pendiente de pago")?.IdEstadoVenta ?? 1;
+                        break;
+
+                    default:
+                        VentaActual.EstadoVentaId = ListaEstadosVenta
+                            .FirstOrDefault(e => e.NombreEstado == "Activa")?.IdEstadoVenta ?? 1;
+                        break;
+                }
+            }
+            else // Tiene envío
+            {
+                VentaActual.EstadoVentaId = ListaEstadosVenta
+                    .FirstOrDefault(e => e.NombreEstado == "Activa")?.IdEstadoVenta ?? 1;
+            }
+
+        }
         private void SincronizarDireccionesCliente()
         {
             if (ClienteVM.DireccionesCliente != null)

@@ -12,7 +12,7 @@
         WindowStyle="None"
         WindowStartupLocation="CenterScreen"
         Title="Producto" 
-        Height="Auto" Width="520">
+        Height="Auto" Width="530">
 
     <Window.DataContext>
         <vm:VentasViewModel/>
@@ -78,19 +78,18 @@
 
                     <!-- Estado de la venta -->
                     <TextBlock Text="Estado de la venta"
-                       Style="{StaticResource FormLabel}"
-                       Grid.Row="0" Grid.Column="3"/>
+                               Style="{StaticResource FormLabel}"
+                               Grid.Row="0" Grid.Column="3"/>
 
-                    <ComboBox Grid.Row="0" Grid.Column="3"
-                      Style="{StaticResource FormComboBox}"
-                      ItemsSource="{Binding ListaEstadosVenta}"
-                      DisplayMemberPath="NombreEstado"
-                      SelectedValuePath="IdEstadoVenta"
-                      SelectedValue="{Binding VentaActual.EstadoVentaId, Mode=TwoWay}"
-                      Margin="0,30,0,10"/>
+                    <TextBox Style="{StaticResource FormTextBox}" 
+                             IsReadOnly="True"
+                             Margin="0,30,0,10"
+                             Grid.Row="0" Grid.Column="3"
+                             Background="#E0E0E0"
+                             Text="{Binding EstadoVentaSeleccionado.NombreEstado}" />
 
-                
-             <!-- PRODUCTOS -->
+
+                    <!-- PRODUCTOS -->
                     <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
                         <TextBlock Text="1. Productos"
                                    Style="{StaticResource FormLabel}"
@@ -252,17 +251,27 @@
                                     <TextBlock Text="{Binding Subtotal, StringFormat={}{0:C}}" />
                                 </StackPanel>
 
+                                <!-- Recargo credito -->
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,2"
                                             Visibility="{Binding EsCredito, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <TextBlock Text="Recargo (10% crédito):" Width="140"/>
                                     <TextBlock Text="{Binding Recargo, StringFormat={}{0:C}}" />
                                 </StackPanel>
 
+                                <!-- Envío -->
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,2"
+                                            Visibility="{Binding EnvioVM.EnvioHabilitado, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <TextBlock Text="Costo de envío:" Width="140"/>
+                                    <TextBlock Text="{Binding EnvioVM.Costo, StringFormat={}{0:C}}"/>
+                                </StackPanel>
+
+                                <!-- Total final -->
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,2">
                                     <TextBlock Text="Total:" Width="140" FontWeight="Bold"/>
                                     <TextBlock Text="{Binding TotalFinal, StringFormat={}{0:C}}" FontWeight="Bold"/>
                                 </StackPanel>
 
+                                <!-- Cuota -->
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,2"
                                             Visibility="{Binding MostrarMontoPorCuota, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <TextBlock Text="Monto por cuota:" Width="140"/>
