@@ -438,47 +438,113 @@
                                 Command="{Binding EnvioVM.NuevaDireccionCommand}"
                                 IsEnabled="{Binding  EnvioVM.EnvioHabilitado}" />
 
-                        <!-- Calle -->
-                        <TextBlock Text="Calle" 
-                                   Style="{StaticResource FormLabel}"
-                                   Grid.Row="1" Grid.Column="0" />
-                        <TextBox Style="{StaticResource FormTextBox}" 
-                                 Margin="0,30,0,10"
-                                 Grid.Row="1" Grid.Column="0"
-                                 Text="{Binding EnvioVM.DireccionSeleccionada.NombreCalle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 IsEnabled="{Binding  EnvioVM.EnvioHabilitado}"/>
+                            <!-- CALLE -->
+                            <TextBlock Text="Calle" 
+                                       Style="{StaticResource FormLabel}"
+                                       Grid.Row="1" Grid.Column="0" />
 
-                        <!-- Altura -->
-                        <TextBlock Text="Altura" 
-                                   Style="{StaticResource FormLabel}"
-                                   Grid.Row="1" Grid.Column="2" />
-                        <TextBox Style="{StaticResource FormTextBox}" 
-                                 Margin="0,30,0,10"
-                                 Grid.Row="1" Grid.Column="2"
-                                 Text="{Binding EnvioVM.DireccionSeleccionada.Altura, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 IsEnabled="{Binding  EnvioVM.EnvioHabilitado}"/>
+                            <!-- Campo + error, sin mover el label -->
+                            <Grid Grid.Row="1" Grid.Column="0" Margin="0,25,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <!-- TextBox -->
+                                    <RowDefinition Height="Auto"/>
+                                    <!-- Error -->
+                                </Grid.RowDefinitions>
 
-                        <!-- Provincia -->
-                        <TextBlock Text="Provincia" 
-                                   Style="{StaticResource FormLabel}"
-                                   Grid.Row="2" Grid.Column="0" />
-                        <TextBox Style="{StaticResource FormTextBox}" 
-                                 Margin="0,30,0,10"
-                                 Grid.Row="2" Grid.Column="0"
-                                 Text="{Binding EnvioVM.DireccionSeleccionada.IdCiudadNavigation.IdProvinciaNavigation.Nombre, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 IsEnabled="{Binding  EnvioVM.EnvioHabilitado}"/>
+                                <TextBox Style="{StaticResource FormTextBox}" 
+                                         Grid.Row="0"
+                                         Margin="0,5,0,0"
+                                         Text="{Binding EnvioVM.DireccionEditable.NombreCalle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         IsEnabled="{Binding EnvioVM.NuevaDireccionHabilitada}"/>
 
-                        <!-- Ciudad -->
-                        <TextBlock Text="Ciudad" 
-                                   Style="{StaticResource FormLabel}"
-                                   Grid.Row="2" Grid.Column="2" />
-                        <TextBox Style="{StaticResource FormTextBox}" 
-                                 Margin="0,30,0,10"
-                                 Grid.Row="2" Grid.Column="2"
-                                 Text="{Binding EnvioVM.DireccionSeleccionada.IdCiudadNavigation.Nombre, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 IsEnabled="{Binding  EnvioVM.EnvioHabilitado}"/>
+                                <TextBlock Text="{Binding EnvioVM.ErrorCalle}"
+                                           Grid.Row="1"
+                                           Foreground="Red"
+                                           FontSize="11"
+                                           Margin="5,2,0,10"/>
+                            </Grid>
 
-                        <!-- Servicio -->
+
+                            <!-- ALTURA -->
+                            <TextBlock Text="Altura" 
+                                       Style="{StaticResource FormLabel}"
+                                       Grid.Row="1" Grid.Column="2" />
+
+                            <Grid Grid.Row="1" Grid.Column="2" Margin="0,25,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBox Style="{StaticResource FormTextBox}" 
+                                         Grid.Row="0"
+                                         Margin="0,5,0,0"
+                                         Text="{Binding EnvioVM.DireccionEditable.Altura, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         IsEnabled="{Binding EnvioVM.NuevaDireccionHabilitada}"/>
+
+                                <TextBlock Text="{Binding EnvioVM.ErrorAltura}"
+                                           Grid.Row="1"
+                                           Foreground="Red"
+                                           FontSize="11"
+                                           Margin="5,2,0,10"/>
+                            </Grid>
+
+
+                            <!-- PROVINCIA -->
+                            <TextBlock Text="Provincia"
+                                       Style="{StaticResource FormLabel}"
+                                       Grid.Row="2" Grid.Column="0" />
+
+                            <Grid Grid.Row="2" Grid.Column="0" Margin="0,25,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <ComboBox ItemsSource="{Binding EnvioVM.Provincias}"
+                                          DisplayMemberPath="Nombre"
+                                          SelectedItem="{Binding EnvioVM.ProvinciaSeleccionada, Mode=TwoWay}"
+                                          Style="{StaticResource FormComboBox}"
+                                          Grid.Row="0"
+                                          Margin="0,5,0,0"
+                                          IsEnabled="{Binding EnvioVM.NuevaDireccionHabilitada}" />
+
+                                <TextBlock Text="{Binding EnvioVM.ErrorProvincia}"
+                                           Grid.Row="1"
+                                           Foreground="Red"
+                                           FontSize="11"
+                                           Margin="5,2,0,10"/>
+                            </Grid>
+
+
+                            <!-- CIUDAD -->
+                            <TextBlock Text="Ciudad"
+                                       Style="{StaticResource FormLabel}"
+                                       Grid.Row="2" Grid.Column="2" />
+
+                            <Grid Grid.Row="2" Grid.Column="2" Margin="0,25,0,0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <ComboBox ItemsSource="{Binding EnvioVM.Ciudades}"
+                                          DisplayMemberPath="Nombre"
+                                          SelectedItem="{Binding EnvioVM.CiudadSeleccionada, Mode=TwoWay}"
+                                          Style="{StaticResource FormComboBox}"
+                                          Grid.Row="0"
+                                          Margin="0,5,0,0"
+                                          IsEnabled="{Binding EnvioVM.NuevaDireccionHabilitada}" />
+
+                                <TextBlock Text="{Binding EnvioVM.ErrorCiudad}"
+                                           Grid.Row="1"
+                                           Foreground="Red"
+                                           FontSize="11"
+                                           Margin="5,2,0,10"/>
+                            </Grid>
+
+                            <!-- Servicio -->
                         <TextBlock Text="Servicio" 
                                    Style="{StaticResource FormLabel}"
                                    Grid.Row="3" Grid.Column="0" />

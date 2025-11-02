@@ -72,22 +72,26 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
             ClienteVM.PropertyChanged += (s, e) =>
             {
-                // Cuando cambia el ClienteActual, pasamos sus direcciones al EnvioVM
-                if (e.PropertyName == nameof(ClienteVM.ClienteActual))
+                switch (e.PropertyName)
                 {
-                    ClienteVM.CargarDirecciones();
-                    EnvioVM.DireccionesCliente = ClienteVM.DireccionesCliente;
-                    OnPropertyChanged(nameof(EnvioVM));
-                }
+                    case nameof(ClienteVM.ClienteActual):
+                        // refresco direcciones del cliente nuevo
+                        ClienteVM.CargarDirecciones();
 
-                // Cuando cambia la lista de direcciones, la sincronizamos también
-                if (e.PropertyName == nameof(ClienteVM.DireccionesCliente))
-                {
-                    EnvioVM.DireccionesCliente = ClienteVM.DireccionesCliente;
-                    OnPropertyChanged(nameof(EnvioVM));
+                        // paso datos al EnvioVM
+                        EnvioVM.DireccionesCliente = ClienteVM.DireccionesCliente;
+                        EnvioVM.ClienteActual = ClienteVM.ClienteActual;
+                        OnPropertyChanged(nameof(EnvioVM));
+                        break;
+
+                    case nameof(ClienteVM.DireccionesCliente):
+                        // si cambian las direcciones, reflejo en EnvioVM
+                        EnvioVM.DireccionesCliente = ClienteVM.DireccionesCliente;
+                        OnPropertyChanged(nameof(EnvioVM));
+                        break;
                 }
             };
-           
+
             // Calcular número próximo (solo para mostrar)
             int ultimoId = _context.Venta.Any() ? _context.Venta.Max(v => v.IdNroVenta) : 0;
             ProximoIdVenta = ultimoId + 1;
@@ -212,7 +216,6 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 VentaActual.IdUsuario = Sesion.UsuarioActual.IdUsuario;
                 VentaActual.IdFormaPago = FormaPagoVM.FormaPagoSeleccionada.IdFormaPago;
                 VentaActual.TotalCuotas = FormaPagoVM.CuotaSeleccionada;
-
                 AsignarEstadoVenta();
 
                 foreach (var d in DetalleVM.DetalleProductos)
@@ -221,25 +224,27 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 _context.Venta.Add(VentaActual);
                 _context.SaveChanges();
 
+                // Registrar envío si corresponde
+                if (!ProcesarEnvio(VentaActual))
+                {
+                    transaction.Rollback();
+                    return;
+                }
+
                 // Confirmar transacción
                 transaction.Commit();
 
-                // Registrar envío si corresponde
-                if (EnvioVM.EnvioHabilitado)
-                    EnvioVM.RegistrarEnvio(VentaActual.IdNroVenta, TransporteVM.TransporteSeleccionado);
-
                 // Mostrar mensaje de éxito
-                MessageBox.Show($"Venta registrada correctamente. N° {VentaActual.IdNroVenta}",
-                                "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                MostrarMensajeFinalDeVenta();
 
                 // Refrescar vistas y limpiar formularios
                 CargarVentas();
                 DetalleVM.Reiniciar();
                 ClienteVM.Reiniciar();
                 EnvioVM.Reiniciar();
-
-                // Recalcular totales y refrescar bindings visuales
                 RecalcularTotales();
+
+                // Refrescar bindings visuales
                 OnPropertyChanged(nameof(EsCredito));
                 OnPropertyChanged(nameof(MostrarMontoPorCuota));
                 VentaActual = new Ventum();
@@ -251,7 +256,6 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
 
 
         public void CargarVentas()
@@ -333,14 +337,81 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
 
         }
-        private void SincronizarDireccionesCliente()
+
+        private bool ProcesarEnvio(Ventum venta)
         {
-            if (ClienteVM.DireccionesCliente != null)
+            try
             {
-                EnvioVM.DireccionesCliente = ClienteVM.DireccionesCliente;
+                // Si el envío no está habilitado, no hacemos nada
+                if (!EnvioVM.EnvioHabilitado)
+                    return true;
+
+                // Si el usuario escribió una nueva dirección
+                if (EnvioVM.NuevaDireccionHabilitada && EnvioVM.DireccionActual != null)
+                {
+                    var dir = EnvioVM.DireccionActual;
+
+                    if (string.IsNullOrWhiteSpace(dir.NombreCalle))
+                    {
+                        MessageBox.Show("Debe completar los datos de la nueva dirección.", "Aviso",
+                                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return false;
+                    }
+
+                    dir.DniCliente = ClienteVM.ClienteActual.DniCliente;
+
+                    if (EnvioVM.CiudadSeleccionada != null)
+                        dir.IdCiudad = EnvioVM.CiudadSeleccionada.IdCiudad; if (EnvioVM.CiudadSeleccionada != null)
+                        dir.IdCiudad = EnvioVM.CiudadSeleccionada.IdCiudad;
+
+                    _context.Direccions.Add(dir);
+                    _context.SaveChanges();
+
+                    // Agregarla a la lista local y seleccionarla
+                    EnvioVM.DireccionesCliente.Add(dir);
+                    EnvioVM.DireccionSeleccionada = dir;
+                }
+
+                // Registrar el envío con la dirección seleccionada o la nueva
+                EnvioVM.RegistrarEnvio(venta.IdNroVenta, TransporteVM.TransporteSeleccionado);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al registrar el envío: {ex.Message}",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
             }
         }
 
+        private void MostrarMensajeFinalDeVenta()
+        {
+            string mensajeFinal;
+
+            // Caso 1️⃣ — Venta sin envío
+            if (!EnvioVM.EnvioHabilitado)
+            {
+                mensajeFinal = $"✅ Venta registrada correctamente.\nN° {VentaActual.IdNroVenta}";
+            }
+            else
+            {
+                // Caso 2️⃣ — Venta con envío
+                mensajeFinal = $"✅ Venta y envío registrados correctamente.\nN° {VentaActual.IdNroVenta}";
+
+                // Caso 3️⃣ — Si además se agregó una nueva dirección
+                if (EnvioVM.NuevaDireccionHabilitada && EnvioVM.DireccionActual != null)
+                {
+                    var cliente = ClienteVM.ClienteActual;
+                    mensajeFinal +=
+                        $"\n🏠 Nueva dirección asignada al cliente {cliente.Nombre} {cliente.Apellido}.";
+                }
+            }
+
+            MessageBox.Show(mensajeFinal, "Éxito",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+      
 
         // --- Notificación de cambios ---
         public event PropertyChangedEventHandler PropertyChanged;

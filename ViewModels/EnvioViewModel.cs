@@ -26,8 +26,11 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             NuevaDireccionHabilitada = false;
             EnvioHabilitado = false;
 
+            // Cargar provincias al iniciar
+            Provincias = new ObservableCollection<Provincium>(_context.Provincia.ToList());
+            Ciudades = new ObservableCollection<Ciudad>(); // se llena cuando elija provincia
+
             NuevaDireccionCommand = new RelayCommand(_ => NuevaDireccion());
-            GuardarNuevaDireccionCommand = new RelayCommand(_ => GuardarNuevaDireccion());
             CargarEnvios();
         }
 
@@ -37,6 +40,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
 
         // --- PROPIEDADES ---
+
         //habilitar envio
         private bool _envioHabilitado;
         public bool EnvioHabilitado
@@ -64,6 +68,18 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
         }
 
+        //cliente actual
+        private Cliente _clienteActual;
+        public Cliente ClienteActual
+        {
+            get => _clienteActual;
+            set
+            {
+                _clienteActual = value;
+                OnPropertyChanged();
+            }
+        }
+
         //traer direcciones del cliente
         private ObservableCollection<Direccion> _direccionesCliente;
         public ObservableCollection<Direccion> DireccionesCliente
@@ -76,7 +92,11 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         public Direccion? DireccionSeleccionada
         {
             get => _direccionSeleccionada;
-            set { _direccionSeleccionada = value; OnPropertyChanged(nameof(DireccionSeleccionada)); }
+            set { _direccionSeleccionada = value; 
+                OnPropertyChanged(nameof(DireccionSeleccionada));
+                OnPropertyChanged(nameof(DireccionEditable));
+                ValidarDireccion();
+            }
         }
 
         //nueva direccion del cliente
@@ -89,13 +109,71 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
         public Direccion DireccionActual { get; set; } = new Direccion();
 
-        
-        
+        public Direccion DireccionEditable
+        {
+            get => NuevaDireccionHabilitada ? DireccionActual : DireccionSeleccionada;
+        }
+
+        //lista de provincias y ciudades
+        public ObservableCollection<Provincium> Provincias { get; set; }
+        public ObservableCollection<Ciudad> Ciudades { get; set; }
+
+        // --- PROVINCIA ---
+        private Provincium _provinciaSeleccionada;
+        public Provincium ProvinciaSeleccionada
+        {
+            get => _provinciaSeleccionada;
+            set
+            {
+                _provinciaSeleccionada = value;
+                OnPropertyChanged();
+
+                // 🔹 Validación
+                if (value == null)
+                    ErrorProvincia = "Debe seleccionar una provincia.";
+                else
+                    ErrorProvincia = string.Empty;
+
+                // 🔹 Filtrar ciudades según provincia elegida
+                if (value != null)
+                {
+                    Ciudades = new ObservableCollection<Ciudad>(
+                        _context.Ciudads
+                            .Where(c => c.IdProvincia == value.IdProvincia)
+                            .ToList()
+                    );
+                    OnPropertyChanged(nameof(Ciudades));
+                }
+
+                // 🔹 Revalidar toda la dirección
+                ValidarDireccion();
+            }
+        }
+
+        // --- CIUDAD ---
+        private Ciudad _ciudadSeleccionada;
+        public Ciudad CiudadSeleccionada
+        {
+            get => _ciudadSeleccionada;
+            set
+            {
+                _ciudadSeleccionada = value;
+                OnPropertyChanged();
+
+                // 🔹 Validación
+                if (value == null)
+                    ErrorCiudad = "Debe seleccionar una ciudad.";
+                else
+                    ErrorCiudad = string.Empty;
+
+                // 🔹 Revalidar dirección completa (por si faltaban otros campos)
+                ValidarDireccion();
+            }
+        }
+
         // --- COMANDOS ---
         public ICommand NuevaDireccionCommand { get; set; }
-        public ICommand GuardarNuevaDireccionCommand { get; set; }
-
-
+    
 
 
         // --- MÉTODOS ---
@@ -116,31 +194,29 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         //crear direccion nueva
         private void NuevaDireccion()
         {
-            DireccionActual = new Direccion();
-            NuevaDireccionHabilitada = true;
-        }
-
-        //guardar direccion nieva
-        private void GuardarNuevaDireccion()
-        {
-            if (DireccionActual == null || string.IsNullOrEmpty(DireccionActual.NombreCalle))
+            if (ClienteActual == null)
             {
-                MessageBox.Show("Debe completar los datos de la nueva dirección.", "Aviso",
-                                MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Debe seleccionar un cliente antes de agregar una dirección.",
+                                "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            _context.Direccions.Add(DireccionActual);
-            _context.SaveChanges();
+            DireccionActual = new Direccion
+            {
+                DniCliente = ClienteActual.DniCliente 
+            };
 
-            DireccionesCliente.Add(DireccionActual);
-            DireccionSeleccionada = DireccionActual;
+            NuevaDireccionHabilitada = true;
 
-            MessageBox.Show("Dirección guardada correctamente.", "Éxito",
-                            MessageBoxButton.OK, MessageBoxImage.Information);
+            OnPropertyChanged(nameof(DireccionEditable));
 
-            NuevaDireccionHabilitada = false;
+            ErrorCalle = string.Empty;
+            ErrorAltura = string.Empty;
+            ErrorProvincia = string.Empty;
+            ErrorCiudad = string.Empty;
+            ValidarDireccion();
         }
+
 
         //Propiedad del costo del envio
         private double _costo;
@@ -199,9 +275,6 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             _context.Envios.Add(nuevoEnvio);
             _context.SaveChanges();
 
-            MessageBox.Show("Envío registrado correctamente.", "Éxito",
-                            MessageBoxButton.OK, MessageBoxImage.Information);
-
             return true;
         }
 
@@ -209,8 +282,65 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         public void Reiniciar()
         {
             DireccionSeleccionada = null;
+            DireccionActual = null;
+            NuevaDireccionHabilitada = false;
+            OnPropertyChanged(nameof(DireccionEditable)); // refresca la vista
             Costo = 0;
             EnvioHabilitado = false;
+        }
+
+
+        // --- ERRORES ---
+        private string _errorCalle;
+        public string ErrorCalle
+        {
+            get => _errorCalle;
+            set { _errorCalle = value; OnPropertyChanged(); }
+        }
+
+        private string _errorAltura;
+        public string ErrorAltura
+        {
+            get => _errorAltura;
+            set { _errorAltura = value; OnPropertyChanged(); }
+        }
+
+        private string _errorProvincia;
+        public string ErrorProvincia
+        {
+            get => _errorProvincia;
+            set { _errorProvincia = value; OnPropertyChanged(); }
+        }
+
+        private string _errorCiudad;
+        public string ErrorCiudad
+        {
+            get => _errorCiudad;
+            set { _errorCiudad = value; OnPropertyChanged(); }
+        }
+
+
+        // --- VALIDACIÓN CENTRAL ---
+        private void ValidarDireccion()
+        {
+            var dir = DireccionEditable;
+            if (dir == null) return;
+
+            ErrorCalle = string.IsNullOrWhiteSpace(dir.NombreCalle)
+                ? "La calle es obligatoria."
+                : string.Empty;
+
+            ErrorAltura = dir.Altura <= 0
+                ? "Debe ingresar una altura válida."
+                : string.Empty;
+
+            ErrorProvincia = ProvinciaSeleccionada == null
+                ? "Debe seleccionar una provincia."
+                : string.Empty;
+
+            ErrorCiudad = CiudadSeleccionada == null
+                ? "Debe seleccionar una ciudad."
+                : string.Empty;
         }
 
 
