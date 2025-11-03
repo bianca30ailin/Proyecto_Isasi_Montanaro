@@ -92,10 +92,44 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         public Direccion? DireccionSeleccionada
         {
             get => _direccionSeleccionada;
-            set { _direccionSeleccionada = value; 
-                OnPropertyChanged(nameof(DireccionSeleccionada));
-                OnPropertyChanged(nameof(DireccionEditable));
-                ValidarDireccion();
+            set
+            {
+                if (_direccionSeleccionada != value)
+                {
+                    _direccionSeleccionada = value;
+                    OnPropertyChanged(nameof(DireccionSeleccionada));
+                    OnPropertyChanged(nameof(DireccionEditable));
+
+                    if (value != null)
+                    {
+                        // 🔹 Buscar la ciudad y provincia asociadas
+                        var ciudadDir = _context.Ciudads
+                            .Include(c => c.IdProvinciaNavigation)
+                            .FirstOrDefault(c => c.IdCiudad == value.IdCiudad);
+
+                        if (ciudadDir != null)
+                        {
+                            // 🔹 Si las listas no están cargadas, las traemos
+                            if (Provincias == null || Provincias.Count == 0)
+                                Provincias = new ObservableCollection<Provincium>(_context.Provincia.ToList());
+
+                            // 🔹 Seleccionar provincia
+                            ProvinciaSeleccionada = Provincias.FirstOrDefault(p => p.IdProvincia == ciudadDir.IdProvincia);
+
+                            // 🔹 Cargar ciudades de esa provincia
+                            Ciudades = new ObservableCollection<Ciudad>(
+                                _context.Ciudads.Where(c => c.IdProvincia == ciudadDir.IdProvincia).ToList()
+                            );
+                            OnPropertyChanged(nameof(Ciudades));
+
+                            // 🔹 Seleccionar ciudad
+                            CiudadSeleccionada = Ciudades.FirstOrDefault(c => c.IdCiudad == ciudadDir.IdCiudad);
+                        }
+                    }
+
+                    // 🔹 Validar dirección al final
+                    ValidarDireccion();
+                }
             }
         }
 
