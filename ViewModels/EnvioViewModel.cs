@@ -114,6 +114,14 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             get => NuevaDireccionHabilitada ? DireccionActual : DireccionSeleccionada;
         }
 
+
+        private bool _modoSoloLectura;
+        public bool ModoSoloLectura
+        {
+            get => _modoSoloLectura;
+            set { _modoSoloLectura = value; OnPropertyChanged(); }
+        }
+
         //lista de provincias y ciudades
         public ObservableCollection<Provincium> Provincias { get; set; }
         public ObservableCollection<Ciudad> Ciudades { get; set; }

@@ -145,9 +145,17 @@
                 <DataGridTemplateColumn Header="Acciones">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <Button Style="{StaticResource BtnSecondary}" Height="15" MinWidth="15" Margin="2,2,4,2">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button Style="{StaticResource BtnSecondary}" Height="15" MinWidth="15" Margin="2,2,4,2"
+                                         Command="{Binding DataContext.VerVentaSoloLecturaCommand, 
+                                                  RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}">
                                     <iconPacks:PackIconMaterial Kind="Eye" Width="16" Height="16" Foreground="#F5A623"/>
+                                </Button>
+                                <!-- Eliminar -->
+                                <Button Style="{StaticResource BtnSecondary}" Height="15" MinWidth="15" Margin="4,2,2,2"
+                                        >
+                                    <iconPacks:PackIconMaterial Kind="DeleteEmpty" Width="16" Height="16" Foreground="#D64545"/>
                                 </Button>
                             </StackPanel>
                         </DataTemplate>

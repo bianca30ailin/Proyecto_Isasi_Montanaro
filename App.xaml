@@ -20,6 +20,7 @@
             <helper:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
             <helper:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
             <helper:CreditoToVisibilityConverter x:Key="CreditoToVisibilityConverter"/>
+            <helper:AndBooleanConverter x:Key="AndBooleanConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 

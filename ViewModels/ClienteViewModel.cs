@@ -61,6 +61,13 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
         }
 
+        private bool _modoSoloLectura;
+        public bool ModoSoloLectura
+        {
+            get => _modoSoloLectura;
+            set { _modoSoloLectura = value; OnPropertyChanged(); }
+        }
+
         // Lista de direcciones del cliente actual
         private ObservableCollection<Direccion> _direccionesCliente;
         public ObservableCollection<Direccion> DireccionesCliente

@@ -55,6 +55,13 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             set { _cuotaSeleccionada = value; OnPropertyChanged(nameof(CuotaSeleccionada)); }
         }
 
+        private bool _modoSoloLectura;
+        public bool ModoSoloLectura
+        {
+            get => _modoSoloLectura;
+            set { _modoSoloLectura = value; OnPropertyChanged(); }
+        }
+
         private void CargarFormasDePago()
         {
             var lista = _context.FormaPago.ToList();

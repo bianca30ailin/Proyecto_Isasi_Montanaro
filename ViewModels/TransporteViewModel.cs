@@ -34,6 +34,13 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             set { _transporteSeleccionado = value; OnPropertyChanged(); }
         }
 
+        private bool _modoSoloLectura;
+        public bool ModoSoloLectura
+        {
+            get => _modoSoloLectura;
+            set { _modoSoloLectura = value; OnPropertyChanged(); }
+        }
+
         // --- Método para cargar transportes desde la base ---
         public void CargarTransportes()
         {

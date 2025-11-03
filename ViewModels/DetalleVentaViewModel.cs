@@ -78,6 +78,13 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
         }
 
+        private bool _modoSoloLectura;
+        public bool ModoSoloLectura
+        {
+            get => _modoSoloLectura;
+            set { _modoSoloLectura = value; OnPropertyChanged(); }
+        }
+
         // --- COMANDOS ---
         public ICommand AgregarProductoCommand { get; set; }
         public ICommand EditarProductoCommand { get; set; }
@@ -191,6 +198,19 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
                 ProductosFiltrados = new ObservableCollection<Producto>(filtrados);
             }
+        }
+
+        public void RecalcularTotalDesdeColeccion()
+        {
+            if (DetalleProductos == null || !DetalleProductos.Any())
+            {
+                OnPropertyChanged(nameof(Total));
+                return;
+            }
+
+            double total = DetalleProductos.Sum(d => d.Subtotal);
+            Total = total;
+            OnPropertyChanged(nameof(Total));
         }
 
         // --- Notificación de cambios ---

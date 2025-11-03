@@ -70,6 +70,8 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             // lista de estados de venta
             ListaEstadosVenta = new ObservableCollection<EstadoVenta>(_context.EstadoVenta.ToList());
 
+            VerVentaSoloLecturaCommand = new RelayCommand(p => VerVentaSoloLectura(p as Ventum));
+
             ClienteVM.PropertyChanged += (s, e) =>
             {
                 switch (e.PropertyName)
@@ -133,6 +135,8 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
         // --- COMANDOS ---
         public ICommand ConfirmarVentaCommand { get; set; }
+
+        public ICommand VerVentaSoloLecturaCommand { get; set; }
 
 
         // --- TOTALES Y CUOTAS --- //
@@ -392,25 +396,136 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             // Caso 1️⃣ — Venta sin envío
             if (!EnvioVM.EnvioHabilitado)
             {
-                mensajeFinal = $"✅ Venta registrada correctamente.\nN° {VentaActual.IdNroVenta}";
+                mensajeFinal = $"Venta registrada correctamente.\nN° {VentaActual.IdNroVenta}";
             }
             else
             {
                 // Caso 2️⃣ — Venta con envío
-                mensajeFinal = $"✅ Venta y envío registrados correctamente.\nN° {VentaActual.IdNroVenta}";
+                mensajeFinal = $"Venta y envío registrados correctamente.\nN° {VentaActual.IdNroVenta}";
 
                 // Caso 3️⃣ — Si además se agregó una nueva dirección
                 if (EnvioVM.NuevaDireccionHabilitada && EnvioVM.DireccionActual != null)
                 {
                     var cliente = ClienteVM.ClienteActual;
                     mensajeFinal +=
-                        $"\n🏠 Nueva dirección asignada al cliente {cliente.Nombre} {cliente.Apellido}.";
+                        $"\n Nueva dirección asignada al cliente {cliente.Nombre} {cliente.Apellido}.";
                 }
             }
 
             MessageBox.Show(mensajeFinal, "Éxito",
                             MessageBoxButton.OK, MessageBoxImage.Information);
         }
+
+        private void VerVentaSoloLectura(Ventum venta)
+        {
+            if (venta == null)
+            {
+                MessageBox.Show("No se pudo abrir la venta seleccionada.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var ventaCompleta = _context.Venta
+                .Include(v => v.DniClienteNavigation)
+                    .ThenInclude(c => c.Direcciones)
+                .Include(v => v.DetalleVentaProductos)
+                    .ThenInclude(d => d.IdProductoNavigation)
+                .Include(v => v.Envios)
+                    .ThenInclude(e => e.IdDireccionNavigation)
+                .Include(v => v.Envios)
+                    .ThenInclude(e => e.IdTransporteNavigation)
+                .Include(v => v.IdFormaPagoNavigation)
+                .Include(v => v.EstadoVenta)
+                .FirstOrDefault(v => v.IdNroVenta == venta.IdNroVenta);
+
+            if (ventaCompleta == null)
+            {
+                MessageBox.Show("No se encontraron los datos completos de la venta.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            var ventana = new Venta_form();
+            var vm = new VentasViewModel();
+
+            // === CLIENTE ===
+            vm.ClienteVM.ClienteActual = ventaCompleta.DniClienteNavigation;
+            vm.ClienteVM.DniClienteInput = ventaCompleta.DniClienteNavigation?.DniCliente.ToString();
+
+            // Importante: que EnvioVM conozca todas las direcciones del cliente
+            vm.EnvioVM.DireccionesCliente = new ObservableCollection<Direccion>(
+                ventaCompleta.DniClienteNavigation.Direcciones
+            );
+
+            // === DETALLE ===
+            vm.DetalleVM.DetalleProductos = new ObservableCollection<DetalleVentaProducto>(
+                ventaCompleta.DetalleVentaProductos
+            );
+
+            // === ENVÍO ===
+            var envio = ventaCompleta.Envios.FirstOrDefault();
+            vm.EnvioVM.EnvioHabilitado = envio != null;
+
+            if (envio != null)
+            {
+                // Dirección seleccionada
+                vm.EnvioVM.DireccionSeleccionada = envio.IdDireccionNavigation;
+                vm.EnvioVM.Costo = envio.Costo;
+
+                // Provincias/ciudades seleccionadas (aseguramos coincidencia por ID con las listas)
+                // 1) Provincia
+                var ciudadDir = _context.Ciudads
+                    .Include(c => c.IdProvinciaNavigation)
+                    .FirstOrDefault(c => c.IdCiudad == envio.IdDireccionNavigation.IdCiudad);
+
+               
+
+                vm.EnvioVM.ProvinciaSeleccionada =
+                    vm.EnvioVM.Provincias.FirstOrDefault(p => p.IdProvincia == ciudadDir.IdProvincia);
+
+                // 2) Ciudades de esa provincia
+                vm.EnvioVM.Ciudades = new ObservableCollection<Ciudad>(
+                    _context.Ciudads.Where(c => c.IdProvincia == ciudadDir.IdProvincia).ToList()
+                );
+
+                vm.EnvioVM.CiudadSeleccionada =
+                    vm.EnvioVM.Ciudades.FirstOrDefault(c => c.IdCiudad == ciudadDir.IdCiudad);
+
+                // Transporte
+                if (vm.TransporteVM.Transportes == null || vm.TransporteVM.Transportes.Count == 0)
+                    vm.TransporteVM.Transportes = new ObservableCollection<Transporte>(_context.Transportes.ToList());
+
+                vm.TransporteVM.TransporteSeleccionado =
+                    vm.TransporteVM.Transportes.FirstOrDefault(t => t.IdTransporte == envio.IdTransporte);
+            }
+
+            // === FORMA DE PAGO ===
+            if (vm.FormaPagoVM.FormasPago == null || vm.FormaPagoVM.FormasPago.Count == 0)
+                vm.FormaPagoVM.FormasPago = new ObservableCollection<FormaPago>(_context.FormaPago.ToList());
+
+            // ¡OJO!: el SelectedItem debe existir dentro de FormasPago (mismo Id)
+            vm.FormaPagoVM.FormaPagoSeleccionada =
+                vm.FormaPagoVM.FormasPago.FirstOrDefault(fp => fp.IdFormaPago == ventaCompleta.IdFormaPago);
+
+            vm.FormaPagoVM.CuotaSeleccionada = ventaCompleta.TotalCuotas ?? 1;
+
+            // === ESTADO Y TOTALES ===
+            vm.VentaActual = ventaCompleta;
+            vm.EstadoVentaSeleccionado = ventaCompleta.EstadoVenta;
+
+            // forzar totales (ver método 2)
+            vm.DetalleVM.RecalcularTotalDesdeColeccion();
+            vm.RecalcularTotales();
+
+            // === SOLO LECTURA ===
+            vm.DetalleVM.ModoSoloLectura = true;
+            vm.EnvioVM.ModoSoloLectura = true;
+            vm.ClienteVM.ModoSoloLectura = true;
+            vm.TransporteVM.ModoSoloLectura = true;
+            vm.FormaPagoVM.ModoSoloLectura = true;
+
+            ventana.DataContext = vm;
+            ventana.ShowDialog();
+        }
+
       
 
         // --- Notificación de cambios ---

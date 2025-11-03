@@ -117,18 +117,21 @@
                                           IsEditable="True"
                                           IsTextSearchEnabled="False"
                                           SelectedItem="{Binding DetalleVM.ProductoSeleccionado, Mode=TwoWay}"
-                                          Text="{Binding DetalleVM.TextoBusqueda, UpdateSourceTrigger=PropertyChanged}"/>
+                                          Text="{Binding DetalleVM.TextoBusqueda, UpdateSourceTrigger=PropertyChanged}"
+                                          IsEnabled="{Binding DetalleVM.ModoSoloLectura, Converter={StaticResource InverseBoolConverter}}"/>
 
                                 <!-- Campo cantidad -->
                                 <TextBox Width="80"
                                          Margin="0,0,0,0"
                                          Style="{StaticResource FormTextBox}"
-                                         Text="{Binding DetalleVM.CantidadSeleccionada, UpdateSourceTrigger=PropertyChanged}" />
+                                         Text="{Binding DetalleVM.CantidadSeleccionada, UpdateSourceTrigger=PropertyChanged}" 
+                                         IsReadOnly="{Binding DetalleVM.ModoSoloLectura}"/>
 
                                 <!-- Botón agregar -->
                                 <Button Content="Añadir"
                                         Style="{StaticResource BtnSecondary}"
-                                        Command="{Binding DetalleVM.AgregarProductoCommand}" />
+                                        Command="{Binding DetalleVM.AgregarProductoCommand}" 
+                                        IsEnabled="{Binding DetalleVM.ModoSoloLectura, Converter={StaticResource InverseBoolConverter}}"/>
                             </StackPanel>
 
                             <!-- Fila 1: stock debajo del ComboBox -->
@@ -162,6 +165,7 @@
                                                         Height="15"
                                                         MinWidth="15"
                                                         Margin="2,2,4,2"
+                                                        IsEnabled="{Binding DetalleVM.ModoSoloLectura, Converter={StaticResource InverseBoolConverter}}"
                                                         Command="{Binding DataContext.DetalleVM.EditarProductoCommand,
                                                                   RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                         CommandParameter="{Binding}">
@@ -175,6 +179,7 @@
                                                         Height="15"
                                                         MinWidth="15"
                                                         Margin="2,2,4,2"
+                                                        IsEnabled="{Binding DetalleVM.ModoSoloLectura, Converter={StaticResource InverseBoolConverter}}"
                                                         Command="{Binding DataContext.DetalleVM.EliminarProductoCommand,
                                                                     RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                         CommandParameter="{Binding}">
@@ -226,6 +231,7 @@
                             <ComboBox Style="{StaticResource FormComboBox}"
                                       ItemsSource="{Binding FormaPagoVM.FormasPago}"
                                       DisplayMemberPath="Nombre"
+                                      IsEnabled="{Binding FormaPagoVM.ModoSoloLectura, Converter={StaticResource InverseBoolConverter}}"
                                       SelectedItem="{Binding FormaPagoVM.FormaPagoSeleccionada, Mode=TwoWay}"
                                       Margin="0,30,0,10"
                                       Grid.Row="0" Grid.Column="0"
@@ -309,6 +315,7 @@
                                       Grid.Row="1" Grid.Column="0" />
                             <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,30,0,10">
                                 <TextBox Style="{StaticResource FormTextBox}" 
+                                         IsReadOnly="{Binding ClienteVM.ModoSoloLectura}"
                                          Text="{Binding ClienteVM.Nombre, UpdateSourceTrigger=PropertyChanged}" />
                                 <TextBlock Text="{Binding ClienteVM.ErrorNombre}"
                                              Foreground="#E35802"
@@ -322,6 +329,7 @@
                                        Grid.Row="1" Grid.Column="2" />
                             <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,30,0,10">
                                 <TextBox Style="{StaticResource FormTextBox}" 
+                                         IsReadOnly="{Binding ClienteVM.ModoSoloLectura}"
                                          Text="{Binding ClienteVM.Apellido, UpdateSourceTrigger=PropertyChanged}" />
                                 <TextBlock Text="{Binding ClienteVM.ErrorApellido}"
                                            Foreground="#E35802"
@@ -340,6 +348,7 @@
                                 <!-- Campo de texto para el DNI -->
                                 <TextBox Width="140"
                                          Style="{StaticResource FormTextBox}"
+                                         IsReadOnly="{Binding ClienteVM.ModoSoloLectura}"
                                          Text="{Binding ClienteVM.DniClienteInput, UpdateSourceTrigger=PropertyChanged}" />
 
                                 <!-- Botón de búsqueda con ícono -->
@@ -347,6 +356,7 @@
                                         Height="15"
                                         MinWidth="15"
                                         Margin="10,0,0,4"
+                                         IsEnabled="{Binding ClienteVM.ModoSoloLectura, Converter={StaticResource InverseBoolConverter}}"
                                         Command="{Binding ClienteVM.BuscarClienteCommand}">
                                     <iconPacks:PackIconMaterial Kind="Magnify"
                                                                 Width="16" Height="16"
@@ -360,6 +370,7 @@
                                        Grid.Row="2" Grid.Column="2" />
                             <StackPanel Grid.Row="2" Grid.Column="2" Margin="0,30,0,10">
                                 <TextBox Style="{StaticResource FormTextBox}" 
+                                         IsReadOnly="{Binding ClienteVM.ModoSoloLectura}"
                                          Text="{Binding ClienteVM.Telefono, UpdateSourceTrigger=PropertyChanged}" />
                                 <TextBlock Text="{Binding ClienteVM.ErrorTelefono}"
                                            Foreground="#E35802"
@@ -373,6 +384,7 @@
                                        Grid.Row="2" Grid.Column="0" />
                             <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,30,0,10">
                                 <TextBox Style="{StaticResource FormTextBox}" 
+                                         IsReadOnly="{Binding ClienteVM.ModoSoloLectura}"
                                          Text="{Binding ClienteVM.Email, UpdateSourceTrigger=PropertyChanged}" />
                                 <TextBlock Text="{Binding ClienteVM.ErrorEmail}"
                                            Foreground="#E35802"
@@ -395,7 +407,15 @@
                                        Margin="0,0,10,0"/>
                             <CheckBox Name="CkEnvio"
                                       IsChecked="{Binding EnvioVM.EnvioHabilitado, Mode=TwoWay}"
-                                      VerticalAlignment="Center"/>
+                                      VerticalAlignment="Center">
+                                <CheckBox.IsEnabled>
+                                    <MultiBinding Converter="{StaticResource AndBooleanConverter}">
+                                        <!-- Siempre se puede tildar/desmarcar solo si NO está en modo lectura -->
+                                        <Binding Path="EnvioVM.ModoSoloLectura" Converter="{StaticResource InverseBoolConverter}"/>
+                                        <!-- En caso de que quieras condicionar con otra lógica adicional, podés agregar más bindings acá -->
+                                    </MultiBinding>
+                                </CheckBox.IsEnabled>
+                            </CheckBox>
                         </StackPanel>
 
                         <Separator Background="#E5E7EB" Height="1" Margin="0,10,0,10"/>
@@ -423,20 +443,32 @@
                         <TextBlock Text="Direccion" 
                                    Style="{StaticResource FormLabel}" 
                                    Grid.Row="0" Grid.Column="0"/>
-                        <ComboBox Style="{StaticResource FormComboBox}" 
+                            <ComboBox Style="{StaticResource FormComboBox}" 
                                   ItemsSource="{Binding EnvioVM.DireccionesCliente}"
                                   DisplayMemberPath="DireccionCompleta" 
                                   SelectedItem="{Binding EnvioVM.DireccionSeleccionada, Mode=TwoWay}"
                                   Margin="0,30,0,10"
-                                  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                                  IsEnabled="{Binding  EnvioVM.EnvioHabilitado}">
-                        </ComboBox>
-                        <Button Content="+ Nueva dirección"
-                                Style="{StaticResource BtnSecondary}"
-                                Margin="0,30,0,10"
-                                Grid.Row="0" Grid.Column="3"
-                                Command="{Binding EnvioVM.NuevaDireccionCommand}"
-                                IsEnabled="{Binding  EnvioVM.EnvioHabilitado}" />
+                                  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+                                <ComboBox.IsEnabled>
+                                    <MultiBinding Converter="{StaticResource AndBooleanConverter}">
+                                        <Binding Path="EnvioVM.EnvioHabilitado"/>
+                                        <Binding Path="EnvioVM.ModoSoloLectura" Converter="{StaticResource InverseBoolConverter}"/>
+                                    </MultiBinding>
+                                </ComboBox.IsEnabled>
+                            </ComboBox>
+                            <Button Content="+ Nueva dirección"
+                                    Style="{StaticResource BtnSecondary}"
+                                    Margin="0,30,0,10"
+                                    Grid.Row="0" Grid.Column="3"
+                                    Command="{Binding EnvioVM.NuevaDireccionCommand}">
+                                <Button.IsEnabled>
+                                    <MultiBinding Converter="{StaticResource AndBooleanConverter}">
+                                        <Binding Path="EnvioVM.EnvioHabilitado"/>
+                                        <Binding Path="EnvioVM.ModoSoloLectura" Converter="{StaticResource InverseBoolConverter}"/>
+                                    </MultiBinding>
+                                </Button.IsEnabled>
+                            </Button>
+
 
                             <!-- CALLE -->
                             <TextBlock Text="Calle" 
@@ -455,8 +487,14 @@
                                 <TextBox Style="{StaticResource FormTextBox}" 
                                          Grid.Row="0"
                                          Margin="0,5,0,0"
-                                         Text="{Binding EnvioVM.DireccionEditable.NombreCalle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         IsEnabled="{Binding EnvioVM.NuevaDireccionHabilitada}"/>
+                                         Text="{Binding EnvioVM.DireccionEditable.NombreCalle, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    <TextBox.IsEnabled>
+                                        <MultiBinding Converter="{StaticResource AndBooleanConverter}">
+                                            <Binding Path="EnvioVM.NuevaDireccionHabilitada"/>
+                                            <Binding Path="EnvioVM.ModoSoloLectura" Converter="{StaticResource InverseBoolConverter}"/>
+                                        </MultiBinding>
+                                    </TextBox.IsEnabled>
+                                </TextBox>
 
                                 <TextBlock Text="{Binding EnvioVM.ErrorCalle}"
                                            Grid.Row="1"
@@ -480,8 +518,14 @@
                                 <TextBox Style="{StaticResource FormTextBox}" 
                                          Grid.Row="0"
                                          Margin="0,5,0,0"
-                                         Text="{Binding EnvioVM.DireccionEditable.Altura, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         IsEnabled="{Binding EnvioVM.NuevaDireccionHabilitada}"/>
+                                         Text="{Binding EnvioVM.DireccionEditable.Altura, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    <TextBox.IsEnabled>
+                                        <MultiBinding Converter="{StaticResource AndBooleanConverter}">
+                                            <Binding Path="EnvioVM.NuevaDireccionHabilitada"/>
+                                            <Binding Path="EnvioVM.ModoSoloLectura" Converter="{StaticResource InverseBoolConverter}"/>
+                                        </MultiBinding>
+                                    </TextBox.IsEnabled>
+                                </TextBox>
 
                                 <TextBlock Text="{Binding EnvioVM.ErrorAltura}"
                                            Grid.Row="1"
@@ -507,8 +551,14 @@
                                           SelectedItem="{Binding EnvioVM.ProvinciaSeleccionada, Mode=TwoWay}"
                                           Style="{StaticResource FormComboBox}"
                                           Grid.Row="0"
-                                          Margin="0,5,0,0"
-                                          IsEnabled="{Binding EnvioVM.NuevaDireccionHabilitada}" />
+                                          Margin="0,5,0,0">
+                                    <ComboBox.IsEnabled>
+                                        <MultiBinding Converter="{StaticResource AndBooleanConverter}">
+                                            <Binding Path="EnvioVM.NuevaDireccionHabilitada"/>
+                                            <Binding Path="EnvioVM.ModoSoloLectura" Converter="{StaticResource InverseBoolConverter}"/>
+                                        </MultiBinding>
+                                    </ComboBox.IsEnabled>
+                                </ComboBox>
 
                                 <TextBlock Text="{Binding EnvioVM.ErrorProvincia}"
                                            Grid.Row="1"
@@ -534,8 +584,14 @@
                                           SelectedItem="{Binding EnvioVM.CiudadSeleccionada, Mode=TwoWay}"
                                           Style="{StaticResource FormComboBox}"
                                           Grid.Row="0"
-                                          Margin="0,5,0,0"
-                                          IsEnabled="{Binding EnvioVM.NuevaDireccionHabilitada}" />
+                                          Margin="0,5,0,0">
+                                    <ComboBox.IsEnabled>
+                                        <MultiBinding Converter="{StaticResource AndBooleanConverter}">
+                                            <Binding Path="EnvioVM.NuevaDireccionHabilitada"/>
+                                            <Binding Path="EnvioVM.ModoSoloLectura" Converter="{StaticResource InverseBoolConverter}"/>
+                                        </MultiBinding>
+                                    </ComboBox.IsEnabled>
+                                </ComboBox>
 
                                 <TextBlock Text="{Binding EnvioVM.ErrorCiudad}"
                                            Grid.Row="1"
@@ -548,24 +604,36 @@
                         <TextBlock Text="Servicio" 
                                    Style="{StaticResource FormLabel}"
                                    Grid.Row="3" Grid.Column="0" />
-                        <ComboBox Style="{StaticResource FormComboBox}" 
-                                  ItemsSource="{Binding TransporteVM.Transportes}" 
-                                  DisplayMemberPath="Nombre"
-                                  SelectedItem="{Binding TransporteVM.TransporteSeleccionado, Mode=TwoWay}"
-                                  Margin="0,30,0,10"
-                                  Grid.Row="3" Grid.Column="0" 
-                                  IsEnabled="{Binding  EnvioVM.EnvioHabilitado}" />
+                            <ComboBox Style="{StaticResource FormComboBox}" 
+                                      ItemsSource="{Binding TransporteVM.Transportes}" 
+                                      DisplayMemberPath="Nombre"
+                                      SelectedItem="{Binding TransporteVM.TransporteSeleccionado, Mode=TwoWay}"
+                                      Margin="0,30,0,10"
+                                      Grid.Row="3" Grid.Column="0">
+                                <ComboBox.IsEnabled>
+                                    <MultiBinding Converter="{StaticResource AndBooleanConverter}">
+                                        <Binding Path="EnvioVM.EnvioHabilitado"/>
+                                        <Binding Path="EnvioVM.ModoSoloLectura" Converter="{StaticResource InverseBoolConverter}"/>
+                                    </MultiBinding>
+                                </ComboBox.IsEnabled>
+                            </ComboBox>
 
-                        <!-- Costo servicio -->
+                            <!-- Costo servicio -->
                         <TextBlock Text="Costo" 
                                    Style="{StaticResource FormLabel}"
                                    Grid.Row="3" Grid.Column="2" />
-                        <TextBox Style="{StaticResource FormTextBox}" 
-                                 Margin="0,30,0,10"
-                                 Grid.Row="3" Grid.Column="2"
-                                 Text="{Binding EnvioVM.Costo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 IsEnabled="{Binding  EnvioVM.EnvioHabilitado}"/>
-                    </Grid>
+                            <TextBox Style="{StaticResource FormTextBox}" 
+                                     Margin="0,30,0,10"
+                                     Grid.Row="3" Grid.Column="2"
+                                     Text="{Binding EnvioVM.Costo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                <TextBox.IsEnabled>
+                                    <MultiBinding Converter="{StaticResource AndBooleanConverter}">
+                                        <Binding Path="EnvioVM.EnvioHabilitado"/>
+                                        <Binding Path="EnvioVM.ModoSoloLectura" Converter="{StaticResource InverseBoolConverter}"/>
+                                    </MultiBinding>
+                                </TextBox.IsEnabled>
+                            </TextBox>
+                        </Grid>
                 </StackPanel>
                 
             </Grid>
@@ -583,12 +651,6 @@
                     Background="#757575"
                     Click="Cancelar_Click"/>
 
-                <!-- Modificar -->
-                <Button Style="{StaticResource BtnPrimary}" 
-                    Content="Modificar" Width="100"
-                    Margin="0,0,10,0"
-                    Background="#F5A623"
-                    />
 
                 <!-- Guardar -->
                 <Button Style="{StaticResource BtnPrimary}" 
