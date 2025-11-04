@@ -16,6 +16,7 @@
     <None Remove="Assets\box\fluent--box-16-regular %282%29.png" />
     <None Remove="Assets\box\fluent--box-16-regular.png" />
     <None Remove="Assets\box\logo.png" />
+    <None Remove="Assets\box\logo_sisie.png" />
     <None Remove="Assets\box\lucide--box.png" />
     <None Remove="Assets\box\prime--box.png" />
     <None Remove="Assets\cliente2.png" />
@@ -69,6 +70,9 @@
   <ItemGroup>
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\box\logo_sisie.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 

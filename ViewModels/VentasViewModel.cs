@@ -71,8 +71,12 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             // lista de estados de venta
             ListaEstadosVenta = new ObservableCollection<EstadoVenta>(_context.EstadoVenta.ToList());
 
+            // comandos
             VerVentaSoloLecturaCommand = new RelayCommand(p => VerVentaSoloLectura(p as Ventum));
 
+            CancelarVentaCommand = new RelayCommand(p => CancelarVenta(p as Ventum));
+
+      
             ClienteVM.PropertyChanged += (s, e) =>
             {
                 switch (e.PropertyName)
@@ -107,8 +111,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 EstadoVentaId = 1
             };
 
-            EstadoVentaSeleccionado = ListaEstadosVenta
-                .FirstOrDefault(e => e.NombreEstado == "Activa");
+            EstadoVentaSeleccionado = ListaEstadosVenta.FirstOrDefault(e => e.NombreEstado == "Activa");
 
             ConfirmarVentaCommand = new RelayCommand(_ => ConfirmarVenta(), _ => DetalleVM.DetalleProductos.Any());
             CargarVentas();
@@ -138,6 +141,8 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         public ICommand ConfirmarVentaCommand { get; set; }
 
         public ICommand VerVentaSoloLecturaCommand { get; set; }
+
+        public ICommand CancelarVentaCommand { get; }
 
 
         // --- TOTALES Y CUOTAS --- //
@@ -235,14 +240,15 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                     transaction.Rollback();
                     return;
                 }
-
+                
                 // Confirmar transacción
                 transaction.Commit();
 
                 // Mostrar mensaje de éxito
                 MostrarMensajeFinalDeVenta();
 
-                GenerarFactura(VentaActual);
+                // Generar Factuta
+                GeneradorFacturaPDF.Generar(VentaActual);
 
                 // Refrescar vistas y limpiar formularios
                 CargarVentas();
@@ -396,17 +402,17 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         {
             string mensajeFinal;
 
-            // Caso 1️⃣ — Venta sin envío
+            // Caso 1️ - Venta sin envío
             if (!EnvioVM.EnvioHabilitado)
             {
                 mensajeFinal = $"Venta registrada correctamente.\nN° {VentaActual.IdNroVenta}";
             }
             else
             {
-                // Caso 2️⃣ — Venta con envío
+                // Caso 2️ — Venta con envío
                 mensajeFinal = $"Venta y envío registrados correctamente.\nN° {VentaActual.IdNroVenta}";
 
-                // Caso 3️⃣ — Si además se agregó una nueva dirección
+                // Caso 3️ — Si además se agregó una nueva dirección
                 if (EnvioVM.NuevaDireccionHabilitada && EnvioVM.DireccionActual != null)
                 {
                     var cliente = ClienteVM.ClienteActual;
@@ -417,6 +423,60 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
             MessageBox.Show(mensajeFinal, "Éxito",
                             MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        public void CancelarVenta(Ventum ventaSeleccionada)
+        {
+            // if opcional, por seguridad
+            if (ventaSeleccionada is null) return;
+
+            var confirmacion = MessageBox.Show("¿Está seguro que desea cancelar esta venta?",
+                                               "Confirmar cancelación",
+                                               MessageBoxButton.YesNo,
+                                               MessageBoxImage.Question);
+
+            if (confirmacion != MessageBoxResult.Yes)
+                return;
+
+            string motivo = Microsoft.VisualBasic.Interaction.InputBox(
+                "Ingrese el motivo de la cancelación:",
+                "Motivo de cancelación",
+                "Cancelación por solicitud del cliente"
+            );
+
+            try
+            {
+                using var transaction = _context.Database.BeginTransaction();
+
+                var estadoCancelado = _context.EstadoVenta
+                    .FirstOrDefault(e => e.NombreEstado == "Cancelada");
+
+                if (estadoCancelado == null)
+                {
+                    MessageBox.Show("No se encontró el estado 'Cancelada' en la base de datos.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                ventaSeleccionada.EstadoVentaId = estadoCancelado.IdEstadoVenta;
+                _context.SaveChanges();
+
+                //  usamos el view model de nota de credito
+                var notaVM = new NotaCreditoViewModel(_context);
+                var nota = notaVM.CrearNotaCredito(ventaSeleccionada, motivo);
+                notaVM.AgregarDetallesYActualizarStock(nota, ventaSeleccionada);
+
+                transaction.Commit();
+
+                MessageBox.Show("Venta cancelada y nota de crédito generada correctamente.",
+                                "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                GeneradorNotaCreditoPDF.Generar(nota, _context);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al cancelar la venta: {ex.Message}",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void VerVentaSoloLectura(Ventum venta)
@@ -479,8 +539,6 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                     .Include(c => c.IdProvinciaNavigation)
                     .FirstOrDefault(c => c.IdCiudad == envio.IdDireccionNavigation.IdCiudad);
 
-               
-
                 vm.EnvioVM.ProvinciaSeleccionada =
                     vm.EnvioVM.Provincias.FirstOrDefault(p => p.IdProvincia == ciudadDir.IdProvincia);
 
@@ -529,111 +587,6 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             ventana.ShowDialog();
         }
 
-        private void GenerarFactura(Ventum venta)
-        {
-            try
-            {
-                string carpetaDestino = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                string ruta = Path.Combine(carpetaDestino, $"Factura_{venta.IdNroVenta}.pdf");
-
-                using (var doc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A4, 40f, 40f, 60f, 40f))
-                {
-                    var writer = iTextSharp.text.pdf.PdfWriter.GetInstance(doc, new FileStream(ruta, FileMode.Create));
-                    doc.Open();
-
-                    // Colores y fuentes
-                    var colorPrincipal = new iTextSharp.text.BaseColor(7, 39, 65);      // azul SISIE
-                    var colorSecundario = new iTextSharp.text.BaseColor(83, 186, 131);  // verde SISIE
-                    var fontTitulo = iTextSharp.text.FontFactory.GetFont("Arial", 18, iTextSharp.text.Font.BOLD, colorPrincipal);
-                    var fontSub = iTextSharp.text.FontFactory.GetFont("Arial", 12, iTextSharp.text.Font.BOLD, colorPrincipal);
-                    var fontNormal = iTextSharp.text.FontFactory.GetFont("Arial", 10, iTextSharp.text.Font.NORMAL, iTextSharp.text.BaseColor.BLACK);
-
-                    // --- ENCABEZADO ---
-                    var titulo = new iTextSharp.text.Paragraph("SISIE - Sistema de Inventario y Envíos", fontTitulo);
-                    titulo.Alignment = iTextSharp.text.Element.ALIGN_CENTER;
-                    doc.Add(titulo);
-                    doc.Add(new iTextSharp.text.Paragraph(" "));
-
-                    var lineaAzul = new iTextSharp.text.pdf.draw.LineSeparator(2f, 100f, colorSecundario, iTextSharp.text.Element.ALIGN_CENTER, -1);
-                    doc.Add(new iTextSharp.text.Chunk(lineaAzul));
-                    doc.Add(new iTextSharp.text.Paragraph(" "));
-
-                    // --- DATOS GENERALES ---
-                    doc.Add(new iTextSharp.text.Paragraph($"Factura N°: {venta.IdNroVenta}", fontSub));
-                    doc.Add(new iTextSharp.text.Paragraph($"Fecha: {venta.FechaHora}", fontNormal));
-                    doc.Add(new iTextSharp.text.Paragraph(" "));
-
-                    // --- CLIENTE ---
-                    var cliente = venta.DniClienteNavigation;
-                    doc.Add(new iTextSharp.text.Paragraph("Cliente", fontSub));
-                    doc.Add(new iTextSharp.text.Paragraph($"Nombre: {cliente.Nombre} {cliente.Apellido}", fontNormal));
-                    doc.Add(new iTextSharp.text.Paragraph($"DNI: {cliente.DniCliente}", fontNormal));
-                    doc.Add(new iTextSharp.text.Paragraph($"Email: {cliente.Email}", fontNormal));
-                    doc.Add(new iTextSharp.text.Paragraph(" "));
-
-                    // --- DETALLE DE PRODUCTOS ---
-                    doc.Add(new iTextSharp.text.Paragraph("Detalle de Productos", fontSub));
-                    doc.Add(new iTextSharp.text.Paragraph(" "));
-
-                    var tabla = new iTextSharp.text.pdf.PdfPTable(4) { WidthPercentage = 100 };
-                    float[] widths = new float[] { 50f, 15f, 15f, 20f };
-                    tabla.SetWidths(widths);
-
-                    var headerColor = new iTextSharp.text.BaseColor(240, 240, 240);
-                    var cellHeader = new iTextSharp.text.pdf.PdfPCell(new iTextSharp.text.Phrase("Producto", fontSub)) { BackgroundColor = headerColor };
-                    tabla.AddCell(cellHeader);
-                    cellHeader.Phrase = new iTextSharp.text.Phrase("Cantidad", fontSub); tabla.AddCell(cellHeader);
-                    cellHeader.Phrase = new iTextSharp.text.Phrase("P. Unitario", fontSub); tabla.AddCell(cellHeader);
-                    cellHeader.Phrase = new iTextSharp.text.Phrase("Subtotal", fontSub); tabla.AddCell(cellHeader);
-
-                    foreach (var item in venta.DetalleVentaProductos)
-                    {
-                        tabla.AddCell(new iTextSharp.text.Phrase(item.IdProductoNavigation.Nombre, fontNormal));
-                        tabla.AddCell(new iTextSharp.text.Phrase(item.Cantidad.ToString(), fontNormal));
-                        tabla.AddCell(new iTextSharp.text.Phrase(item.IdProductoNavigation.Precio.ToString("C"), fontNormal));
-                        tabla.AddCell(new iTextSharp.text.Phrase((item.Cantidad * item.IdProductoNavigation.Precio).ToString("C"), fontNormal));
-                    }
-                    doc.Add(tabla);
-                    doc.Add(new iTextSharp.text.Paragraph(" "));
-
-                    // --- ENVÍO ---
-                    var envio = venta.Envios.FirstOrDefault();
-                    if (envio != null)
-                    {
-                        doc.Add(new iTextSharp.text.Paragraph("Datos de Envío", fontSub));
-                        doc.Add(new iTextSharp.text.Paragraph($"Dirección: {envio.IdDireccionNavigation.DireccionCompleta}", fontNormal));
-                        doc.Add(new iTextSharp.text.Paragraph($"Transporte: {envio.IdTransporteNavigation.Nombre}", fontNormal));
-                        doc.Add(new iTextSharp.text.Paragraph($"Costo de Envío: {envio.Costo:C}", fontNormal));
-                        doc.Add(new iTextSharp.text.Paragraph(" "));
-                    }
-
-                    // --- FORMA DE PAGO ---
-                    doc.Add(new iTextSharp.text.Paragraph("Forma de Pago", fontSub));
-                    var forma = venta.IdFormaPagoNavigation;
-                    doc.Add(new iTextSharp.text.Paragraph($"Método: {forma.Nombre}", fontNormal));
-
-                    if (forma.Nombre.Equals("Crédito", StringComparison.OrdinalIgnoreCase))
-                        doc.Add(new iTextSharp.text.Paragraph($"Cuotas: {venta.TotalCuotas}", fontNormal));
-
-                    doc.Add(new iTextSharp.text.Paragraph(" "));
-
-                    // --- TOTALES ---
-                    doc.Add(new iTextSharp.text.Paragraph($"Total Final: {venta.Total:C}", fontSub));
-                    doc.Add(new iTextSharp.text.Paragraph(" "));
-                    doc.Add(new iTextSharp.text.Paragraph("¡Gracias por su compra!", fontNormal));
-
-                    doc.Close();
-                }
-
-                MessageBox.Show($"Factura generada correctamente en:\n{ruta}",
-                    "Factura generada", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al generar la factura: {ex.Message}",
-                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
 
         // --- Notificación de cambios ---
         public event PropertyChangedEventHandler PropertyChanged;

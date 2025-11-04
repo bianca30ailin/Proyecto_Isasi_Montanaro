@@ -47,6 +47,9 @@ public partial class ProyectoTallerContext : DbContext
 
     public virtual DbSet<FormaPago> FormaPago { get; set; } = null!;
 
+    public virtual DbSet<NotaCredito> NotaCredito { get; set; }
+    public virtual DbSet<DetalleNotaCredito> DetalleNotaCredito { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)

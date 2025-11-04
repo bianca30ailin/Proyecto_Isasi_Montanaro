@@ -153,8 +153,10 @@
                                     <iconPacks:PackIconMaterial Kind="Eye" Width="16" Height="16" Foreground="#F5A623"/>
                                 </Button>
                                 <!-- Eliminar -->
-                                <Button Style="{StaticResource BtnSecondary}" Height="15" MinWidth="15" Margin="4,2,2,2"
-                                        >
+                                <Button Style="{StaticResource BtnSecondary}"
+                                        Height="15" MinWidth="15" Margin="4,2,2,2"
+                                        Command="{Binding DataContext.CancelarVentaCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}">
                                     <iconPacks:PackIconMaterial Kind="DeleteEmpty" Width="16" Height="16" Foreground="#D64545"/>
                                 </Button>
                             </StackPanel>
