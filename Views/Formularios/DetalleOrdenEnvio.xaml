@@ -1,0 +1,190 @@
+﻿<Window x:Class="Proyecto_Isasi_Montanaro.Views.Formularios.DetalleOrdenEnvio"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        Title="Orden de Envío" 
+        Height="600" Width="700"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="#F3EDF7">
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ENCABEZADO -->
+        <Border Grid.Row="0" 
+                Background="White" 
+                CornerRadius="8" 
+                Padding="25"
+                Margin="0,0,0,20"
+                BorderBrush="#E5E7EB"
+                BorderThickness="1">
+            <StackPanel>
+                <TextBlock Text="ORDEN DE ENVÍO" 
+                           FontSize="28" 
+                           FontWeight="Bold" 
+                           Foreground="#072741"
+                           HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding Envio.IdEnvio, StringFormat='N° {0}'}" 
+                           FontSize="18" 
+                           Foreground="#53BA83"
+                           FontWeight="SemiBold"
+                           HorizontalAlignment="Center"
+                           Margin="0,8,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- CONTENIDO -->
+        <Border Grid.Row="1"
+                Background="White"
+                CornerRadius="8"
+                Padding="30"
+                BorderBrush="#E5E7EB"
+                BorderThickness="1">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <!-- EMPRESA -->
+                    <TextBlock Text="SISIE - Gabriela Montañaro, Bianca Isasi Vitale" 
+                               FontSize="14" 
+                               FontWeight="SemiBold"
+                               Foreground="#072741"
+                               TextAlignment="Center"
+                               Margin="0,0,0,25"/>
+
+                    <!-- DESTINATARIO -->
+                    <TextBlock Text="DESTINATARIO" 
+                               FontSize="16" 
+                               FontWeight="Bold" 
+                               Foreground="#072741"
+                               Margin="0,0,0,12"/>
+                    
+                    <StackPanel Margin="0,0,0,8">
+                        <TextBlock Text="Nombre Completo:" 
+                                   FontWeight="SemiBold" 
+                                   Foreground="#555"
+                                   FontSize="12"/>
+                        <TextBlock Text="{Binding Cliente.NombreCompleto}" 
+                                   FontSize="14"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,8">
+                        <TextBlock Text="DNI:" 
+                                   FontWeight="SemiBold" 
+                                   Foreground="#555"
+                                   FontSize="12"/>
+                        <TextBlock Text="{Binding Cliente.DniCliente}" 
+                                   FontSize="14"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,8">
+                        <TextBlock Text="Teléfono:" 
+                                   FontWeight="SemiBold" 
+                                   Foreground="#555"
+                                   FontSize="12"/>
+                        <TextBlock Text="{Binding Cliente.Telefono}" 
+                                   FontSize="14"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,20">
+                        <TextBlock Text="Email:" 
+                                   FontWeight="SemiBold" 
+                                   Foreground="#555"
+                                   FontSize="12"/>
+                        <TextBlock Text="{Binding Cliente.Email}" 
+                                   FontSize="14"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <Separator Margin="0,0,0,20" Background="#E5E7EB"/>
+
+                    <!-- DIRECCIÓN DE ENTREGA -->
+                    <TextBlock Text="DIRECCIÓN DE ENTREGA" 
+                               FontSize="16" 
+                               FontWeight="Bold" 
+                               Foreground="#072741"
+                               Margin="0,0,0,12"/>
+
+                    <StackPanel Margin="0,0,0,8">
+                        <TextBlock Text="Dirección:" 
+                                   FontWeight="SemiBold" 
+                                   Foreground="#555"
+                                   FontSize="12"/>
+                        <TextBlock Text="{Binding Direccion.DireccionCompleta}" 
+                                   FontSize="14"
+                                   TextWrapping="Wrap"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,0,20">
+                        <TextBlock Text="Código Postal:" 
+                                   FontWeight="SemiBold" 
+                                   Foreground="#555"
+                                   FontSize="12"/>
+                        <TextBlock Text="{Binding Direccion.CodigoPostal}" 
+                                   FontSize="14"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <Separator Margin="0,0,0,20" Background="#E5E7EB"/>
+
+                    <!-- TRANSPORTE -->
+                    <TextBlock Text="TRANSPORTE" 
+                               FontSize="16" 
+                               FontWeight="Bold" 
+                               Foreground="#072741"
+                               Margin="0,0,0,12"/>
+
+                    <StackPanel>
+                        <TextBlock Text="Servicio:" 
+                                   FontWeight="SemiBold" 
+                                   Foreground="#555"
+                                   FontSize="12"/>
+                        <TextBlock Text="{Binding Envio.IdTransporteNavigation.Nombre}" 
+                                   FontSize="14"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- BOTONES -->
+        <StackPanel Grid.Row="2" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right" 
+                    Margin="0,20,0,0">
+            <Button Content="Generar PDF"
+                    Style="{StaticResource BtnPrimary}"
+                    Command="{Binding GenerarPDFCommand}"
+                    Margin="0,0,10,0"
+                    MinWidth="140"
+                    Height="40"
+                    FontSize="14">
+                <Button.ContentTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconMaterial Kind="FilePdfBox" 
+                                                       Width="18" 
+                                                       Height="18"
+                                                       Margin="0,0,8,0"/>
+                            <TextBlock Text="Generar PDF" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </Button.ContentTemplate>
+            </Button>
+            
+            <Button Content="Cerrar"
+                    Style="{StaticResource BtnSecondary}"
+                    Click="Cerrar_Click"
+                    MinWidth="100"
+                    Height="40"
+                    FontSize="14"/>
+        </StackPanel>
+    </Grid>
+</Window>

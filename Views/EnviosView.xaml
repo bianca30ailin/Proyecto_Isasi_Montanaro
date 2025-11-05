@@ -48,10 +48,11 @@
             </StackPanel>
 
             <!-- Botón a la derecha -->
-            <Button Content="Nuevo Envio"
+            <Button Content="Transportes"
             Style="{StaticResource BtnPrimary}"
             Grid.Column="1"
-            HorizontalAlignment="Right"/>
+            HorizontalAlignment="Right"
+            Command="{Binding AbrirTransportesCommand}"/>
         </Grid>
 
 
@@ -84,23 +85,27 @@
                 <!-- DatePickers -->
                 <DatePicker Grid.Column="1" 
                     Style="{StaticResource FormDate}" 
-                    Margin="0,0,10,0"/>
+                    Margin="0,0,10,0"
+                    SelectedDate="{Binding FechaDesde}"/>
                 <DatePicker Grid.Column="2" 
                     Style="{StaticResource FormDate}" 
-                    Margin="0,0,16,0"/>
+                    Margin="0,0,16,0"
+                    SelectedDate="{Binding FechaHasta}"/>
 
                 <!-- Botones -->
                 <Button Grid.Column="3" 
-                Content="Filtrar" 
-                Style="{StaticResource BtnPrimary}" 
-                Margin="0,0,8,0"
-                MinWidth="100"/>
+                    Content="Filtrar" 
+                    Style="{StaticResource BtnPrimary}" 
+                    Margin="0,0,8,0"
+                    MinWidth="100"
+                    Command="{Binding FiltrarCommand}"/>
 
                 <Button Grid.Column="4" 
-                Content="Limpiar" 
-                Style="{StaticResource BtnSecondary}" 
-                Margin="0,0,0,0"
-                MinWidth="100"/>
+                    Content="Limpiar" 
+                    Style="{StaticResource BtnSecondary}" 
+                    Margin="0,0,0,0"
+                    MinWidth="100"
+                    Command="{Binding LimpiarFiltrosCommand}"/>
             </Grid>
         </Border>
 
@@ -125,28 +130,34 @@
 
                 <!-- Buscador -->
                 <TextBox Grid.Column="1"
-                 Style="{StaticResource TableSearchBox}" TextChanged="TextBox_TextChanged"/>
+                         Style="{StaticResource TableSearchBox}" 
+                         Text="{Binding BusquedaTexto, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
         </Border>
 
         <!-- FILA 4: TABLA -->
         <DataGrid Grid.Row="4" Style="{StaticResource AppDataGrid}" Margin="0,2,0,0"
-              ItemsSource="{Binding Envios}">
+              ItemsSource="{Binding Envios}" SelectionChanged="DataGrid_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Codigo"    Binding="{Binding IdEnvio}" Width="Auto"/>
                 <DataGridTextColumn Header="ID venta"  Binding="{Binding IdNroVenta}" Width="Auto"/>
                 <DataGridTextColumn Header="Costo" Binding="{Binding Costo, StringFormat=C}" Width="Auto"/>
                 <DataGridTextColumn Header="Destinatario"     Binding="{Binding IdNroVentaNavigation.DniClienteNavigation.NombreCompleto}" Width="*"/>
                 <DataGridTextColumn Header="Servicio"    Binding="{Binding IdTransporteNavigation.Nombre}" Width="*"/>
-                <DataGridTextColumn Header="Fecha envio"    Binding="{Binding Fecha_envio}" Width="1*"/>
-                <DataGridTextColumn Header="Fecha despacho" Binding="{Binding FechaDespacho}" Width="1*"/>
+                <DataGridTextColumn Header="Fecha Despacho" Binding="{Binding FechaDespacho}" Width="Auto"/>
+                <DataGridTextColumn Header="Fecha Entrega" Binding="{Binding FechaEntrega, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" Width="Auto"/>
                 <DataGridTextColumn Header="Estado" Binding="{Binding IdEstadoNavigation.Nombre}" Width="*"/>
                 <DataGridTemplateColumn Header="Acciones" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center">
-                                <!-- Ver -->
-                                <Button Style="{StaticResource BtnSecondary}" Height="15" MinWidth="15" Margin="2,2,4,2">
+                                <!-- Ver Orden de Envío -->
+                                <Button Style="{StaticResource BtnSecondary}" 
+                                        Height="15" MinWidth="15" 
+                                        Margin="2,2,4,2"
+                                        Command="{Binding DataContext.VerOrdenEnvioCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}"
+                                        ToolTip="Ver Orden de Envío">
                                     <iconPacks:PackIconMaterial Kind="Eye" Width="16" Height="16" Foreground="#F5A623"/>
                                 </Button>
                                 <!-- Eliminar -->
