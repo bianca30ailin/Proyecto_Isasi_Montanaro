@@ -118,6 +118,7 @@
 
                 <!-- Buscador -->
                 <TextBox Grid.Column="1"
+                         Text="Buscar cliente"
              Style="{StaticResource TableSearchBox}"/>
             </Grid>
         </Border>

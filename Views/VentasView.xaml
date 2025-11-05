@@ -34,7 +34,7 @@
             <TextBlock Text="Gestión de Ventas" Style="{StaticResource HeaderTitle}"/>
         </StackPanel>
 
-        <Grid Grid.Row="1" Margin="0,0,0,10">
+        <Grid Grid.Row="1" Margin="0,0,0,10" Cursor="">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -42,10 +42,19 @@
 
             <!-- Chips a la izquierda -->
             <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left">
-                <Button Content="Activas" Style="{StaticResource ChipActivos}" Margin="0,0,10,0"/>
-                <Button Content="Canceladas" Style="{StaticResource ChipInactivos}" Margin="0,0,10,0"/>
-                <Button Content="Pago pendiente" Style="{StaticResource ChipPendientePago}" Margin="0,0,10,0"/>
-                <Button Content="Completadas" Style="{StaticResource ChipCompletada}" />
+                <Button Content="Activas" Style="{StaticResource ChipActivos}" Margin="0,0,10,0"
+                        Command="{Binding FiltrarPorEstadoCommand}"
+                        CommandParameter="Activa"
+                        />
+                <Button Content="Canceladas" Style="{StaticResource ChipInactivos}" Margin="0,0,10,0"
+                        Command="{Binding FiltrarPorEstadoCommand}"
+                        CommandParameter="Cancelada"/>
+                <Button Content="Pago pendiente" Style="{StaticResource ChipPendientePago}" Margin="0,0,10,0"
+                        Command="{Binding FiltrarPorEstadoCommand}"
+                        CommandParameter="Pendiente de pago"/>
+                <Button Content="Completadas" Style="{StaticResource ChipCompletada}" 
+                        Command="{Binding FiltrarPorEstadoCommand}"
+                        CommandParameter="Completada"/>
             </StackPanel>
 
             <!-- Botón a la derecha -->
@@ -73,36 +82,41 @@
                     <!-- Botón Limpiar -->
                 </Grid.ColumnDefinitions>
 
-                <!-- ComboBox Categorías -->
+                <!-- ComboBox ordenar -->
                 <ComboBox Grid.Column="0"
-                  Style="{StaticResource FormCombo}"
-                  Margin="0,0,10,0"
-                  SelectedIndex="0">
-                    <ComboBoxItem IsEnabled="False" Foreground="Gray">
-                        Seleccione una categoria...
-                    </ComboBoxItem>
-                </ComboBox>
+                          Style="{StaticResource FormCombo}"
+                          Margin="0,0,10,0"
+                          ItemsSource="{Binding CriteriosOrden}"
+                          SelectedItem="{Binding CriterioOrdenSeleccionado, Mode=TwoWay}"
+                          SelectedIndex="0"
+                          ToolTip="Ordenar ventas por..."/>
 
                 <!-- DatePickers -->
-                <DatePicker Grid.Column="1" 
-                    Style="{StaticResource FormDate}" 
-                    Margin="0,0,10,0"/>
-                <DatePicker Grid.Column="2" 
-                    Style="{StaticResource FormDate}" 
-                    Margin="0,0,16,0"/>
+                <DatePicker Grid.Column="1"
+                            Style="{StaticResource FormDate}"
+                            Margin="0,0,10,0"
+                            SelectedDate="{Binding FechaDesde, Mode=TwoWay}"
+                            ToolTip="Desde esta fecha"/>
 
-                <!-- Botones -->
+                <DatePicker Grid.Column="2"
+                            Style="{StaticResource FormDate}"
+                            Margin="0,0,16,0"
+                            SelectedDate="{Binding FechaHasta, Mode=TwoWay}"
+                            ToolTip="Hasta esta fecha"/>
+
+                <!-- Botones 
                 <Button Grid.Column="3" 
                     Content="Filtrar" 
                     Style="{StaticResource BtnPrimary}" 
                     Margin="0,0,8,0"
-                    MinWidth="100"/>
+                    MinWidth="100"/> -->
 
-                <Button Grid.Column="4" 
-                    Content="Limpiar" 
-                    Style="{StaticResource BtnSecondary}" 
+                <Button Grid.Column="4"
+                    Content="Limpiar"
+                    Style="{StaticResource BtnSecondary}"
                     Margin="0,0,0,0"
-                    MinWidth="100"/>
+                    MinWidth="100"
+                    Command="{Binding LimpiarFiltrosCommand}"/>
             </Grid>
         </Border>
 
@@ -126,8 +140,42 @@
                 </StackPanel>
 
                 <!-- Buscador -->
-                <TextBox Grid.Column="1"
-             Style="{StaticResource TableSearchBox}"/>
+                <Grid Grid.Column="1" VerticalAlignment="Center">
+                    <TextBox x:Name="BuscarTextBox"
+                             Style="{StaticResource TableSearchBox}"
+                             Padding="24,0,8,0"
+                             VerticalContentAlignment="Center"
+                             Text="{Binding TextoBusqueda, UpdateSourceTrigger=PropertyChanged}"
+                             ToolTip="Buscar venta, cliente o vendedor"/>
+
+                    <!-- Ícono de lupa -->
+                    <iconPacks:PackIconMaterial Kind="Magnify"
+                                Width="12" Height="12"
+                                Margin="6,0,0,0"
+                                VerticalAlignment="Center"
+                                Foreground="#888"
+                                IsHitTestVisible="False"/>
+
+                    <!-- Placeholder -->
+                    <TextBlock Text="Buscar venta, cliente o vendedor..."
+                               Foreground="Gray"
+                               FontStyle="Italic"
+                               Opacity="0.6"
+                               Margin="28,0,0,0"
+                               VerticalAlignment="Center"
+                               IsHitTestVisible="False">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Text, ElementName=BuscarTextBox}" Value="">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Grid>
             </Grid>
         </Border>
 

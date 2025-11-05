@@ -225,7 +225,7 @@
 
     <!-- SearchBox con “placeholder” usando Tag -->
         <Style x:Key="SearchBox" TargetType="TextBox" BasedOn="{StaticResource FormTextBox}">
-            <Setter Property="Tag" Value="Buscar..."/>
+            
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">

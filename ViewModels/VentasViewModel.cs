@@ -114,10 +114,35 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             EstadoVentaSeleccionado = ListaEstadosVenta.FirstOrDefault(e => e.NombreEstado == "Activa");
 
             ConfirmarVentaCommand = new RelayCommand(_ => ConfirmarVenta(), _ => DetalleVM.DetalleProductos.Any());
+
             CargarVentas();
+
+            // Inicializar comando de filtrado
+            FiltrarPorEstadoCommand = new RelayCommand(FiltrarPorEstado);
+
+            LimpiarFiltrosCommand = new RelayCommand(_ => LimpiarFiltros());
+
+            // Establecer filtro por defecto al iniciar
+            EstadoFiltroSeleccionado = "Activa";
+
+            CriteriosOrden = new ObservableCollection<string>
+            {
+                "Número de venta (Ascendente)",
+                "Número de venta (Descendente)",
+                "Total (Mayor a menor)",
+                "Total (Menor a mayor)",
+                "Vendedor (A-Z)",
+                "Vendedor (Z-A)",
+                "Fecha (Más reciente)",
+                "Fecha (Más antigua)"
+            };
+
+            CriterioOrdenSeleccionado = "Número de venta (Descendente)";
         }
 
+        // Modelos
         public ClienteViewModel ClienteVM { get; set; }
+
         public DetalleVentaViewModel DetalleVM { get; set; }
 
         public EnvioViewModel EnvioVM { get; set; }
@@ -127,15 +152,92 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         public TransporteViewModel TransporteVM { get; set; }
 
         public ObservableCollection<EstadoVenta> ListaEstadosVenta { get; set; }
+
         public Ventum VentaActual { get; set; }
 
         private ObservableCollection<Ventum> _ventas;
+
         public ObservableCollection<Ventum> Ventas
         {
             get => _ventas;
             set { _ventas = value; OnPropertyChanged(nameof(Ventas)); }
         }
 
+        public ObservableCollection<string> CriteriosOrden { get; set; }
+
+        // --- FILTRADO POR ESTADO ---
+
+        // Ventas originales (sin filtrar)
+        private ObservableCollection<Ventum> _todasLasVentas;
+        public ObservableCollection<Ventum> TodasLasVentas
+        {
+            get => _todasLasVentas;
+            set { _todasLasVentas = value; OnPropertyChanged(); }
+        }
+
+        // Estado actual del filtro
+        private string _estadoFiltroSeleccionado;
+        public string EstadoFiltroSeleccionado
+        {
+            get => _estadoFiltroSeleccionado;
+            set
+            {
+                _estadoFiltroSeleccionado = value;
+                OnPropertyChanged();
+                FiltrarPorEstado(value);
+            }
+        }
+
+        // --- ORDENAMIENTO DE TABLA ---
+        private string _criterioOrdenSeleccionado;
+        public string CriterioOrdenSeleccionado
+        {
+            get => _criterioOrdenSeleccionado;
+            set
+            {
+                _criterioOrdenSeleccionado = value;
+                OnPropertyChanged();
+                AplicarOrdenamiento(value);
+            }
+        }
+
+        // --- FILTRO POR FECHAS ---
+        private DateTime? _fechaDesde;
+        public DateTime? FechaDesde
+        {
+            get => _fechaDesde;
+            set
+            {
+                _fechaDesde = value;
+                OnPropertyChanged();
+                FiltrarPorPeriodo(); // se actualiza automáticamente
+            }
+        }
+
+        private DateTime? _fechaHasta;
+        public DateTime? FechaHasta
+        {
+            get => _fechaHasta;
+            set
+            {
+                _fechaHasta = value;
+                OnPropertyChanged();
+                FiltrarPorPeriodo();
+            }
+        }
+
+        // --- BUSCADOR ---
+        private string _textoBusqueda;
+        public string TextoBusqueda
+        {
+            get => _textoBusqueda;
+            set
+            {
+                _textoBusqueda = value;
+                OnPropertyChanged();
+                FiltrarPorTexto(); // se actualiza en tiempo real
+            }
+        }
 
         // --- COMANDOS ---
         public ICommand ConfirmarVentaCommand { get; set; }
@@ -143,6 +245,10 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         public ICommand VerVentaSoloLecturaCommand { get; set; }
 
         public ICommand CancelarVentaCommand { get; }
+
+        public ICommand FiltrarPorEstadoCommand { get; set; }
+
+        public ICommand LimpiarFiltrosCommand { get; set; }
 
 
         // --- TOTALES Y CUOTAS --- //
@@ -273,17 +379,149 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
         public void CargarVentas()
         {
-            Ventas = new ObservableCollection<Ventum>(
-                _context.Venta
-                    .Include(v => v.DniClienteNavigation)
-                    .Include(v => v.EstadoVenta)
-                    .Include(v => v.IdUsuarioNavigation)
-                    .Include(v => v.DetalleVentaProductos)
-                    .ThenInclude(d => d.IdProductoNavigation)
-                    .ToList()
-            );
+            var lista = _context.Venta
+                .Include(v => v.DniClienteNavigation)
+                .Include(v => v.EstadoVenta)
+                .Include(v => v.IdUsuarioNavigation)
+                .Include(v => v.DetalleVentaProductos)
+                .ThenInclude(d => d.IdProductoNavigation)
+                .ToList();
+
+            // Guardamos todas las ventas originales
+            TodasLasVentas = new ObservableCollection<Ventum>(lista);
+
+            // Aplicamos filtro por defecto
+            FiltrarPorEstado("Activa");
         }
 
+        // Filtrado
+        private void FiltrarPorEstado(object estado)
+        {
+            string filtro = estado?.ToString() ?? "Activa";
+
+            var ventasFiltradas = TodasLasVentas
+                .Where(v => v.EstadoVenta != null &&
+                            v.EstadoVenta.NombreEstado.Equals(filtro, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            Ventas = new ObservableCollection<Ventum>(ventasFiltradas);
+        }
+
+        // Ordenado
+        private void AplicarOrdenamiento(string criterio)
+        {
+            if (Ventas == null || !Ventas.Any()) return;
+
+            IEnumerable<Ventum> ordenadas = Ventas;
+
+            switch (criterio)
+            {
+                case "Número de venta (Ascendente)":
+                    ordenadas = Ventas.OrderBy(v => v.IdNroVenta);
+                    break;
+
+                case "Número de venta (Descendente)":
+                    ordenadas = Ventas.OrderByDescending(v => v.IdNroVenta);
+                    break;
+
+                case "Total (Mayor a menor)":
+                    ordenadas = Ventas.OrderByDescending(v => v.Total);
+                    break;
+
+                case "Total (Menor a mayor)":
+                    ordenadas = Ventas.OrderBy(v => v.Total);
+                    break;
+
+                case "Vendedor (A-Z)":
+                    ordenadas = Ventas.OrderBy(v => v.IdUsuarioNavigation.Nombre);
+                    break;
+
+                case "Vendedor (Z-A)":
+                    ordenadas = Ventas.OrderByDescending(v => v.IdUsuarioNavigation.Nombre);
+                    break;
+
+                case "Fecha (Más reciente)":
+                    ordenadas = Ventas.OrderByDescending(v => v.FechaHora);
+                    break;
+
+                case "Fecha (Más antigua)":
+                    ordenadas = Ventas.OrderBy(v => v.FechaHora);
+                    break;
+            }
+
+            Ventas = new ObservableCollection<Ventum>(ordenadas);
+        }
+
+        // Filtrado periodos
+        private void FiltrarPorPeriodo()
+        {
+            if (TodasLasVentas == null || !TodasLasVentas.Any()) return;
+
+            var listaFiltrada = TodasLasVentas.AsEnumerable();
+
+            // Filtrar por estado actual (mantiene el chip)
+            if (!string.IsNullOrEmpty(EstadoFiltroSeleccionado))
+                listaFiltrada = listaFiltrada
+                    .Where(v => v.EstadoVenta != null &&
+                                v.EstadoVenta.NombreEstado.Equals(EstadoFiltroSeleccionado, StringComparison.OrdinalIgnoreCase));
+
+            // Filtrar desde
+            if (FechaDesde.HasValue)
+                listaFiltrada = listaFiltrada.Where(v => v.FechaHora >= DateOnly.FromDateTime(FechaDesde.Value));
+
+            // Filtrar hasta
+            if (FechaHasta.HasValue)
+                listaFiltrada = listaFiltrada.Where(v => v.FechaHora <= DateOnly.FromDateTime(FechaHasta.Value));
+
+            // Aplicar resultado
+            Ventas = new ObservableCollection<Ventum>(listaFiltrada);
+        }
+
+        // Limpiar los filtros
+        private void LimpiarFiltros()
+        {
+            FechaDesde = null;
+            FechaHasta = null;
+            EstadoFiltroSeleccionado = "Activa";
+            FiltrarPorEstado("Activa");
+        }
+
+        // Buscador 
+        private void FiltrarPorTexto()
+        {
+            if (TodasLasVentas == null || !TodasLasVentas.Any()) return;
+
+            var listaFiltrada = TodasLasVentas.AsEnumerable();
+
+            // Mantener filtro de estado
+            if (!string.IsNullOrEmpty(EstadoFiltroSeleccionado))
+                listaFiltrada = listaFiltrada
+                    .Where(v => v.EstadoVenta != null &&
+                                v.EstadoVenta.NombreEstado.Equals(EstadoFiltroSeleccionado, StringComparison.OrdinalIgnoreCase));
+
+            // Mantener filtro de fechas
+            if (FechaDesde.HasValue)
+                listaFiltrada = listaFiltrada.Where(v => v.FechaHora >= DateOnly.FromDateTime(FechaDesde.Value));
+
+            if (FechaHasta.HasValue)
+                listaFiltrada = listaFiltrada.Where(v => v.FechaHora <= DateOnly.FromDateTime(FechaHasta.Value));
+
+            // Aplicar búsqueda por texto
+            if (!string.IsNullOrWhiteSpace(TextoBusqueda))
+            {
+                string texto = TextoBusqueda.ToLower();
+
+                listaFiltrada = listaFiltrada.Where(v =>
+                    v.IdNroVenta.ToString().Contains(texto) ||
+                    (v.DniClienteNavigation?.NombreCompleto?.ToLower().Contains(texto) ?? false) ||
+                    (v.IdUsuarioNavigation?.Nombre?.ToLower().Contains(texto) ?? false) ||
+                    (v.EstadoVenta?.NombreEstado?.ToLower().Contains(texto) ?? false)
+                );
+            }
+
+            // Aplicar resultado
+            Ventas = new ObservableCollection<Ventum>(listaFiltrada);
+        }
         //calcular nro de venta
         private int _proximoIdVenta;
         public int ProximoIdVenta
