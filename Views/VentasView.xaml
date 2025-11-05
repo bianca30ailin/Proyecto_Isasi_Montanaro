@@ -141,42 +141,13 @@
                 </StackPanel>
 
                 <!-- Buscador -->
-                <Grid Grid.Column="1" VerticalAlignment="Center">
-                    <TextBox x:Name="BuscarTextBox"
-                             Style="{StaticResource TableSearchBox}"
-                             Padding="24,0,8,0"
-                             VerticalContentAlignment="Center"
-                             Text="{Binding TextoBusqueda, UpdateSourceTrigger=PropertyChanged}"
-                             ToolTip="Buscar venta, cliente o vendedor"/>
-
-                    <!-- Ícono de lupa -->
-                    <iconPacks:PackIconMaterial Kind="Magnify"
-                                Width="12" Height="12"
-                                Margin="6,0,0,0"
-                                VerticalAlignment="Center"
-                                Foreground="#888"
-                                IsHitTestVisible="False"/>
-
-                    <!-- Placeholder -->
-                    <TextBlock Text="Buscar venta, cliente o vendedor..."
-                               Foreground="Gray"
-                               FontStyle="Italic"
-                               Opacity="0.6"
-                               Margin="28,0,0,0"
-                               VerticalAlignment="Center"
-                               IsHitTestVisible="False">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Text, ElementName=BuscarTextBox}" Value="">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                </Grid>
+                <TextBox x:Name="BuscarTextBox"
+         Grid.ColumnSpan="2"
+         Margin="540,0,0,0"
+         Style="{StaticResource SearchBox}"
+         Tag="Buscar producto o categoría..."
+         Text="{Binding TextoBusqueda, UpdateSourceTrigger=PropertyChanged}"
+         ToolTip="Buscar venta, cliente o vendedor..."/>
             </Grid>
         </Border>
 

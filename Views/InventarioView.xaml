@@ -118,7 +118,7 @@
             BorderBrush="#E5E7EB"
             BorderThickness="0,0,0,1">
             <!-- línea sutil abajo -->
-            <Grid Style="{StaticResource TableHeaderBar}">
+            <Grid Style="{StaticResource TableHeaderBar}" Cursor="">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
@@ -130,11 +130,14 @@
                     <TextBlock Text="Listado de Productos" Style="{StaticResource TableHeaderTitle}"/>
                 </StackPanel>
 
-                <!-- Cuadro de búsqueda -->
-                <TextBox
-                         Text="{Binding TextoBusqueda, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         Margin="540,0,0,0" Cursor="" Grid.ColumnSpan="2"
-                         />
+                <!-- Búsqueda -->
+                <TextBox x:Name="BuscarInventarioTextBox"
+                         Grid.ColumnSpan="2"
+                         Margin="540,0,0,0"
+                         Style="{StaticResource SearchBox}"
+                         Tag="Buscar producto o categoría..."
+                         Text="{Binding TextoBusqueda, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip="Buscar producto"/>
             </Grid>
         </Border>
 
