@@ -104,12 +104,13 @@
                             SelectedDate="{Binding FechaHasta, Mode=TwoWay}"
                             ToolTip="Hasta esta fecha"/>
 
-                <!-- Botones 
+                <!-- Botones -->
                 <Button Grid.Column="3" 
                     Content="Filtrar" 
                     Style="{StaticResource BtnPrimary}" 
                     Margin="0,0,8,0"
-                    MinWidth="100"/> -->
+                    Command="{Binding AplicarFiltrosCommand}"
+                    MinWidth="100"/> 
 
                 <Button Grid.Column="4"
                     Content="Limpiar"

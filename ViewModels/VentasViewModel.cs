@@ -125,6 +125,9 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             // Establecer filtro por defecto al iniciar
             EstadoFiltroSeleccionado = "Activa";
 
+            AplicarFiltrosCommand = new RelayCommand(_ => AplicarFiltros());
+
+            // Opciones de orden disponibles
             CriteriosOrden = new ObservableCollection<string>
             {
                 "Número de venta (Ascendente)",
@@ -137,6 +140,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 "Fecha (Más antigua)"
             };
 
+            // Orden inicial por defecto
             CriterioOrdenSeleccionado = "Número de venta (Descendente)";
         }
 
@@ -188,20 +192,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
         }
 
-        // --- ORDENAMIENTO DE TABLA ---
-        private string _criterioOrdenSeleccionado;
-        public string CriterioOrdenSeleccionado
-        {
-            get => _criterioOrdenSeleccionado;
-            set
-            {
-                _criterioOrdenSeleccionado = value;
-                OnPropertyChanged();
-                AplicarOrdenamiento(value);
-            }
-        }
-
-        // --- FILTRO POR FECHAS ---
+        // --- FECHAS ---
         private DateTime? _fechaDesde;
         public DateTime? FechaDesde
         {
@@ -210,7 +201,6 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             {
                 _fechaDesde = value;
                 OnPropertyChanged();
-                FiltrarPorPeriodo(); // se actualiza automáticamente
             }
         }
 
@@ -222,7 +212,18 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             {
                 _fechaHasta = value;
                 OnPropertyChanged();
-                FiltrarPorPeriodo();
+            }
+        }
+
+        // --- ORDEN ---
+        private string _criterioOrdenSeleccionado;
+        public string CriterioOrdenSeleccionado
+        {
+            get => _criterioOrdenSeleccionado;
+            set
+            {
+                _criterioOrdenSeleccionado = value;
+                OnPropertyChanged();
             }
         }
 
@@ -247,6 +248,8 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         public ICommand CancelarVentaCommand { get; }
 
         public ICommand FiltrarPorEstadoCommand { get; set; }
+
+        public ICommand AplicarFiltrosCommand { get; set; }
 
         public ICommand LimpiarFiltrosCommand { get; set; }
 
@@ -407,83 +410,81 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             Ventas = new ObservableCollection<Ventum>(ventasFiltradas);
         }
 
-        // Ordenado
-        private void AplicarOrdenamiento(string criterio)
+        private void AplicarFiltros()
         {
-            if (Ventas == null || !Ventas.Any()) return;
+            if (TodasLasVentas == null || !TodasLasVentas.Any()) return;
 
-            IEnumerable<Ventum> ordenadas = Ventas;
+            var listaFiltrada = TodasLasVentas.AsEnumerable();
 
-            switch (criterio)
+            // === ESTADO (chips) ===
+            if (!string.IsNullOrEmpty(EstadoFiltroSeleccionado))
+                listaFiltrada = listaFiltrada
+                    .Where(v => v.EstadoVenta != null &&
+                                v.EstadoVenta.NombreEstado.Equals(EstadoFiltroSeleccionado, StringComparison.OrdinalIgnoreCase));
+
+            // === FECHAS ===
+            if (FechaDesde.HasValue)
+                listaFiltrada = listaFiltrada.Where(v => v.FechaHora >= DateOnly.FromDateTime(FechaDesde.Value));
+
+            if (FechaHasta.HasValue)
+                listaFiltrada = listaFiltrada.Where(v => v.FechaHora <= DateOnly.FromDateTime(FechaHasta.Value));
+
+            // === BUSCADOR ===
+            if (!string.IsNullOrWhiteSpace(TextoBusqueda))
+            {
+                string texto = TextoBusqueda.ToLower();
+
+                listaFiltrada = listaFiltrada.Where(v =>
+                    v.IdNroVenta.ToString().Contains(texto) ||
+                    (v.DniClienteNavigation?.NombreCompleto?.ToLower().Contains(texto) ?? false) ||
+                    (v.IdUsuarioNavigation?.Nombre?.ToLower().Contains(texto) ?? false) ||
+                    (v.EstadoVenta?.NombreEstado?.ToLower().Contains(texto) ?? false));
+            }
+
+            // === ORDENAMIENTO ===
+            IEnumerable<Ventum> ordenadas = listaFiltrada;
+
+            switch (CriterioOrdenSeleccionado)
             {
                 case "Número de venta (Ascendente)":
-                    ordenadas = Ventas.OrderBy(v => v.IdNroVenta);
+                    ordenadas = listaFiltrada.OrderBy(v => v.IdNroVenta);
                     break;
-
                 case "Número de venta (Descendente)":
-                    ordenadas = Ventas.OrderByDescending(v => v.IdNroVenta);
+                    ordenadas = listaFiltrada.OrderByDescending(v => v.IdNroVenta);
                     break;
-
                 case "Total (Mayor a menor)":
-                    ordenadas = Ventas.OrderByDescending(v => v.Total);
+                    ordenadas = listaFiltrada.OrderByDescending(v => v.Total);
                     break;
-
                 case "Total (Menor a mayor)":
-                    ordenadas = Ventas.OrderBy(v => v.Total);
+                    ordenadas = listaFiltrada.OrderBy(v => v.Total);
                     break;
-
                 case "Vendedor (A-Z)":
-                    ordenadas = Ventas.OrderBy(v => v.IdUsuarioNavigation.Nombre);
+                    ordenadas = listaFiltrada.OrderBy(v => v.IdUsuarioNavigation.Nombre);
                     break;
-
                 case "Vendedor (Z-A)":
-                    ordenadas = Ventas.OrderByDescending(v => v.IdUsuarioNavigation.Nombre);
+                    ordenadas = listaFiltrada.OrderByDescending(v => v.IdUsuarioNavigation.Nombre);
                     break;
-
                 case "Fecha (Más reciente)":
-                    ordenadas = Ventas.OrderByDescending(v => v.FechaHora);
+                    ordenadas = listaFiltrada.OrderByDescending(v => v.FechaHora);
                     break;
-
                 case "Fecha (Más antigua)":
-                    ordenadas = Ventas.OrderBy(v => v.FechaHora);
+                    ordenadas = listaFiltrada.OrderBy(v => v.FechaHora);
                     break;
             }
 
             Ventas = new ObservableCollection<Ventum>(ordenadas);
         }
 
-        // Filtrado periodos
-        private void FiltrarPorPeriodo()
-        {
-            if (TodasLasVentas == null || !TodasLasVentas.Any()) return;
-
-            var listaFiltrada = TodasLasVentas.AsEnumerable();
-
-            // Filtrar por estado actual (mantiene el chip)
-            if (!string.IsNullOrEmpty(EstadoFiltroSeleccionado))
-                listaFiltrada = listaFiltrada
-                    .Where(v => v.EstadoVenta != null &&
-                                v.EstadoVenta.NombreEstado.Equals(EstadoFiltroSeleccionado, StringComparison.OrdinalIgnoreCase));
-
-            // Filtrar desde
-            if (FechaDesde.HasValue)
-                listaFiltrada = listaFiltrada.Where(v => v.FechaHora >= DateOnly.FromDateTime(FechaDesde.Value));
-
-            // Filtrar hasta
-            if (FechaHasta.HasValue)
-                listaFiltrada = listaFiltrada.Where(v => v.FechaHora <= DateOnly.FromDateTime(FechaHasta.Value));
-
-            // Aplicar resultado
-            Ventas = new ObservableCollection<Ventum>(listaFiltrada);
-        }
-
         // Limpiar los filtros
         private void LimpiarFiltros()
         {
+            TextoBusqueda = string.Empty;
             FechaDesde = null;
             FechaHasta = null;
             EstadoFiltroSeleccionado = "Activa";
+            CriterioOrdenSeleccionado = "Número de venta (Descendente)";
             FiltrarPorEstado("Activa");
+            AplicarFiltros();
         }
 
         // Buscador 
@@ -499,12 +500,6 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                     .Where(v => v.EstadoVenta != null &&
                                 v.EstadoVenta.NombreEstado.Equals(EstadoFiltroSeleccionado, StringComparison.OrdinalIgnoreCase));
 
-            // Mantener filtro de fechas
-            if (FechaDesde.HasValue)
-                listaFiltrada = listaFiltrada.Where(v => v.FechaHora >= DateOnly.FromDateTime(FechaDesde.Value));
-
-            if (FechaHasta.HasValue)
-                listaFiltrada = listaFiltrada.Where(v => v.FechaHora <= DateOnly.FromDateTime(FechaHasta.Value));
 
             // Aplicar búsqueda por texto
             if (!string.IsNullOrWhiteSpace(TextoBusqueda))
