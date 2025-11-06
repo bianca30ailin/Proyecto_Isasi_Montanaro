@@ -10,29 +10,23 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Proyecto_Isasi_Montanaro.Views
+namespace Proyecto_Isasi_Montanaro.Views.Formularios
 {
     /// <summary>
-    /// Lógica de interacción para EnviosView.xaml
+    /// Lógica de interacción para DetalleOrdenEnvio.xaml
     /// </summary>
-    public partial class EnviosView : UserControl
+    public partial class DetalleOrdenEnvio : Window
     {
-        public EnviosView()
+        public DetalleOrdenEnvio()
         {
             InitializeComponent();
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void Cerrar_Click(object sender, RoutedEventArgs e)
         {
-
-        }
-
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
+            Close();
         }
     }
 }

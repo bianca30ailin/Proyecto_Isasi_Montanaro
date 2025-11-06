@@ -22,6 +22,7 @@ public partial class Envio
 
     public int IdDireccion { get; set; }
 
+    public DateOnly? FechaEntrega { get; set; }
     public virtual Estado IdEstadoNavigation { get; set; } = null!;
 
     public virtual Ventum IdNroVentaNavigation { get; set; } = null!;

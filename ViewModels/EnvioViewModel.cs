@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Proyecto_Isasi_Montanaro.Commands;
 using Proyecto_Isasi_Montanaro.Models;
+using Proyecto_Isasi_Montanaro.Views.Formularios;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -31,6 +32,9 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             Ciudades = new ObservableCollection<Ciudad>(); // se llena cuando elija provincia
 
             NuevaDireccionCommand = new RelayCommand(_ => NuevaDireccion());
+            VerOrdenEnvioCommand = new RelayCommand(param => VerOrdenEnvio(param));
+
+
             CargarEnvios();
         }
 
@@ -215,7 +219,8 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
         // --- COMANDOS ---
         public ICommand NuevaDireccionCommand { get; set; }
-    
+        public ICommand VerOrdenEnvioCommand { get; set; }
+
 
 
         // --- MÉTODOS ---
@@ -384,6 +389,29 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 ? "Debe seleccionar una ciudad."
                 : string.Empty;
         }
+
+        private void VerOrdenEnvio(object parametro)
+        {
+            var envioSeleccionado = parametro as Envio;
+            if (envioSeleccionado == null)
+                return;
+
+            // Traigo el envío con sus relaciones cargadas
+            var envio = _context.Envios
+                .Include(e => e.IdNroVentaNavigation)
+                    .ThenInclude(v => v.DniClienteNavigation)
+                .Include(e => e.IdDireccionNavigation)
+                    .ThenInclude(d => d.IdCiudadNavigation)
+                .Include(e => e.IdTransporteNavigation)
+                .Include(e => e.IdEstadoNavigation)
+                .FirstOrDefault(e => e.IdEnvio == envioSeleccionado.IdEnvio);
+
+            // Creo la ventana
+            var ventana = new DetalleOrdenEnvio();
+            ventana.DataContext = new DetalleOrdenEnvioViewModel(envio);
+            ventana.ShowDialog();
+        }
+
 
 
         //notificacion de cambio
