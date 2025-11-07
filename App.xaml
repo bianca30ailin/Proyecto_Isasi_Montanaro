@@ -18,6 +18,7 @@
             <helper:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
             <helper:ToLowerConverter x:Key="ToLowerConverter"/>
             <helper:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+            <helper:NullToVisibilityInverseConverter x:Key="NullToVisibilityInverseConverter"/>
             <helper:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
             <helper:CreditoToVisibilityConverter x:Key="CreditoToVisibilityConverter"/>
             <helper:AndBooleanConverter x:Key="AndBooleanConverter"/>
