@@ -12,7 +12,7 @@ public partial class Envio
 
     public string? NumSeguimiento { get; set; }
 
-    public double Costo { get; set; }
+    public double? Costo { get; set; }
 
     public int IdEstado { get; set; }
 

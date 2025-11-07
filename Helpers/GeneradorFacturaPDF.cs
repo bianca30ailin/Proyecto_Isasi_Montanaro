@@ -1,5 +1,6 @@
 ﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
+using Microsoft.EntityFrameworkCore;
 using Proyecto_Isasi_Montanaro.Models;
 using System;
 using System.Collections.Generic;
@@ -198,6 +199,62 @@ namespace Proyecto_Isasi_Montanaro.Helpers
                 Padding = 4
             };
             return cell;
+        }
+    
+
+    public static void VerFactura(Ventum venta, ProyectoTallerContext context)
+        {
+            try
+            {
+                if (venta == null)
+                {
+                    MessageBox.Show("No hay una venta seleccionada para mostrar la factura.",
+                                    "Aviso", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                // --- RUTA DE FACTURA ---
+                string carpeta = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SISIE");
+                string archivo = Path.Combine(carpeta, $"Factura_{venta.IdNroVenta}.pdf");
+
+                // Si no existe el archivo, se genera automáticamente
+                if (!File.Exists(archivo))
+                {
+                    var ventaCompleta = context.Venta
+                        .Include(v => v.DniClienteNavigation)
+                        .Include(v => v.IdFormaPagoNavigation)
+                        .Include(v => v.DetalleVentaProductos)
+                            .ThenInclude(d => d.IdProductoNavigation)
+                        .Include(v => v.Envios)
+                            .ThenInclude(e => e.IdDireccionNavigation)
+                        .Include(v => v.Envios)
+                            .ThenInclude(e => e.IdTransporteNavigation)
+                        .Include(v => v.EstadoVenta)
+                        .FirstOrDefault(v => v.IdNroVenta == venta.IdNroVenta);
+
+                    if (ventaCompleta == null)
+                    {
+                        MessageBox.Show("No se encontró la venta en la base de datos.", "Error",
+                                        MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    // Genera el PDF
+                    Generar(ventaCompleta);
+                }
+
+                // Abre la factura
+                if (File.Exists(archivo))
+                    Process.Start(new ProcessStartInfo(archivo) { UseShellExecute = true });
+                else
+                    MessageBox.Show("No se pudo abrir la factura. Verifique que el archivo existe.",
+                                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al intentar abrir la factura: {ex.Message}",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

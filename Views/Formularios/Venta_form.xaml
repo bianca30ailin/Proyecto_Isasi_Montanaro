@@ -626,7 +626,8 @@
                             <TextBox Style="{StaticResource FormTextBox}" 
                                      Margin="0,30,0,10"
                                      Grid.Row="3" Grid.Column="2"
-                                     Text="{Binding EnvioVM.Costo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                     Text="{Binding EnvioVM.Costo, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, TargetNullValue='',FallbackValue=''}"
+                                     LostFocus="TxtCosto_LostFocus">
                                 <TextBox.IsEnabled>
                                     <MultiBinding Converter="{StaticResource AndBooleanConverter}">
                                         <Binding Path="EnvioVM.EnvioHabilitado"/>
@@ -642,7 +643,7 @@
             <!-- Botones -->
             <StackPanel Orientation="Horizontal" 
                     Grid.Row="5" 
-                    HorizontalAlignment="Center">
+                    HorizontalAlignment="Center" Cursor="">
 
                 <!-- Cancelar -->
                 <Button Style="{StaticResource BtnSecondary}" 
@@ -657,7 +658,18 @@
                 <Button Style="{StaticResource BtnPrimary}" 
                     Content="Guardar" Width="100"
                     Background="#53BA83"
-                    Command="{Binding ConfirmarVentaCommand}"/>
+                    Command="{Binding ConfirmarVentaCommand}"
+                    Visibility="{Binding ModoSoloLectura, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+
+                <Button Content="Ver factura"
+                    Command="{Binding VerFacturaCommand}"
+                    Visibility="{Binding ModoSoloLectura, Converter={StaticResource BoolToVisibilityConverter}}"
+                    Style="{StaticResource BtnPrimary}"
+                    Background="#072741"
+                    Foreground="White"
+                    Width="130"
+                    Margin="10,0,0,0"/>
+
             </StackPanel>
         </Grid>
     </Border>

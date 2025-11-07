@@ -266,14 +266,17 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
 
         //Propiedad del costo del envio
-        private double _costo;
-        public double Costo
+        private double? _costo;
+        public double? Costo
         {
             get => _costo;
             set
             {
-                _costo = value;
-                OnPropertyChanged(nameof(Costo));
+                if (value != _costo)
+                {
+                    _costo = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -300,9 +303,16 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 return false;
             }
 
-            if (Costo <= 0)
+            if (Costo == null)
             {
-                MessageBox.Show("Debe ingresar un costo válido para el envío.", "Aviso",
+                MessageBox.Show("Debe ingresar un costo para el envío.", "Aviso",
+                                MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+
+            if (Costo < 0 || double.IsNaN(Costo.Value))
+            {
+                MessageBox.Show("El costo del envío no puede ser negativo ni inválido.", "Aviso",
                                 MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
@@ -332,7 +342,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             DireccionActual = null;
             NuevaDireccionHabilitada = false;
             OnPropertyChanged(nameof(DireccionEditable)); // refresca la vista
-            Costo = 0;
+            Costo = null;
             EnvioHabilitado = false;
         }
 
@@ -412,6 +422,50 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             ventana.ShowDialog();
         }
 
+        public bool ProcesarEnvioCompleto(Ventum venta, Cliente cliente, Transporte transporteSeleccionado)
+        {
+            try
+            {
+                if (!EnvioHabilitado)
+                    return true;
+
+                // Validar dirección nueva
+                if (NuevaDireccionHabilitada && DireccionActual != null)
+                {
+                    if (string.IsNullOrWhiteSpace(DireccionActual.NombreCalle))
+                    {
+                        MessageBox.Show("Debe completar los datos de la nueva dirección.", "Aviso",
+                                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return false;
+                    }
+
+                    if (CiudadSeleccionada == null)
+                    {
+                        MessageBox.Show("Debe seleccionar una ciudad para la nueva dirección.", "Aviso",
+                                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return false;
+                    }
+
+                    DireccionActual.DniCliente = cliente.DniCliente;
+                    DireccionActual.IdCiudad = CiudadSeleccionada.IdCiudad;
+
+                    _context.Direccions.Add(DireccionActual);
+                    _context.SaveChanges();
+
+                    DireccionesCliente.Add(DireccionActual);
+                    DireccionSeleccionada = DireccionActual;
+                }
+
+                // Registrar envío final
+                return RegistrarEnvio(venta.IdNroVenta, transporteSeleccionado);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al procesar el envío: {ex.Message}",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+        }
 
 
         //notificacion de cambio

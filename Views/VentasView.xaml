@@ -142,12 +142,12 @@
 
                 <!-- Buscador -->
                 <TextBox x:Name="BuscarTextBox"
-         Grid.ColumnSpan="2"
-         Margin="540,0,0,0"
-         Style="{StaticResource SearchBox}"
-         Tag="Buscar producto o categoría..."
-         Text="{Binding TextoBusqueda, UpdateSourceTrigger=PropertyChanged}"
-         ToolTip="Buscar venta, cliente o vendedor..."/>
+                         Grid.ColumnSpan="2"
+                         Margin="540,0,0,0"
+                         Style="{StaticResource SearchBox}"
+                         Tag="Buscar venta, cliente o vendedor..."
+                         Text="{Binding TextoBusqueda, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip="Buscar venta, cliente o vendedor..."/>
             </Grid>
         </Border>
 
@@ -159,7 +159,7 @@
                 <DataGridTextColumn Header="Fecha" Binding="{Binding FechaHora}" Width="Auto"/>
                 <DataGridTextColumn Header="Total" Binding="{Binding Total}" Width="*"/>
                 <DataGridTextColumn Header="Cliente"     Binding="{Binding DniClienteNavigation.NombreCompleto}" Width="Auto"/>
-                <DataGridTextColumn Header="Envio"    Binding="{Binding Envio}" Width="Auto"/>
+                <DataGridTextColumn Header="Envio"      Binding="{Binding Envios[0].IdEnvio, StringFormat='N° orden: {0}'}"   Width="Auto"/>
                 <DataGridTextColumn Header="Estado"    Binding="{Binding EstadoVenta.NombreEstado}" Width="*"/>
                 <DataGridTextColumn Header="Creado por" Binding="{Binding IdUsuarioNavigation.Nombre}" Width="*"/>
                 <DataGridTemplateColumn Header="Acciones">

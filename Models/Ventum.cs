@@ -27,4 +27,6 @@ public partial class Ventum
 
     public virtual ICollection<DetalleVentaProducto> DetalleVentaProductos { get; set; } = new List<DetalleVentaProducto>();
     public virtual ICollection<Envio> Envios { get; set; } = new List<Envio>();
+
+   
 }

@@ -36,6 +36,12 @@ namespace Proyecto_Isasi_Montanaro.Views.Formularios
         {
 
         }
+
+        private void TxtCosto_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var tb = sender as TextBox;
+            tb?.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
+        }
     }
 
 }

@@ -14,6 +14,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Proyecto_Isasi_Montanaro.ViewModels
@@ -76,7 +77,9 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
             CancelarVentaCommand = new RelayCommand(p => CancelarVenta(p as Ventum));
 
-      
+            VerFacturaCommand = new RelayCommand(_ => GeneradorFacturaPDF.VerFactura(VentaActual, _context));
+
+
             ClienteVM.PropertyChanged += (s, e) =>
             {
                 switch (e.PropertyName)
@@ -253,6 +256,8 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
         public ICommand LimpiarFiltrosCommand { get; set; }
 
+        public ICommand VerFacturaCommand { get; }
+
 
         // --- TOTALES Y CUOTAS --- //
         public double Subtotal => DetalleVM?.Total ?? 0;
@@ -293,6 +298,13 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             EsCredito && FormaPagoVM.CuotaSeleccionada.HasValue
                 ? Math.Round(TotalFinal / FormaPagoVM.CuotaSeleccionada.Value, 2)
                 : TotalFinal;
+
+        private bool _modoSoloLectura;
+        public bool ModoSoloLectura
+        {
+            get => _modoSoloLectura;
+            set { _modoSoloLectura = value; OnPropertyChanged(); }
+        }
 
         // --- METODOS ---
         private void ConfirmarVenta()
@@ -343,21 +355,78 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 _context.Venta.Add(VentaActual);
                 _context.SaveChanges();
 
-                // Registrar envío si corresponde
+                // --- Registrar envío ---
                 if (!ProcesarEnvio(VentaActual))
                 {
                     transaction.Rollback();
+
+                    // 🔹 Limpiar el ChangeTracker para evitar errores de concurrencia
+                    _context.ChangeTracker.Clear();
+
+                    // 🔹 Desasociar los productos y reiniciar IDs del detalle
+                    foreach (var detalle in DetalleVM.DetalleProductos)
+                    {
+                        detalle.IdProductoNavigation = null;
+                        detalle.IdDetalle = 0; // ✅ Evita el error IDENTITY_INSERT
+                    }
+
+                    // 🔹 Quitar venta fallida del contexto (por si acaso)
+                    if (_context.Entry(VentaActual).State != EntityState.Detached)
+                        _context.Entry(VentaActual).State = EntityState.Detached;
+
+                    // 🔹 Crear una nueva venta limpia para reintentar
+                    VentaActual = new Ventum
+                    {
+                        FechaHora = DateOnly.FromDateTime(DateTime.Now),
+                        Total = TotalFinal,
+                        EstadoVentaId = 1
+                    };
+
+                    // 🔹 Forzar actualización de bindings
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        var focusedElement = Keyboard.FocusedElement as FrameworkElement;
+                        focusedElement?.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+                    });
+
+                    // 🔹 Recalcular totales y reactivar el envío
+                    RecalcularTotales();
+                    EnvioVM.EnvioHabilitado = true;
+                    OnPropertyChanged(nameof(EnvioVM));
+
+                    MessageBox.Show("No se pudo registrar el envío. Verifique el costo y vuelva a intentarlo.",
+                                    "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
-                
+
                 // Confirmar transacción
                 transaction.Commit();
 
                 // Mostrar mensaje de éxito
                 MostrarMensajeFinalDeVenta();
 
-                // Generar Factuta
-                GeneradorFacturaPDF.Generar(VentaActual);
+                // --- Generar factura ---
+                var ventaCompleta = _context.Venta
+                    .Include(v => v.DniClienteNavigation)
+                    .Include(v => v.IdFormaPagoNavigation)
+                    .Include(v => v.DetalleVentaProductos)
+                        .ThenInclude(d => d.IdProductoNavigation)
+                    .Include(v => v.Envios)
+                        .ThenInclude(e => e.IdDireccionNavigation)
+                         .ThenInclude(d => d.IdCiudadNavigation)
+                    .Include(v => v.Envios)
+                        .ThenInclude(e => e.IdTransporteNavigation)
+                    .Include(v => v.EstadoVenta)
+                    .FirstOrDefault(v => v.IdNroVenta == VentaActual.IdNroVenta);
+
+                if (ventaCompleta == null)
+                {
+                    MessageBox.Show("No se pudo cargar la venta completa para generar la factura.",
+                                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                GeneradorFacturaPDF.Generar(ventaCompleta);
 
                 // Refrescar vistas y limpiar formularios
                 CargarVentas();
@@ -374,11 +443,11 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             catch (Exception ex)
             {
                 transaction.Rollback();
-                MessageBox.Show($"Error al confirmar la venta: {ex.Message}",
+                string errorDetalle = ex.InnerException?.Message ?? ex.Message;
+                MessageBox.Show($"Error al confirmar la venta: {errorDetalle}",
                                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
 
         public void CargarVentas()
         {
@@ -388,6 +457,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 .Include(v => v.IdUsuarioNavigation)
                 .Include(v => v.DetalleVentaProductos)
                 .ThenInclude(d => d.IdProductoNavigation)
+                .Include(v => v.Envios) 
                 .ToList();
 
             // Guardamos todas las ventas originales
@@ -542,7 +612,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
             // Si hay envío habilitado, se suma al total
             if (EnvioVM != null && EnvioVM.EnvioHabilitado)
-                total += EnvioVM.Costo;
+                total += EnvioVM.Costo ?? 0;
 
             //total final redondeado
             TotalFinal = Math.Round(total, 2);
@@ -586,49 +656,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
         private bool ProcesarEnvio(Ventum venta)
         {
-            try
-            {
-                // Si el envío no está habilitado, no hacemos nada
-                if (!EnvioVM.EnvioHabilitado)
-                    return true;
-
-                // Si el usuario escribió una nueva dirección
-                if (EnvioVM.NuevaDireccionHabilitada && EnvioVM.DireccionActual != null)
-                {
-                    var dir = EnvioVM.DireccionActual;
-
-                    if (string.IsNullOrWhiteSpace(dir.NombreCalle))
-                    {
-                        MessageBox.Show("Debe completar los datos de la nueva dirección.", "Aviso",
-                                        MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return false;
-                    }
-
-                    dir.DniCliente = ClienteVM.ClienteActual.DniCliente;
-
-                    if (EnvioVM.CiudadSeleccionada != null)
-                        dir.IdCiudad = EnvioVM.CiudadSeleccionada.IdCiudad; if (EnvioVM.CiudadSeleccionada != null)
-                        dir.IdCiudad = EnvioVM.CiudadSeleccionada.IdCiudad;
-
-                    _context.Direccions.Add(dir);
-                    _context.SaveChanges();
-
-                    // Agregarla a la lista local y seleccionarla
-                    EnvioVM.DireccionesCliente.Add(dir);
-                    EnvioVM.DireccionSeleccionada = dir;
-                }
-
-                // Registrar el envío con la dirección seleccionada o la nueva
-                EnvioVM.RegistrarEnvio(venta.IdNroVenta, TransporteVM.TransporteSeleccionado);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al registrar el envío: {ex.Message}",
-                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
-            }
+            return EnvioVM.ProcesarEnvioCompleto(venta, ClienteVM.ClienteActual, TransporteVM.TransporteSeleccionado);
         }
 
         private void MostrarMensajeFinalDeVenta()
@@ -815,6 +843,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             vm.ClienteVM.ModoSoloLectura = true;
             vm.TransporteVM.ModoSoloLectura = true;
             vm.FormaPagoVM.ModoSoloLectura = true;
+            vm.ModoSoloLectura = true;
 
             ventana.DataContext = vm;
             ventana.ShowDialog();
