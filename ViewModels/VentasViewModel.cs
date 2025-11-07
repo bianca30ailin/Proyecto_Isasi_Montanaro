@@ -126,7 +126,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             LimpiarFiltrosCommand = new RelayCommand(_ => LimpiarFiltros());
 
             // Establecer filtro por defecto al iniciar
-            EstadoFiltroSeleccionado = "Activa";
+            EstadoFiltroSeleccionado = null;
 
             AplicarFiltrosCommand = new RelayCommand(_ => AplicarFiltros());
 
@@ -464,13 +464,20 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             TodasLasVentas = new ObservableCollection<Ventum>(lista);
 
             // Aplicamos filtro por defecto
-            FiltrarPorEstado("Activa");
+            FiltrarPorEstado(null);
         }
 
         // Filtrado
         private void FiltrarPorEstado(object estado)
         {
-            string filtro = estado?.ToString() ?? "Activa";
+            if (estado == null || string.IsNullOrWhiteSpace(estado.ToString()))
+            {
+                // Mostrar todas las ventas si no hay filtro seleccionado
+                Ventas = new ObservableCollection<Ventum>(TodasLasVentas);
+                return;
+            }
+
+            string filtro = estado.ToString();
 
             var ventasFiltradas = TodasLasVentas
                 .Where(v => v.EstadoVenta != null &&
@@ -551,7 +558,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             TextoBusqueda = string.Empty;
             FechaDesde = null;
             FechaHasta = null;
-            EstadoFiltroSeleccionado = "Activa";
+            EstadoFiltroSeleccionado = null;
             CriterioOrdenSeleccionado = "Número de venta (Descendente)";
             FiltrarPorEstado("Activa");
             AplicarFiltros();
