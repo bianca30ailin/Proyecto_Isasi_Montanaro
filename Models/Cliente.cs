@@ -16,6 +16,8 @@ public partial class Cliente
 
     public string Email { get; set; } = null!;
 
+    public bool Activo { get; set; } = true;
+
     public DateTime? FechaNacimiento { get; set; }
 
     public virtual ICollection<Ventum> Venta { get; set; } = new List<Ventum>();
@@ -25,5 +27,25 @@ public partial class Cliente
 
     [NotMapped] // propiedades no mapeadas, no modifica la base de datos
     public string NombreCompleto => $"{Nombre} {Apellido}"; //nombre y apellido del cliente
+   
+    [NotMapped]
     public int CantidadVentas => Venta?.Count ?? 0; //cantidad de ventas del cliente
+
+    [NotMapped]
+    public string Estado => Activo ? "Activo" : "Inactivo";
+
+    [NotMapped]
+    public DateOnly? FechaAlta
+    {
+        get
+        {
+            // si tiene ventas, tomamos la más antigua
+            return Venta != null && Venta.Any()
+                ? Venta.Min(v => v.FechaHora)
+                : null;
+        }
+    }
+
+
+
 }

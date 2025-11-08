@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Proyecto_Isasi_Montanaro.Views"
              xmlns:vm="clr-namespace:Proyecto_Isasi_Montanaro.ViewModels"
+             xmlns:conv="clr-namespace:Proyecto_Isasi_Montanaro.Helpers"
              xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
@@ -42,8 +43,8 @@
 
             <!-- Chips a la izquierda -->
             <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left">
-                <Button Content="Activos" Style="{StaticResource ChipActivos}" Margin="0,0,10,0"/>
-                <Button Content="Inactivos" Style="{StaticResource ChipInactivos}"/>
+                <Button Content="Activos" Style="{StaticResource ChipActivos}" Command="{Binding FiltroActivosCommand}" Margin="0,0,10,0"/>
+                <Button Content="Inactivos" Style="{StaticResource ChipInactivos}" Command="{Binding FiltroInactivosCommand}"/>
             </StackPanel>
         </Grid>
 
@@ -65,33 +66,41 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- ComboBox Categorías -->
+                <!-- ComboBox de ordenamiento -->
                 <ComboBox Grid.Column="0"
-                  Style="{StaticResource FormCombo}"
-                  Margin="0,0,10,0"
-                  SelectedIndex="0">
-                    <ComboBoxItem IsEnabled="False" Foreground="Gray">
-                        Seleccione una categoria...
-                    </ComboBoxItem>
+                      Style="{StaticResource FormCombo}"
+                      Margin="0,0,10,0"
+                      SelectedValuePath="Content"
+                      SelectedValue="{Binding CriterioOrdenamiento, Mode=TwoWay}">
+                    <ComboBoxItem Content="Todos" IsSelected="True"/>
+                    <ComboBoxItem Content="A-Z" />
+                    <ComboBoxItem Content="Z-A" />
+                    <ComboBoxItem Content="Más ventas" />
+                    <ComboBoxItem Content="Menos ventas" />
                 </ComboBox>
 
                 <!-- DatePickers -->
                 <DatePicker Grid.Column="1" 
                     Style="{StaticResource FormDate}" 
+                    SelectedDate="{Binding FechaDesde, Mode=TwoWay, Converter={StaticResource DateOnlyConverter}}"
                     Margin="0,0,10,0"/>
                 <DatePicker Grid.Column="2" 
                     Style="{StaticResource FormDate}" 
+                    SelectedDate="{Binding FechaHasta, Mode=TwoWay, Converter={StaticResource DateOnlyConverter}}"
                     Margin="0,0,16,0"/>
 
                 <!-- Botones -->
                 <Button Grid.Column="3" 
                     Content="Filtrar" 
-                    Style="{StaticResource BtnPrimary}" 
+                    Style="{StaticResource BtnPrimary}"
+                    Command="{Binding AplicarOrdenCommand}"
                     Margin="0,0,8,0"
                     MinWidth="100"/>
 
                 <Button Grid.Column="4" 
                     Content="Limpiar" 
-                    Style="{StaticResource BtnSecondary}" 
+                    Style="{StaticResource BtnSecondary}"
+                    Command="{Binding LimpiarOrdenCommand}"
                     Margin="0,0,0,0"
                     MinWidth="100"/>
             </Grid>
@@ -99,10 +108,10 @@
 
         <!-- FILA 3: Encabezado de tabla -->
         <Border Grid.Row="3"
-        Background="White"
-        Margin="0,10,0,4" 
-        BorderBrush="#E5E7EB"
-        BorderThickness="0,0,0,1">
+                Background="White"
+                Margin="0,10,0,4" 
+                BorderBrush="#E5E7EB"
+                BorderThickness="0,0,0,1">
             <!-- línea sutil abajo -->
             <Grid Style="{StaticResource TableHeaderBar}">
                 <Grid.ColumnDefinitions>
@@ -117,10 +126,15 @@
                 </StackPanel>
 
                 <!-- Buscador -->
-                <TextBox Grid.Column="1"
-                         Text="Buscar cliente"
-             Style="{StaticResource TableSearchBox}"/>
-            </Grid>
+                <TextBox x:Name="BuscarTextBox"
+                         Grid.ColumnSpan="2"
+                         Margin="540,0,0,0"
+                         Style="{StaticResource SearchBox}"
+                         Tag="Buscar cliente"
+                         Text="{Binding TextoBusqueda, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip="Buscar cliente."/>
+            
+    </Grid>
         </Border>
 
         <!-- FILA 4: TABLA -->
@@ -131,7 +145,11 @@
                 <DataGridTextColumn Header="Nombre"  Binding="{Binding NombreCompleto}" Width="*"/>
                 <DataGridTextColumn Header="Nro compras" Binding="{Binding CantidadVentas}" Width="*"/>
                 <DataGridTextColumn Header="Estado"    Binding="{Binding Estado}" Width="*"/>
-                <DataGridTextColumn Header="Creado por" Binding="{Binding CreadoPor}" Width="*"/>
+                <DataGridTextColumn Header="Cantidad de ventas" Binding="{Binding CantidadVentas}" Width="*"/>
+                <DataGridTextColumn Header="Fecha de alta"
+                    Binding="{Binding FechaAlta, StringFormat=d}"
+                    Width="*"
+                    IsReadOnly="True"/>
                 <DataGridTemplateColumn Header="Acciones" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

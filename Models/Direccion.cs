@@ -12,8 +12,6 @@ public partial class Direccion
 
     public int Altura { get; set; }
 
-    public int CodigoPostal { get; set; }
-
     public int IdCiudad { get; set; }
 
     // FK opcional hacia cliente
@@ -24,5 +22,5 @@ public partial class Direccion
     public virtual Cliente? Cliente { get; set; } //hace la relacion oopcionel
 
     [NotMapped]
-    public string DireccionCompleta => $"{NombreCalle} {Altura} - {IdCiudadNavigation.Nombre} (CP {CodigoPostal})";
+    public string DireccionCompleta => $"{NombreCalle} {Altura} - {IdCiudadNavigation.Nombre} (CP {IdCiudadNavigation.CodigoPostal})\";";
 }

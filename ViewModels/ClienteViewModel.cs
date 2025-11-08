@@ -26,6 +26,11 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             ClienteActual = new Cliente();
             BuscarClienteCommand = new RelayCommand(_ => BuscarCliente());
             VerClienteCommand = new RelayCommand(p => VerCliente(p as Cliente));
+            EliminarClienteCommand = new RelayCommand(p => EliminarCliente(p as Cliente));
+            FiltroActivosCommand = new RelayCommand(_ => AplicarFiltroActivos());
+            FiltroInactivosCommand = new RelayCommand(_ => AplicarFiltroInactivos());
+            AplicarOrdenCommand = new RelayCommand(_ => FiltrarPorOrdenYFechas());
+            LimpiarOrdenCommand = new RelayCommand(_ => LimpiarOrdenYFechas());
             CargarClientes();
         }
 
@@ -120,11 +125,74 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             set { _errorDni = value; OnPropertyChanged(); }
         }
 
+        // Filtrado
+
+        private bool _filtroActivosPresionado = false;
+        private bool _filtroInactivosPresionado = false;
+
+        public bool FiltroActivosPresionado
+        {
+            get => _filtroActivosPresionado;
+            set
+            {
+                _filtroActivosPresionado = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool FiltroInactivosPresionado
+        {
+            get => _filtroInactivosPresionado;
+            set
+            {
+                _filtroInactivosPresionado = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string CriterioOrdenamiento { get; set; }
+
+        private DateOnly? _fechaDesde;
+        public DateOnly? FechaDesde
+        {
+            get => _fechaDesde;
+            set { _fechaDesde = value; OnPropertyChanged(); }
+        }
+
+        private DateOnly? _fechaHasta;
+        public DateOnly? FechaHasta
+        {
+            get => _fechaHasta;
+            set { _fechaHasta = value; OnPropertyChanged(); }
+        }
+
+        private string _textoBusqueda;
+        public string TextoBusqueda
+        {
+            get => _textoBusqueda;
+            set
+            {
+                _textoBusqueda = value;
+                OnPropertyChanged();
+
+                // Ejecuta la búsqueda automáticamente cuando cambia el texto
+                FiltrarBusqueda();
+            }
+        }
 
         // --- COMANDOS ---
         public ICommand BuscarClienteCommand { get; set; }
 
         public ICommand VerClienteCommand { get; }
+
+        public ICommand EliminarClienteCommand { get; }
+
+        public ICommand FiltroActivosCommand { get; }
+        public ICommand FiltroInactivosCommand { get; }
+
+
+        public ICommand AplicarOrdenCommand { get; }
+        public ICommand LimpiarOrdenCommand { get; }
 
 
         // --- METODOS ---
@@ -136,7 +204,8 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 .Include(c => c.Venta)
                 .ToList();
 
-            Clientes = new ObservableCollection<Cliente>(lista);
+            _todosLosClientes = lista;
+            Clientes = new ObservableCollection<Cliente>(_todosLosClientes);
         }
 
         private void VerCliente(Cliente clienteSeleccionado)
@@ -239,6 +308,125 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             OnPropertyChanged(nameof(ClienteActual));
         }
 
+        private void EliminarCliente(Cliente cliente)
+        {
+            if (cliente == null)
+            {
+                MessageBox.Show("Debe seleccionar un cliente válido.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            // Confirmación antes de dar de baja
+            var resultado = MessageBox.Show(
+                $"¿Seguro que desea dar de baja al cliente {cliente.Nombre} {cliente.Apellido}?",
+                "Confirmar baja",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (resultado != MessageBoxResult.Yes)
+                return;
+
+            // Baja lógica
+            cliente.Activo = false;
+            _context.Clientes.Update(cliente);
+            _context.SaveChanges();
+
+            // Actualizar la lista visible
+            CargarClientes();
+
+            MessageBox.Show($"El cliente {cliente.Nombre} {cliente.Apellido} fue dado de baja correctamente.",
+                            "Baja realizada", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private List<Cliente> _todosLosClientes;
+        private void AplicarFiltroActivos()
+        {
+            // Si el filtro ya estaba activo, lo desactivamos y mostramos todos
+            if (FiltroActivosPresionado)
+            {
+                FiltroActivosPresionado = false;
+                Clientes = new ObservableCollection<Cliente>(_todosLosClientes);
+                return;
+            }
+
+            // Activamos este filtro y desactivamos el otro
+            FiltroActivosPresionado = true;
+            FiltroInactivosPresionado = false;
+
+            var filtrados = _todosLosClientes.Where(c => c.Activo).ToList();
+            Clientes = new ObservableCollection<Cliente>(filtrados);
+        }
+
+        private void AplicarFiltroInactivos()
+        {
+            if (FiltroInactivosPresionado)
+            {
+                FiltroInactivosPresionado = false;
+                Clientes = new ObservableCollection<Cliente>(_todosLosClientes);
+                return;
+            }
+
+            FiltroInactivosPresionado = true;
+            FiltroActivosPresionado = false;
+
+            var filtrados = _todosLosClientes.Where(c => !c.Activo).ToList();
+            Clientes = new ObservableCollection<Cliente>(filtrados);
+        }
+
+        private void FiltrarPorOrdenYFechas()
+        {
+            IEnumerable<Cliente> filtrados = _todosLosClientes;
+
+            // --- FILTRO POR FECHAS ---
+            if (FechaDesde.HasValue || FechaHasta.HasValue)
+            {
+                filtrados = filtrados.Where(c =>
+                {
+                    var fechaAlta = c.Venta.Any() ? c.Venta.Min(v => v.FechaHora) : (DateOnly?)null;
+                    return fechaAlta.HasValue &&
+                           (!FechaDesde.HasValue || fechaAlta.Value >= FechaDesde.Value) &&
+                           (!FechaHasta.HasValue || fechaAlta.Value <= FechaHasta.Value);
+                });
+            }
+
+            // --- ORDENAMIENTO ---
+            switch (CriterioOrdenamiento)
+            {
+                case "A-Z":
+                    filtrados = filtrados.OrderByDescending(c => c.Apellido).ThenByDescending(c => c.Nombre);
+                    break;
+
+                case "Z-A":
+                    filtrados = filtrados.OrderBy(c => c.Apellido).ThenBy(c => c.Nombre);
+                    break;
+
+                case "Más ventas":
+                    filtrados = filtrados.OrderByDescending(c => c.CantidadVentas);
+                    break;
+
+                case "Menos ventas":
+                    filtrados = filtrados.OrderBy(c => c.CantidadVentas);
+                    break;
+
+                case "Todos":
+                default:
+                    // no aplicar orden, simplemente mantener la lista original (ordenada por apellido/nombre)
+                    filtrados = filtrados.OrderBy(c => c.Apellido).ThenBy(c => c.Nombre);
+                    break;
+            }
+
+            Clientes = new ObservableCollection<Cliente>(filtrados);
+        }
+
+        private void LimpiarOrdenYFechas()
+        {
+            FechaDesde = null;
+            FechaHasta = null;
+            CriterioOrdenamiento = null;
+
+            Clientes = new ObservableCollection<Cliente>(_todosLosClientes);
+        }
+
         // Validaciones
         public string Nombre
         {
@@ -324,6 +512,25 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
         }
 
+        private void FiltrarBusqueda()
+        {
+            if (string.IsNullOrWhiteSpace(TextoBusqueda))
+            {
+                // Si no hay texto, mostramos todo
+                Clientes = new ObservableCollection<Cliente>(_todosLosClientes);
+                return;
+            }
+
+            var termino = TextoBusqueda.ToLower();
+
+            var filtrados = _todosLosClientes.Where(c =>
+                (!string.IsNullOrEmpty(c.Nombre) && c.Nombre.ToLower().Contains(termino)) ||
+                (!string.IsNullOrEmpty(c.Apellido) && c.Apellido.ToLower().Contains(termino)) ||
+                c.DniCliente.ToString().Contains(termino)
+            ).ToList();
+
+            Clientes = new ObservableCollection<Cliente>(filtrados);
+        }
 
 
 

@@ -93,7 +93,7 @@ namespace Proyecto_Isasi_Montanaro.Helpers
                     // --- DIRECCIÓN DE ENTREGA ---
                     AgregarSeccion(doc, "DIRECCIÓN DE ENTREGA", azulSisie);
                     AgregarCampo(doc, "Dirección:", direccion?.DireccionCompleta ?? "Sin dirección", grisLabel);
-                    AgregarCampo(doc, "Código Postal:", direccion.CodigoPostal.ToString(), grisLabel);
+                    AgregarCampo(doc, "Código Postal:", direccion.IdCiudadNavigation.CodigoPostal.ToString(), grisLabel);
                     AgregarCampo(doc, "Ciudad:", direccion.IdCiudadNavigation?.Nombre ?? "", grisLabel);
                     AgregarCampo(doc, "Provincia:", direccion.IdCiudadNavigation?.IdProvinciaNavigation?.Nombre ?? "", grisLabel);
 

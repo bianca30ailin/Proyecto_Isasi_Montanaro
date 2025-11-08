@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Proyecto_Isasi_Montanaro.Models;
 
@@ -11,9 +12,11 @@ using Proyecto_Isasi_Montanaro.Models;
 namespace Proyecto_Isasi_Montanaro.Migrations
 {
     [DbContext(typeof(ProyectoTallerContext))]
-    partial class ProyectoTallerContextModelSnapshot : ModelSnapshot
+    [Migration("20251107234521_AgregarCodigoPostalCiudad")]
+    partial class AgregarCodigoPostalCiudad
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -105,9 +108,6 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                     b.Property<int>("DniCliente")
                         .HasColumnType("int")
                         .HasColumnName("dni_cliente");
-
-                    b.Property<bool>("Activo")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Apellido")
                         .IsRequired()
@@ -222,6 +222,10 @@ namespace Proyecto_Isasi_Montanaro.Migrations
                     b.Property<int>("Altura")
                         .HasColumnType("int")
                         .HasColumnName("altura");
+
+                    b.Property<int>("CodigoPostal")
+                        .HasColumnType("int")
+                        .HasColumnName("codigo_postal");
 
                     b.Property<int?>("DniCliente")
                         .HasColumnType("int")

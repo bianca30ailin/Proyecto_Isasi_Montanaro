@@ -167,7 +167,6 @@ public partial class ProyectoTallerContext : DbContext
                 
                 .HasColumnName("id_direccion");
             entity.Property(e => e.Altura).HasColumnName("altura");
-            entity.Property(e => e.CodigoPostal).HasColumnName("codigo_postal");
             entity.Property(e => e.IdCiudad).HasColumnName("id_ciudad");
             entity.Property(e => e.NombreCalle)
                 .HasMaxLength(100)
