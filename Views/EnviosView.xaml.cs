@@ -36,6 +36,9 @@ namespace Proyecto_Isasi_Montanaro.Views
 
         }
 
-        
+        private void DataGrid_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Proyecto_Isasi_Montanaro.Commands;
+using Proyecto_Isasi_Montanaro.Helpers;
 using Proyecto_Isasi_Montanaro.Models;
 using Proyecto_Isasi_Montanaro.Views.Formularios;
 using System;
@@ -31,6 +32,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             FiltroInactivosCommand = new RelayCommand(_ => AplicarFiltroInactivos());
             AplicarOrdenCommand = new RelayCommand(_ => FiltrarPorOrdenYFechas());
             LimpiarOrdenCommand = new RelayCommand(_ => LimpiarOrdenYFechas());
+            InicializarPermisos();
             CargarClientes();
         }
 
@@ -194,8 +196,48 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         public ICommand AplicarOrdenCommand { get; }
         public ICommand LimpiarOrdenCommand { get; }
 
+        // --- Permisos ---
+        
+        private bool _puedeEditarCliente;
+        private bool _puedeEliminarCliente;
+        private bool _mostrarColumnAcciones;
+
+        public bool PuedeEditarCliente
+        {
+            get => _puedeEditarCliente;
+            set
+            {
+                _puedeEditarCliente = value;
+                OnPropertyChanged(nameof(PuedeEditarCliente));
+                OnPropertyChanged(nameof(MostrarColumnAcciones));
+            }
+        }
+
+        public bool PuedeEliminarCliente
+        {
+            get => _puedeEliminarCliente;
+            set
+            {
+                _puedeEliminarCliente = value;
+                OnPropertyChanged(nameof(PuedeEliminarCliente));
+                OnPropertyChanged(nameof(MostrarColumnAcciones));
+            }
+        }
+
+        public bool MostrarColumnAcciones => PuedeEditarCliente || PuedeEliminarCliente;
+
 
         // --- METODOS ---
+
+        private void InicializarPermisos()
+        {
+            bool esVentas = Sesion.UsuarioActual?.IdTipoUsuarios.Any(t => t.IdTipoUsuario == 2) ?? false;
+
+            
+            PuedeEditarCliente = esVentas;
+            PuedeEliminarCliente = esVentas;
+
+        }
         public void CargarClientes()
         {
             var lista = _context.Clientes

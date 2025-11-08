@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Proyecto_Isasi_Montanaro.Commands;
+using Proyecto_Isasi_Montanaro.Helpers;
 using Proyecto_Isasi_Montanaro.Models;
 using Proyecto_Isasi_Montanaro.Views;
 using Proyecto_Isasi_Montanaro.Views.Formularios;
@@ -75,7 +76,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             EditarEnvioCommand = new RelayCommand(e => EditarEnvio(e as Envio));
             AbrirTransportesCommand = new RelayCommand(_ => AbrirTransportes());
 
-
+            InicializarPermisos();
             CargarEnvios();
         }
 
@@ -354,8 +355,49 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         public ICommand EditarEnvioCommand { get; }
         public ICommand AbrirTransportesCommand { get; set; }
 
+        // --- Permisos ---
+        private bool _puedeCrearTransporte;
+        private bool _puedeEditarEnvio;
+        
+        private bool _mostrarColumnAcciones;
+
+        public bool PuedeCrearTransporte
+        {
+            get => _puedeCrearTransporte;
+            set
+            {
+                _puedeCrearTransporte = value;
+                OnPropertyChanged(nameof(PuedeCrearTransporte));
+            }
+        }
+
+        public bool PuedeEditarEnvio
+        {
+            get => _puedeEditarEnvio;
+            set
+            {
+                _puedeEditarEnvio = value;
+                OnPropertyChanged(nameof(PuedeEditarEnvio));
+                OnPropertyChanged(nameof(MostrarColumnAcciones)); // Actualiza también esta
+            }
+        }
+
+
+
+        public bool MostrarColumnAcciones => PuedeEditarEnvio;
+
 
         // --- MÉTODOS ---
+
+        private void InicializarPermisos()
+        {
+            bool esEnvio = Sesion.UsuarioActual?.IdTipoUsuarios.Any(t => t.IdTipoUsuario == 3) ?? false;
+
+            PuedeCrearTransporte = esEnvio;
+            PuedeEditarEnvio = esEnvio;
+           
+
+        }
         //cargar envios
         public void CargarEnvios()
         {

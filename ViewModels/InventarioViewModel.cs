@@ -31,9 +31,45 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         public ICommand FiltrarPorFechasCommand { get; }
 
         // --- Permisos ---
-        public bool PuedeCrearProducto => Sesion.UsuarioActual?.IdTipoUsuarios.Any(t => t.IdTipoUsuario == 4) ?? false;
-        public bool PuedeEditarProducto => Sesion.UsuarioActual?.IdTipoUsuarios.Any(t => t.IdTipoUsuario == 4) ?? false;
-        public bool PuedeEliminarProducto => Sesion.UsuarioActual?.IdTipoUsuarios.Any(t => t.IdTipoUsuario == 4) ?? false;
+        private bool _puedeCrearProducto;
+        private bool _puedeEditarProducto;
+        private bool _puedeEliminarProducto;
+        private bool _mostrarColumnAcciones;
+
+        public bool PuedeCrearProducto
+        {
+            get => _puedeCrearProducto;
+            set
+            {
+                _puedeCrearProducto = value;
+                OnPropertyChanged(nameof(PuedeCrearProducto));
+            }
+        }
+
+        public bool PuedeEditarProducto
+        {
+            get => _puedeEditarProducto;
+            set
+            {
+                _puedeEditarProducto = value;
+                OnPropertyChanged(nameof(PuedeEditarProducto));
+                OnPropertyChanged(nameof(MostrarColumnAcciones)); // Actualiza también esta
+            }
+        }
+
+        public bool PuedeEliminarProducto
+        {
+            get => _puedeEliminarProducto;
+            set
+            {
+                _puedeEliminarProducto = value;
+                OnPropertyChanged(nameof(PuedeEliminarProducto));
+                OnPropertyChanged(nameof(MostrarColumnAcciones)); 
+            }
+        }
+
+        public bool MostrarColumnAcciones => PuedeEditarProducto || PuedeEliminarProducto;
+
 
 
         // --- Filtros ---
@@ -93,6 +129,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             Productos = new ObservableCollection<Producto>();
             Categorias = new ObservableCollection<Categorium>();
 
+            InicializarPermisos();
             CargarProductos();
             CargarCategorias();
 
@@ -106,10 +143,15 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             FiltrarPorFechasCommand = new RelayCommand(FiltrarPorFechas);
         }
 
-        // --- Validación de permisos ---
-        private bool CanCrearProducto(object parameter) => PuedeCrearProducto;
-        private bool CanEditarProducto(object parameter) => PuedeEditarProducto;
-        private bool CanEliminarProducto(object parameter) => PuedeEliminarProducto;
+        private void InicializarPermisos()
+        {
+            bool esInventario = Sesion.UsuarioActual?.IdTipoUsuarios.Any(t => t.IdTipoUsuario == 4) ?? false;
+
+            PuedeCrearProducto = esInventario;
+            PuedeEditarProducto = esInventario;
+            PuedeEliminarProducto = esInventario;
+
+        }
 
 
         // --- Carga inicial ---

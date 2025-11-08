@@ -214,155 +214,26 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         }
 
 
-        // ========== PERMISOS GRANULARES (CREAR/EDITAR/ELIMINAR) ==========
-
-        // Permisos de Inventario
-        private bool _puedeCrearProducto;
-        public bool PuedeCrearProducto
-        {
-            get => _puedeCrearProducto;
-            set { _puedeCrearProducto = value; OnPropertyChanged(nameof(PuedeCrearProducto)); }
-        }
-
-        private bool _puedeEditarProducto;
-        public bool PuedeEditarProducto
-        {
-            get => _puedeEditarProducto;
-            set { _puedeEditarProducto = value; OnPropertyChanged(nameof(PuedeEditarProducto)); }
-        }
-
-        private bool _puedeEliminarProducto;
-        public bool PuedeEliminarProducto
-        {
-            get => _puedeEliminarProducto;
-            set { _puedeEliminarProducto = value; OnPropertyChanged(nameof(PuedeEliminarProducto)); }
-        }
-
-        // Permisos de Usuarios
-        private bool _puedeCrearUsuario;
-        public bool PuedeCrearUsuario
-        {
-            get => _puedeCrearUsuario;
-            set { _puedeCrearUsuario = value; OnPropertyChanged(nameof(PuedeCrearUsuario)); }
-        }
-
-        private bool _puedeEditarUsuario;
-        public bool PuedeEditarUsuario
-        {
-            get => _puedeEditarUsuario;
-            set { _puedeEditarUsuario = value; OnPropertyChanged(nameof(PuedeEditarUsuario)); }
-        }
-
-        private bool _puedeEliminarUsuario;
-        public bool PuedeEliminarUsuario
-        {
-            get => _puedeEliminarUsuario;
-            set { _puedeEliminarUsuario = value; OnPropertyChanged(nameof(PuedeEliminarUsuario)); }
-        }
-
-        // Permisos de Clientes
-        private bool _puedeCrearCliente;
-        public bool PuedeCrearCliente
-        {
-            get => _puedeCrearCliente;
-            set { _puedeCrearCliente = value; OnPropertyChanged(nameof(PuedeCrearCliente)); }
-        }
-
-        private bool _puedeEditarCliente;
-        public bool PuedeEditarCliente
-        {
-            get => _puedeEditarCliente;
-            set { _puedeEditarCliente = value; OnPropertyChanged(nameof(PuedeEditarCliente)); }
-        }
-
-        private bool _puedeEliminarCliente;
-        public bool PuedeEliminarCliente
-        {
-            get => _puedeEliminarCliente;
-            set { _puedeEliminarCliente = value; OnPropertyChanged(nameof(PuedeEliminarCliente)); }
-        }
-
-        // Permisos de Ventas
-        private bool _puedeCrearVenta;
-        public bool PuedeCrearVenta
-        {
-            get => _puedeCrearVenta;
-            set { _puedeCrearVenta = value; OnPropertyChanged(nameof(PuedeCrearVenta)); }
-        }
-
-        private bool _puedeEditarVenta;
-        public bool PuedeEditarVenta
-        {
-            get => _puedeEditarVenta;
-            set { _puedeEditarVenta = value; OnPropertyChanged(nameof(PuedeEditarVenta)); }
-        }
-
-        private bool _puedeEliminarVenta;
-        public bool PuedeEliminarVenta
-        {
-            get => _puedeEliminarVenta;
-            set { _puedeEliminarVenta = value; OnPropertyChanged(nameof(PuedeEliminarVenta)); }
-        }
-
-        // Permisos de Envíos
-        private bool _puedeCrearEnvio;
-        public bool PuedeCrearEnvio
-        {
-            get => _puedeCrearEnvio;
-            set { _puedeCrearEnvio = value; OnPropertyChanged(nameof(PuedeCrearEnvio)); }
-        }
-
-        private bool _puedeEditarEnvio;
-        public bool PuedeEditarEnvio
-        {
-            get => _puedeEditarEnvio;
-            set { _puedeEditarEnvio = value; OnPropertyChanged(nameof(PuedeEditarEnvio)); }
-        }
-
-        private bool _puedeEliminarEnvio;
-        public bool PuedeEliminarEnvio
-        {
-            get => _puedeEliminarEnvio;
-            set { _puedeEliminarEnvio = value; OnPropertyChanged(nameof(PuedeEliminarEnvio)); }
-        }
-
+        
         // Método que configura los permisos según los tipos de usuario del usuario actual
         private void ConfigurarPermisosPorTipo(Usuario usuario)
         {
+
             var tiposIds = usuario.IdTipoUsuarios.Select(t => t.IdTipoUsuario).ToList();
 
             // Administrador (ID = 1)
             if (tiposIds.Contains(1))
             {
-                // Puede VER todas las secciones
+                // Puede VER todas las secciones?
                 PuedeUsuarios = true;
                 PuedeInventario = true;
                 PuedeClientes = true;
                 PuedeVentas = true;
                 PuedeEnvios = true;
-                PuedeInformes = true;
+                PuedeInformes = false;
                 PuedeBackUp = true;
 
-                // NO puede crear/editar/eliminar NADA a excepcion del sector de usuarios
-                PuedeCrearProducto = false;
-                PuedeEditarProducto = false;
-                PuedeEliminarProducto = false;
-
-                PuedeCrearUsuario = true;
-                PuedeEditarUsuario = true;
-                PuedeEliminarUsuario = true;
-
-                PuedeCrearCliente = false;
-                PuedeEditarCliente = false;
-                PuedeEliminarCliente = false;
-
-                PuedeCrearVenta = false;
-                PuedeEditarVenta = false;
-                PuedeEliminarVenta = false;
-
-                PuedeCrearEnvio = false;
-                PuedeEditarEnvio = false;
-                PuedeEliminarEnvio = false;
+                
             }
 
             // Ventas (ID = 2)
@@ -382,6 +253,20 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             if (tiposIds.Contains(3))
             {
                 PuedeEnvios = true;
+            }
+
+            //Supervisor / (ID = 5)
+            if (tiposIds.Contains(5))
+            {
+                PuedeUsuarios = true;
+                PuedeInventario = true;
+                PuedeClientes = true;
+                PuedeVentas = true;
+                PuedeEnvios = true;
+                PuedeInformes = true;
+                PuedeBackUp = true;
+
+                
             }
         }
 

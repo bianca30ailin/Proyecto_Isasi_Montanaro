@@ -339,7 +339,7 @@ public partial class ProyectoTallerContext : DbContext
             {
                 IdTipoUsuario = 1,
                 Tipo = "Admin",
-                Descripcion = "Usuario con acceso total al sistema"
+                Descripcion = "Usuario con acceso total a usuario y solo lectura para las demas áreas"
             },
             new TipoUsuario
             {
@@ -351,14 +351,21 @@ public partial class ProyectoTallerContext : DbContext
             {
                 IdTipoUsuario = 3,
                 Tipo = "Logistica",
-                Descripcion = "Usuario que se encarga de registrar los envíos y sus estados"
+                Descripcion = "Usuario que se encarga de actualizar o registrar datos de los envios"
             },
             new TipoUsuario
             {
                 IdTipoUsuario = 4,
                 Tipo = "Inventario",
                 Descripcion = "Usuario que se encarga del inventario"
+            },
+            new TipoUsuario
+            {
+                IdTipoUsuario = 5,
+                Tipo = "Supervisor",
+                Descripcion = "Usuario con permisos para generar informes"
             }
+
         );
 
         modelBuilder.Entity<Transporte>(entity =>

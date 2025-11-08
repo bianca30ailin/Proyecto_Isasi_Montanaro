@@ -69,6 +69,8 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             // Calcular al iniciar
             RecalcularTotales();
 
+            InicializarPermisos();
+
             // lista de estados de venta
             ListaEstadosVenta = new ObservableCollection<EstadoVenta>(_context.EstadoVenta.ToList());
 
@@ -258,6 +260,45 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
         public ICommand VerFacturaCommand { get; }
 
+        // --- Permisos ---
+        private bool _puedeCrearVenta;
+        private bool _puedeEditarVenta;
+        private bool _puedeEliminarVenta;
+        private bool _mostrarColumnAcciones;
+
+        public bool PuedeCrearVenta
+        {
+            get => _puedeCrearVenta;
+            set
+            {
+                _puedeCrearVenta = value;
+                OnPropertyChanged(nameof(PuedeCrearVenta));
+            }
+        }
+
+        public bool PuedeEditarVenta
+        {
+            get => _puedeEditarVenta;
+            set
+            {
+                _puedeEditarVenta = value;
+                OnPropertyChanged(nameof(PuedeEditarVenta));
+                OnPropertyChanged(nameof(MostrarColumnAcciones)); 
+            }
+        }
+
+        public bool PuedeEliminarVenta
+        {
+            get => _puedeEliminarVenta;
+            set
+            {
+                _puedeEliminarVenta = value;
+                OnPropertyChanged(nameof(PuedeEliminarVenta));
+                OnPropertyChanged(nameof(MostrarColumnAcciones));
+            }
+        }
+
+        public bool MostrarColumnAcciones => PuedeEditarVenta || PuedeEliminarVenta;
 
         // --- TOTALES Y CUOTAS --- //
         public double Subtotal => DetalleVM?.Total ?? 0;
@@ -307,6 +348,16 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         }
 
         // --- METODOS ---
+
+        private void InicializarPermisos()
+        {
+            bool esVentas = Sesion.UsuarioActual?.IdTipoUsuarios.Any(t => t.IdTipoUsuario == 2) ?? false;
+
+            PuedeCrearVenta = esVentas;
+            PuedeEditarVenta = esVentas;
+            PuedeEliminarVenta = esVentas;
+
+        }
         private void ConfirmarVenta()
         {
             using var transaction = _context.Database.BeginTransaction();

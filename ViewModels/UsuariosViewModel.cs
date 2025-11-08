@@ -3,6 +3,7 @@ using Proyecto_Isasi_Montanaro.Commands;
 using Proyecto_Isasi_Montanaro.Models;
 using Proyecto_Isasi_Montanaro.ViewModels;
 using Proyecto_Isasi_Montanaro.Views.Formularios;
+using Proyecto_Isasi_Montanaro.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel; // Necesario para ObservableCollection
@@ -34,6 +35,46 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         public ICommand LimpiarFiltroCommand { get; }
         public ICommand FiltrarPorFechasCommand { get; }
 
+        // --- Permisos ---
+        private bool _puedeCrearUsuario;
+        private bool _puedeEditarUsuario;
+        private bool _puedeEliminarUsuario;
+        private bool _mostrarColumnAcciones;
+
+        public bool PuedeCrearUsuario
+        {
+            get => _puedeCrearUsuario;
+            set
+            {
+                _puedeCrearUsuario = value;
+                OnPropertyChanged(nameof(PuedeCrearUsuario));
+            }
+        }
+
+        public bool PuedeEditarUsuario
+        {
+            get => _puedeEditarUsuario;
+            set
+            {
+                _puedeEditarUsuario = value;
+                OnPropertyChanged(nameof(PuedeEditarUsuario));
+                OnPropertyChanged(nameof(MostrarColumnAcciones)); // Actualiza también esta
+            }
+        }
+
+        public bool PuedeEliminarUsuario
+        {
+            get => _puedeEliminarUsuario;
+            set
+            {
+                _puedeEliminarUsuario = value;
+                OnPropertyChanged(nameof(PuedeEliminarUsuario));
+                OnPropertyChanged(nameof(MostrarColumnAcciones)); // Actualiza también esta
+            }
+        }
+
+        public bool MostrarColumnAcciones => PuedeEditarUsuario || PuedeEliminarUsuario;
+
 
         // Propiedad para el contexto de la base de datos (para simplificar)
         private readonly ProyectoTallerContext _context;
@@ -43,7 +84,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             _context = new ProyectoTallerContext();
             Usuarios = new ObservableCollection<Usuario>();
             Perfiles = new ObservableCollection<string>();
-
+            InicializarPermisos();
             CargarUsuarios();
             CargarPerfiles();
 
@@ -56,6 +97,19 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             FiltrarInactivosCommand = new RelayCommand(FiltrarInactivos);
             LimpiarFiltroCommand = new RelayCommand(LimpiarFiltro);
             FiltrarPorFechasCommand = new RelayCommand(FiltrarPorFechas);
+        }
+
+        private void InicializarPermisos()
+        {
+            bool esAdmin = Sesion.UsuarioActual?.IdTipoUsuarios.Any(t => t.IdTipoUsuario == 1) ?? false;
+
+            PuedeCrearUsuario = esAdmin;
+            PuedeEditarUsuario = esAdmin;
+            PuedeEliminarUsuario = esAdmin;
+
+            // Debug: verifica que se están asignando correctamente
+            Console.WriteLine($"Permisos inicializados - Admin: {esAdmin}");
+            Console.WriteLine($"MostrarColumnAcciones: {MostrarColumnAcciones}");
         }
 
         // Método para cargar los datos de la base de datos

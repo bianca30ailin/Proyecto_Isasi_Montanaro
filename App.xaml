@@ -23,7 +23,6 @@
             <helper:CreditoToVisibilityConverter x:Key="CreditoToVisibilityConverter"/>
             <helper:AndBooleanConverter x:Key="AndBooleanConverter"/>
             <helper:EditOnlyIfNullConverter x:Key="EditOnlyIfNullConverter"/>
-            
             <helper:DateOnlyConverter x:Key="DateOnlyConverter"/>
         </ResourceDictionary>
     </Application.Resources>
