@@ -509,4 +509,16 @@
                   Color="#33000000"
                   Opacity="0.4"/>
 
+    <!-- === DASHBOARD CARD (para informes y métricas) === -->
+    <Style x:Key="DashboardCard" TargetType="Border">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="BorderBrush" Value="#E5E7EB"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="15"/>
+        <Setter Property="Margin" Value="5,0"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Effect" Value="{x:Null}"/>
+    </Style>
+
 </ResourceDictionary>

@@ -9,77 +9,410 @@
              d:DesignHeight="450" d:DesignWidth="800"
              Background="#F3EDF7">
 
-    <Grid Margin="30">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <!-- Encabezado -->
-            <RowDefinition Height="Auto"/>
-            <!-- Filtros o Resumen -->
-            <RowDefinition Height="*"/>
-            <!-- Contenido principal -->
-        </Grid.RowDefinitions>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="30">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Encabezado -->
+                <RowDefinition Height="Auto"/>
+                <!-- Filtros -->
+                <RowDefinition Height="Auto"/>
+                <!-- Cards -->
+                <RowDefinition Height="Auto"/>
+                <!-- Gráficos -->
+                <RowDefinition Height="Auto"/>
+                <!-- Tabla -->
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <!-- FILA 0: ENCABEZADO -->
-        <Grid Grid.Row="0" Margin="0,0,0,15">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+            <!-- FILA 0: ENCABEZADO -->
+            <Grid Grid.Row="0" Margin="0,0,0,15">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-            <!-- Botón Volver -->
-            <Button Command="{Binding VolverCommand}"
-                    Background="Transparent"
-                    Foreground="#072741"
-                    BorderThickness="0"
-                    FontWeight="Bold"
-                    FontSize="14"
-                    Cursor="Hand"
-                    VerticalAlignment="Center"
-                    Padding="0"
-                    Margin="0,0,15,0">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <iconPacks:PackIconMaterial Kind="ArrowLeft"
-                                        Width="18" Height="18"
-                                        VerticalAlignment="Center"
-                                        Margin="0,0,5,0"/>
+                <Button Command="{Binding VolverCommand}"
+                        Background="Transparent"
+                        Foreground="#072741"
+                        BorderThickness="0"
+                        FontWeight="Bold"
+                        FontSize="14"
+                        Cursor="Hand"
+                        VerticalAlignment="Center"
+                        Padding="0"
+                        Margin="0,0,15,0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <iconPacks:PackIconMaterial Kind="ArrowLeft"
+                                                    Width="18" Height="18"
+                                                    VerticalAlignment="Center"
+                                                    Margin="0,0,5,0"/>
+                    </StackPanel>
+                </Button>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <iconPacks:PackIconMaterial Kind="AccountCogOutline"
+                                                Width="20" Height="20"
+                                                Foreground="#5B21B6"
+                                                VerticalAlignment="Center"
+                                                Margin="0,0,10,0"/>
+                    <TextBlock Text="Informe de Usuarios"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               Foreground="#072741"
+                               VerticalAlignment="Center"/>
                 </StackPanel>
-            </Button>
+            </Grid>
 
-            <!-- Título con ícono -->
-            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                <iconPacks:PackIconMaterial Kind="AccountCogOutline"
-                                    Width="20" Height="20"
-                                    Foreground="#E35802"
-                                    VerticalAlignment="Center"
-                                    Margin="0,0,10,0"/>
-                <TextBlock Text="Informe de Usuarios"
-                           FontSize="18"
-                           FontWeight="Bold"
+            <!-- FILA 1: FILTROS -->
+            <Border Grid.Row="1" Style="{StaticResource FilterPanel}" Margin="0,0,0,15">
+                <Grid VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Orden -->
+                    <ComboBox Grid.Column="0"
+                              Style="{StaticResource FormCombo}"
+                              Margin="0,0,10,0"
+                              ItemsSource="{Binding CriteriosOrden}"
+                              SelectedItem="{Binding CriterioOrdenSeleccionado, Mode=TwoWay}"
+                              ToolTip="Ordenar informe por..."/>
+                    
+                    <!-- Fecha desde -->
+                    <DatePicker Grid.Column="1"
+                                Style="{StaticResource FormDate}"
+                                Margin="0,0,10,0"
+                                SelectedDate="{Binding FechaDesde, Mode=TwoWay}"
+                                ToolTip="Desde esta fecha"/>
+
+                    <!-- Fecha hasta -->
+                    <DatePicker Grid.Column="2"
+                                Style="{StaticResource FormDate}"
+                                Margin="0,0,10,0"
+                                SelectedDate="{Binding FechaHasta, Mode=TwoWay}"
+                                ToolTip="Hasta esta fecha"/>
+
+                    <!-- Botón Generar -->
+                    <Button Grid.Column="3"
+                            Content="Generar"
+                            Style="{StaticResource BtnPrimary}"
+                            Margin="0,0,8,0"
+                            MinWidth="80"
+                            Command="{Binding GenerarReporteCommand}"/>
+
+                    <!-- Botón Limpiar -->
+                    <Button Grid.Column="4"
+                            Content="Limpiar"
+                            Style="{StaticResource BtnSecondary}"
+                            Margin="0,0,8,0"
+                            MinWidth="80"
+                            Command="{Binding LimpiarFiltrosCommand}"/>
+
+                    <!-- Botón Exportar PDF -->
+                    <Button Grid.Column="5"
+                            Style="{StaticResource BtnPrimary}"
+                            Background="#5B21B6"
+                            MinWidth="110"
+                            Command="{Binding ExportarPdfCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <iconPacks:PackIconMaterial Kind="FilePdfBox"
+                                                        Width="12" Height="12"
+                                                        Margin="0,0,8,0"/>
+                            <TextBlock Text="Exportar PDF"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- FILA 2: CARDS -->
+            <UniformGrid Grid.Row="2" Columns="4" Margin="0,0,0,15">
+                <!-- Total Usuarios -->
+                <Border Style="{StaticResource DashboardCard}">
+                    <StackPanel HorizontalAlignment="Center">
+                        <iconPacks:PackIconMaterial Kind="AccountMultiple"
+                                                    Width="24" Height="24"
+                                                    Foreground="#5B21B6"
+                                                    HorizontalAlignment="Center"
+                                                    Margin="0,0,0,8"/>
+                        <TextBlock Text="Total Usuarios"
+                                   Foreground="#072741"
+                                   FontWeight="SemiBold"
+                                   FontSize="13"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="{Binding TotalUsuarios}"
+                                   Foreground="#5B21B6"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Usuarios dados de baja -->
+                <Border Style="{StaticResource DashboardCard}">
+                    <StackPanel HorizontalAlignment="Center">
+                        <iconPacks:PackIconMaterial Kind="AccountCancel"
+                                                    Width="24" Height="24"
+                                                    Foreground="#9CA3AF"
+                                                     HorizontalAlignment="Center"
+                                                    Margin="0,0,0,8"/>
+                        <TextBlock Text="Usuarios dados&#x0a;de baja"
+                                   Foreground="#072741"
+                                   FontWeight="SemiBold"
+                                   FontSize="13"
+                                   TextAlignment="Center"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="{Binding UsuariosBaja}"
+                                   Foreground="#9CA3AF"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Promedio edad -->
+                <Border Style="{StaticResource DashboardCard}">
+                    <StackPanel HorizontalAlignment="Center">
+                        <iconPacks:PackIconMaterial Kind="AccountClock"
+                                                    Width="24" Height="24"
+                                                    Foreground="#5B21B6"
+                                                     HorizontalAlignment="Center"
+                                                    Margin="0,0,0,8"/>
+                        <TextBlock Text="Promedio de&#x0a;edad"
+                                   Foreground="#072741"
+                                   FontWeight="SemiBold"
+                                   FontSize="13"
+                                   TextAlignment="Center"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="{Binding PromedioEdad, StringFormat={}{0:F1}}"
+                                   Foreground="#5B21B6"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Usuarios incompletos -->
+                <Border Style="{StaticResource DashboardCard}">
+                    <StackPanel HorizontalAlignment="Center">
+                        <iconPacks:PackIconMaterial Kind="AccountAlert"
+                                                    Width="24" Height="24"
+                                                    Foreground="#F59E0B"
+                                                     HorizontalAlignment="Center"
+                                                    Margin="0,0,0,8"/>
+                        <TextBlock Text="Usuarios con datos&#x0a;incompletos"
+                                   Foreground="#072741"
+                                   FontWeight="SemiBold"
+                                   FontSize="13"
+                                   TextAlignment="Center"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="{Binding UsuariosIncompletos}"
+                                   Foreground="#F59E0B"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <!-- FILA 3: GRÁFICOS -->
+            <Grid Grid.Row="3" Margin="0,0,0,15">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Usuarios por edad -->
+                <Border Grid.Column="0" Style="{StaticResource DashboardCard}">
+                    <StackPanel>
+                        <TextBlock Text="Distribución por Edad"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="#072741"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,10"/>
+                        <ItemsControl ItemsSource="{Binding UsuariosPorEdad}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,4">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="120"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="40"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Rango}"
+                                                   FontSize="11"
+                                                   VerticalAlignment="Center"/>
+                                        <Border Grid.Column="1"
+                                                Height="20"
+                                                CornerRadius="4"
+                                                Background="{Binding Color}"
+                                                Width="{Binding AnchoCalculado}"
+                                                Margin="5,0"/>
+                                        <TextBlock Grid.Column="2"
+                                                   Text="{Binding Cantidad}"
+                                                   FontWeight="Bold"
+                                                   FontSize="12"
+                                                   HorizontalAlignment="Right"
+                                                   VerticalAlignment="Center"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- Usuarios por sector -->
+                <Border Grid.Column="1" Style="{StaticResource DashboardCard}">
+                    <StackPanel>
+                        <TextBlock Text="Usuarios por Sector"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="#072741"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,10"/>
+                        <ItemsControl ItemsSource="{Binding UsuariosPorSector}" Height="220">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Rows="1"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel HorizontalAlignment="Center" Margin="5,0">
+                                        <Border Height="{Binding AlturaCalculada}"
+                                                Width="20"
+                                                CornerRadius="3"
+                                                Background="#5B21B6"
+                                                VerticalAlignment="Bottom"/>
+                                        <TextBlock Text="{Binding Cantidad}"
+                                                   FontSize="11"
+                                                   FontWeight="Bold"
+                                                   Foreground="#072741"
+                                                   HorizontalAlignment="Center"
+                                                   Margin="0,5,0,0"/>
+                                        <TextBlock Text="{Binding Sector}"
+                                                   FontSize="9"
+                                                   Foreground="#666"
+                                                   TextAlignment="Center"
+                                                   TextWrapping="Wrap"
+                                                   MaxWidth="80"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <!-- Usuarios creados por mes -->
+                <Border Grid.Column="2" Style="{StaticResource DashboardCard}">
+                    <StackPanel>
+                        <TextBlock Text="Usuarios Creados por Mes"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"
+                                   Foreground="#072741"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,10"/>
+                        <ItemsControl ItemsSource="{Binding UsuariosPorMes}" Height="220">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Rows="1"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel HorizontalAlignment="Center" Margin="5,0">
+                                        <Border Height="{Binding AlturaCalculada}"
+                                                Width="20"
+                                                CornerRadius="3"
+                                                Background="#5B21B6"
+                                                VerticalAlignment="Bottom"/>
+                                        <TextBlock Text="{Binding Cantidad}"
+                                                   FontSize="11"
+                                                   FontWeight="Bold"
+                                                   Foreground="#072741"
+                                                   HorizontalAlignment="Center"
+                                                   Margin="0,5,0,0"/>
+                                        <TextBlock Text="{Binding Mes}"
+                                                   FontSize="9"
+                                                   Foreground="#666"
+                                                   TextAlignment="Center"
+                                                   TextWrapping="Wrap"
+                                                   MaxWidth="70"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- FILA 4: TABLA -->
+            <Border Grid.Row="4"
+                    Style="{StaticResource DashboardCard}"
+                    Margin="0,0,0,15">
+                <StackPanel>
+                    <TextBlock Text="Usuarios sin Rol Asignado"
+                               FontSize="14"
+                               FontWeight="SemiBold"
+                               Foreground="#072741"
+                               Margin="0,0,0,10"
+                               HorizontalAlignment="Center"/>
+                    <DataGrid ItemsSource="{Binding UsuariosSinRol}"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              AlternatingRowBackground="#F9FAFB"
+                              GridLinesVisibility="None"
+                              FontSize="13"
+                              BorderThickness="0">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Nombre Completo" Binding="{Binding NombreCompleto}" Width="*" />
+                            <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*" />
+                            <DataGridTextColumn Header="Teléfono" Binding="{Binding Telefono}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+
+            <!-- FILA 5: DETALLE DE USUARIOS -->
+            <Border Grid.Row="5"
+                    Style="{StaticResource DashboardCard}">
+                <StackPanel>
+                    <TextBlock Text="Detalle de Usuarios"
+                           FontSize="14"
+                           FontWeight="SemiBold"
                            Foreground="#072741"
-                           VerticalAlignment="Center"/>
-            </StackPanel>
+                           Margin="0,0,0,10"
+                           HorizontalAlignment="Center"/>
+
+                    <DataGrid ItemsSource="{Binding UsuariosDetalle}"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              AlternatingRowBackground="#F9FAFB"
+                              GridLinesVisibility="None"
+                              FontSize="13"
+                              BorderThickness="0">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Nombre" Binding="{Binding NombreCompleto}" Width="2*"/>
+                            <DataGridTextColumn Header="DNI" Binding="{Binding Dni}" Width="*" />
+                            <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="2*" />
+                            <DataGridTextColumn Header="Teléfono" Binding="{Binding Telefono}" Width="*" />
+                            <DataGridTextColumn Header="Dirección" Binding="{Binding Direccion}" Width="2*" />
+                            <DataGridTextColumn Header="Estado" Binding="{Binding Estado}" Width="*" />
+                            <DataGridTextColumn Header="Roles" Binding="{Binding Roles}" Width="2*" />
+                            <DataGridTextColumn Header="Cant. Roles" Binding="{Binding CantRoles}" Width="*" />
+                            <DataGridTextColumn Header="Creado" Binding="{Binding FechaCreacion, StringFormat={}{0:dd/MM/yyyy}}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
+
         </Grid>
-
-
-        <!-- FILA 1: FILTROS O RESUMEN -->
-        <StackPanel Grid.Row="1" Margin="0,10,0,10">
-            <!-- Aquí podrás agregar filtros, combos, datepickers, etc. -->
-            <TextBlock Text="Filtros o resumen (opcional)" 
-                    FontStyle="Italic"
-                    Foreground="#94A3B8"/>
-        </StackPanel>
-
-        <!-- FILA 2: CONTENIDO PRINCIPAL -->
-        <Border Grid.Row="2"
-                 Background="White"
-                 CornerRadius="10"
-                 BorderBrush="#E5E7EB"
-                 BorderThickness="1"
-                 Padding="20"
-                 Effect="{DynamicResource CardShadow}">
-            <TextBlock Text="Aquí se mostrará el análisis de ventas, gráficos o reportes detallados."
-                    Foreground="#64748B"
-                    TextWrapping="Wrap"/>
-        </Border>
-    </Grid>
+    </ScrollViewer>
 </UserControl>
