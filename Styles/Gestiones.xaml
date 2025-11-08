@@ -129,7 +129,67 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Completada -->
+    <!-- En Preparación -->
+    <Style x:Key="ChipEnPreparacion" TargetType="Button" BasedOn="{StaticResource Chip}">
+        <Setter Property="Background" Value="#1976D2"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#1565C0"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#0D47A1"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- En Camino -->
+    <Style x:Key="ChipEnCamino" TargetType="Button" BasedOn="{StaticResource Chip}">
+        <Setter Property="Background" Value="#FFA000"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#FB8C00"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#EF6C00"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Entregado -->
+    <Style x:Key="ChipEntregado" TargetType="Button" BasedOn="{StaticResource Chip}">
+        <Setter Property="Background" Value="#43A047"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#388E3C"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#2E7D32"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Cancelado -->
+    <Style x:Key="ChipCancelado" TargetType="Button" BasedOn="{StaticResource Chip}">
+        <Setter Property="Background" Value="#E53935"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#D32F2F"/>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#B71C1C"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="CenteredCell" TargetType="DataGridCell">
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Completada -->
         <Style x:Key="ChipCompletada" TargetType="Button" BasedOn="{StaticResource Chip}">
             <Setter Property="Background" Value="#2BAE66"/>
             <Style.Triggers>

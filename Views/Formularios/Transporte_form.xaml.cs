@@ -1,5 +1,4 @@
-﻿using Proyecto_Isasi_Montanaro.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,31 +10,24 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Proyecto_Isasi_Montanaro.Views
+namespace Proyecto_Isasi_Montanaro.Views.Formularios
 {
     /// <summary>
-    /// Lógica de interacción para EnviosView.xaml
+    /// Lógica de interacción para Transporte_form.xaml
     /// </summary>
-    public partial class EnviosView : UserControl
+    public partial class Transporte_form : Window
     {
-        public EnviosView()
+        public Transporte_form()
         {
             InitializeComponent();
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void Cerrar_Click(object sender, RoutedEventArgs e)
         {
-
+            this.Close();
         }
 
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
-        
     }
 }
