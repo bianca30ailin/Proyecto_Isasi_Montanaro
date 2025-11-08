@@ -169,42 +169,13 @@
                 </StackPanel>
 
                 <!-- Buscador -->
-                <Grid Grid.Column="1" VerticalAlignment="Center">
-                    <TextBox x:Name="BuscarTextBox"
-                         Style="{StaticResource TableSearchBox}"
-                         Padding="24,0,8,0"
-                         VerticalContentAlignment="Center"
-                         Text="{Binding BusquedaTexto, UpdateSourceTrigger=PropertyChanged}"
-                         ToolTip="Buscar venta, cliente o vendedor"/>
-
-                    <!-- Ícono de lupa -->
-                    <iconPacks:PackIconMaterial Kind="Magnify"
-                        Width="12" Height="12"
-                        Margin="6,0,0,0"
-                        VerticalAlignment="Center"
-                        Foreground="#888"
-                        IsHitTestVisible="False"/>
-
-                    <!-- Placeholder -->
-                    <TextBlock Text="Buscar por venta, envio, destinatario, seguimiento, destino..."
-                       Foreground="Gray"
-                       FontStyle="Italic"
-                       Opacity="0.6"
-                       Margin="28,0,0,0"
-                       VerticalAlignment="Center"
-                       IsHitTestVisible="False">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Text, ElementName=BuscarTextBox}" Value="">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                </Grid>
+                <TextBox x:Name="BuscarTextBox"
+                          Grid.ColumnSpan="2"
+                          Margin="540,0,0,0"
+                          Style="{StaticResource SearchBox}"
+                          Tag="Buscar envio..."
+                          Text="{Binding BusquedaTexto, UpdateSourceTrigger=PropertyChanged}"
+                          ToolTip="Buscar envio..."/>
             </Grid>
         </Border>
 
@@ -215,10 +186,10 @@
                 <DataGridTextColumn Header="Codigo"    Binding="{Binding IdEnvio}" Width="Auto"/>
                 <DataGridTextColumn Header="ID venta"  Binding="{Binding IdNroVenta}" Width="Auto"/>
                 <DataGridTextColumn Header="Costo" Binding="{Binding Costo, StringFormat=C}" Width="Auto"/>
-                <DataGridTextColumn Header="Destinatario"     Binding="{Binding IdNroVentaNavigation.DniClienteNavigation.NombreCompleto}" Width="*"/>
-                <DataGridTextColumn Header="Servicio"    Binding="{Binding IdTransporteNavigation.Nombre}" Width="*"/>
+                <DataGridTextColumn Header="Destinatario"     Binding="{Binding IdNroVentaNavigation.DniClienteNavigation.NombreCompleto}" Width="Auto"/>
+                <DataGridTextColumn Header="Servicio"    Binding="{Binding IdTransporteNavigation.Nombre}" Width="Auto"/>
                 <!-- Fecha Despacho -->
-                <DataGridTemplateColumn Header="Despacho" Width="130">
+                <DataGridTemplateColumn Header="Despacho" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding FechaDespacho, StringFormat={}{0:dd/MM/yyyy}}" 
@@ -228,7 +199,7 @@
                 </DataGridTemplateColumn>
 
                 <!-- Fecha Entrega -->
-                <DataGridTemplateColumn Header="Entrega" Width="130">
+                <DataGridTemplateColumn Header="Entrega" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding FechaEntrega, StringFormat={}{0:dd/MM/yyyy}}" 
@@ -238,13 +209,13 @@
                 </DataGridTemplateColumn>
 
                 <!-- Número seguimiento -->
-                <DataGridTextColumn Header="N° Seguimiento" Binding="{Binding NumSeguimiento}" Width="150"/>
+                <DataGridTextColumn Header="N° Seguimiento" Binding="{Binding NumSeguimiento}" Width="Auto"/>
 
                 <!-- Estado -->
-                <DataGridTextColumn Header="Estado" Binding="{Binding IdEstadoNavigation.Nombre}" Width="150"/>
+                <DataGridTextColumn Header="Estado" Binding="{Binding IdEstadoNavigation.Nombre}" Width="Auto"/>
 
                 <!-- Acciones -->
-                <DataGridTemplateColumn Header="Acciones" Width="80">
+                <DataGridTemplateColumn Header="Acciones" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">

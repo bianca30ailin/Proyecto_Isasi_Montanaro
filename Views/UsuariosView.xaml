@@ -133,22 +133,15 @@
                 </StackPanel>
 
                 <!-- Buscador -->
-                <Grid Grid.Column="1">
-                    <TextBox x:Name="BuscarBox"
-                         Style="{StaticResource TableSearchBox}"
-                         Text="{Binding TextoBusqueda, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-                    <!-- Placeholder que aparece cuando el TextBox está vacío -->
-                    <TextBlock Text="Buscar por nombre, apellido o DNI..."
-                           Foreground="Gray"
-                           Margin="10,0,0,0"
-                           VerticalAlignment="Center"
-                           IsHitTestVisible="False"
-                           Visibility="{Binding Text.IsEmpty,
-                                    ElementName=BuscarBox,
-                                    Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-                </Grid>
+                <TextBox x:Name="BuscarTextBox"
+                          Grid.ColumnSpan="2"
+                          Margin="540,0,0,0"
+                          Style="{StaticResource SearchBox}"
+                          Tag="Buscar usuario..."
+                          Text="{Binding TextoBusqueda, UpdateSourceTrigger=PropertyChanged}"
+                          ToolTip="Buscar usuario..."/>
             </Grid>
+            
         </Border>
 
         <!-- FILA 4: TABLA -->
