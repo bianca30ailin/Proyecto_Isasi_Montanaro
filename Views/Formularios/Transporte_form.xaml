@@ -1,0 +1,113 @@
+﻿<Window x:Class="Proyecto_Isasi_Montanaro.Views.Formularios.Transporte_form"
+       
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Height="500" Width="600">
+
+    <Border CornerRadius="8" Background="White" BorderBrush="#E5E7EB" BorderThickness="1" Padding="25">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- TÍTULO -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+                <Image Source="/Assets/envio/cil--truck.png" Width="26" Height="26" Margin="0,0,10,0"/>
+                <TextBlock Text="Gestión de Transportes" FontSize="20" FontWeight="Bold" Foreground="#072741"/>
+            </StackPanel>
+
+            <!-- FORMULARIO NUEVO TRANSPORTE -->
+            <Border Grid.Row="1" 
+                    Background="#F9FAFB" 
+                    CornerRadius="6" 
+                    Padding="15" 
+                    Margin="0,0,0,15">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Nuevo Transporte" 
+                                   FontWeight="SemiBold" 
+                                   Foreground="#072741" 
+                                   Margin="0,0,0,8"/>
+                        <TextBox Text="{Binding NuevoTransporteNombre, UpdateSourceTrigger=PropertyChanged}"
+                                 Style="{StaticResource FormTextBox}"
+                                 Width="350"
+                                 HorizontalAlignment="Left"/>
+                        <TextBlock Text="{Binding ErrorNuevoTransporte}"
+                           Foreground="#D64545"
+                           FontSize="11"
+                           Margin="0,4,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding TieneErrorNuevoTransporte}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                    </StackPanel>
+
+                    <Button Grid.Column="1" 
+                            Content="Agregar"
+                            Style="{StaticResource BtnPrimary}"
+                            Command="{Binding AgregarTransporteCommand}"
+                            VerticalAlignment="Center"
+                            Margin="0,0,10,0"
+                            MinWidth="100" Height="34"/>
+                </Grid>
+            </Border>
+
+            <!-- LISTA DE TRANSPORTES -->
+            <Border Grid.Row="2" 
+                    Background="White" 
+                    BorderBrush="#E5E7EB" 
+                    BorderThickness="1" 
+                    CornerRadius="6">
+                <DataGrid ItemsSource="{Binding Transportes}"
+                          Style="{StaticResource AppDataGrid}"
+                          AutoGenerateColumns="False"
+                          CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" 
+                                            Binding="{Binding IdTransporte}" 
+                                            Width="60"
+                                            IsReadOnly="True"/>
+
+                        <DataGridTextColumn Header="Nombre" 
+                                            Binding="{Binding Nombre}" 
+                                            Width="*"/>
+
+                        
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+
+            <Button Grid.Row="3" 
+                Content="Cerrar"
+                Style="{StaticResource BtnSecondary}"
+                Click="Cerrar_Click"
+                Margin="0,15,0,0"
+                HorizontalAlignment="Center"
+                MinWidth="120"
+                Background="#757575"
+                Foreground="White"/>
+        </Grid>
+    </Border>
+</Window>

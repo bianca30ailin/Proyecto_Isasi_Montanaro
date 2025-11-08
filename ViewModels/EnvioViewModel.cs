@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Proyecto_Isasi_Montanaro.Commands;
 using Proyecto_Isasi_Montanaro.Models;
+using Proyecto_Isasi_Montanaro.Views;
 using Proyecto_Isasi_Montanaro.Views.Formularios;
 using System;
 using System.Collections.Generic;
@@ -31,8 +32,48 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             Provincias = new ObservableCollection<Provincium>(_context.Provincia.ToList());
             Ciudades = new ObservableCollection<Ciudad>(); // se llena cuando elija provincia
 
+            // Cargar transportes para el filtro
+            // Cargar transportes para el filtro
+            Transportes = new ObservableCollection<Transporte>(_context.Transportes.ToList());
+
+            // Insertar placeholder al inicio para que el Combo muestre "Transportes..." por defecto
+            var transportePlaceholder = new Transporte
+            {
+                IdTransporte = 0,           // id reservado para el placeholder
+                Nombre = "Transportes..."   // texto que se mostrará
+            };
+
+            Transportes.Insert(0, transportePlaceholder);
+
+            // Seleccionar por defecto el placeholder
+            TransporteFiltro = transportePlaceholder;
+
+
+            // Opciones de ordenamiento
+            OpcionesOrdenamiento = new ObservableCollection<string>
+            {
+                "Fecha más reciente",
+                "Fecha más antigua",
+                "Destinatario (A-Z)",
+                "Destinatario (Z-A)",
+                "Costo (menor a mayor)",
+                "Costo (mayor a menor)",
+                "N° Envío (menor a mayor)",
+                "N° Envío (mayor a menor)"
+            };
+
+            // Cargar estados desde la base
+            Estados = new ObservableCollection<Estado>(_context.Estados.ToList());
+
+            OrdenamientoSeleccionado = "Fecha más reciente"; // Por defecto
+
             NuevaDireccionCommand = new RelayCommand(_ => NuevaDireccion());
             VerOrdenEnvioCommand = new RelayCommand(param => VerOrdenEnvio(param));
+            FiltrarPorEstadoCommand = new RelayCommand(p => FiltrarPorEstado(p?.ToString()));
+            FiltrarCommand = new RelayCommand(_ => AplicarFiltros());
+            LimpiarFiltrosCommand = new RelayCommand(_ => LimpiarFiltros());
+            EditarEnvioCommand = new RelayCommand(e => EditarEnvio(e as Envio));
+            AbrirTransportesCommand = new RelayCommand(_ => AbrirTransportes());
 
 
             CargarEnvios();
@@ -69,8 +110,95 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             {
                 _envios = value;
                 OnPropertyChanged(nameof(Envios));
+                EnviosFiltrados = _envios;
             }
         }
+
+        private ObservableCollection<Envio> _enviosFiltrados;
+        public ObservableCollection<Envio> EnviosFiltrados
+        {
+            get => _enviosFiltrados;
+            set
+            {
+                _enviosFiltrados = value;
+                OnPropertyChanged();
+            }
+        }
+
+        // --- PROPIEDADES DE FILTRADO ---
+        private string _estadoFiltroActual;
+        public string EstadoFiltroActual
+        {
+            get => _estadoFiltroActual;
+            set
+            {
+                _estadoFiltroActual = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private Transporte _transporteFiltro;
+        public Transporte TransporteFiltro
+        {
+            get => _transporteFiltro;
+            set
+            {
+                _transporteFiltro = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<Transporte> Transportes { get; set; }
+        public ObservableCollection<Estado> Estados { get; set; }
+
+
+        private string _ordenamientoSeleccionado;
+        public string OrdenamientoSeleccionado
+        {
+            get => _ordenamientoSeleccionado;
+            set
+            {
+                _ordenamientoSeleccionado = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<string> OpcionesOrdenamiento { get; set; }
+
+        private DateTime? _fechaDesde;
+        public DateTime? FechaDesde
+        {
+            get => _fechaDesde;
+            set
+            {
+                _fechaDesde = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private DateTime? _fechaHasta;
+        public DateTime? FechaHasta
+        {
+            get => _fechaHasta;
+            set
+            {
+                _fechaHasta = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _busquedaTexto;
+        public string BusquedaTexto
+        {
+            get => _busquedaTexto;
+            set
+            {
+                _busquedaTexto = value;
+                OnPropertyChanged();
+                AplicarFiltros(); // Filtrar en tiempo real
+            }
+        }
+
 
         //cliente actual
         private Cliente _clienteActual;
@@ -220,23 +348,192 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
         // --- COMANDOS ---
         public ICommand NuevaDireccionCommand { get; set; }
         public ICommand VerOrdenEnvioCommand { get; set; }
-
+        public ICommand FiltrarPorEstadoCommand { get; set; }
+        public ICommand FiltrarCommand { get; set; }
+        public ICommand LimpiarFiltrosCommand { get; set; }
+        public ICommand EditarEnvioCommand { get; }
+        public ICommand AbrirTransportesCommand { get; set; }
 
 
         // --- MÉTODOS ---
         //cargar envios
         public void CargarEnvios()
         {
-            Envios = new ObservableCollection<Envio>(
-                _context.Envios
-                    .Include(e => e.IdNroVentaNavigation)
+            var enviosActualizados = _context.Envios
+                .Include(e => e.IdNroVentaNavigation)
                     .ThenInclude(v => v.DniClienteNavigation)
-                    .Include(e => e.IdDireccionNavigation)
-                    .Include(e => e.IdTransporteNavigation)
-                    .Include(e => e.IdEstadoNavigation)
-                    .ToList()
-            );
+                .Include(e => e.IdDireccionNavigation)
+                    .ThenInclude(d => d.IdCiudadNavigation)
+                        .ThenInclude(c => c.IdProvinciaNavigation)
+                .Include(e => e.IdTransporteNavigation)
+                .Include(e => e.IdEstadoNavigation)
+                .AsNoTracking()  
+                .ToList();
+
+            // Crear NUEVA colección (fuerza actualización en UI)
+            Envios = new ObservableCollection<Envio>(enviosActualizados);
+
+            // Aplicar filtros actuales
+            AplicarFiltros();
         }
+
+        private void FiltrarPorEstado(string nombreEstado)
+        {
+            // Si no se pasa parámetro → mostrar todo
+            if (string.IsNullOrEmpty(nombreEstado))
+            {
+                EstadoFiltroActual = null;
+                AplicarFiltros();
+                return;
+            }
+
+            // Si clickea el mismo filtro → desactivar
+            if (EstadoFiltroActual == nombreEstado)
+                EstadoFiltroActual = null;
+            else
+                EstadoFiltroActual = nombreEstado;
+
+            AplicarFiltros();
+        }
+
+        
+
+
+        private void AplicarFiltros()
+        {
+            if (Envios == null)
+            {
+                EnviosFiltrados = new ObservableCollection<Envio>();
+                return;
+            }
+
+            var filtrados = Envios.AsEnumerable();
+
+            // 1. Filtro por estado (chips)
+            if (!string.IsNullOrEmpty(EstadoFiltroActual))
+            {
+                filtrados = filtrados.Where(e =>
+                    e.IdEstadoNavigation?.Nombre?.Equals(EstadoFiltroActual, StringComparison.OrdinalIgnoreCase) == true
+                );
+            }
+
+            // 2. Filtro por transporte
+            if (TransporteFiltro != null && TransporteFiltro.IdTransporte != 0)
+            {
+                filtrados = filtrados.Where(e => e.IdTransporte == TransporteFiltro.IdTransporte);
+            }
+
+            // 3. Filtro por fecha de despacho
+            if (FechaDesde.HasValue)
+            {
+                filtrados = filtrados.Where(e =>
+                    e.FechaDespacho.HasValue &&
+                    e.FechaDespacho.Value.ToDateTime(TimeOnly.MinValue) >= FechaDesde.Value.Date
+                );
+            }
+
+            if (FechaHasta.HasValue)
+            {
+                filtrados = filtrados.Where(e =>
+                    e.FechaDespacho.HasValue &&
+                    e.FechaDespacho.Value.ToDateTime(TimeOnly.MinValue) <= FechaHasta.Value.Date
+                );
+            }
+
+            // 4. Filtro por búsqueda de texto
+            if (!string.IsNullOrWhiteSpace(BusquedaTexto))
+            {
+                var busqueda = BusquedaTexto.ToLower();
+                filtrados = filtrados.Where(e =>
+                    e.IdEnvio.ToString().Contains(busqueda) ||
+                    e.IdNroVenta.ToString().Contains(busqueda) ||
+                    (e.IdNroVentaNavigation?.DniClienteNavigation?.NombreCompleto?.ToLower().Contains(busqueda) ?? false) ||
+                    (e.IdDireccionNavigation?.IdCiudadNavigation?.Nombre?.ToLower().Contains(busqueda) ?? false) ||
+                    (e.IdDireccionNavigation?.IdCiudadNavigation?.IdProvinciaNavigation?.Nombre?.ToLower().Contains(busqueda) ?? false) ||
+                    (e.IdDireccionNavigation?.DireccionCompleta?.ToLower().Contains(busqueda) ?? false) ||
+                    (e.NumSeguimiento?.ToLower().Contains(busqueda) ?? false)
+                );
+            }
+
+            // 5. Aplicar ordenamiento
+            filtrados = AplicarOrdenamiento(filtrados);
+
+            EnviosFiltrados = new ObservableCollection<Envio>(filtrados);
+        }
+
+        
+        private IEnumerable<Envio> AplicarOrdenamiento(IEnumerable<Envio> envios)
+        {
+            return OrdenamientoSeleccionado switch
+            {
+                "Fecha más reciente" => envios.OrderByDescending(e => e.FechaDespacho ?? DateOnly.MinValue),
+                "Fecha más antigua" => envios.OrderBy(e => e.FechaDespacho ?? DateOnly.MaxValue),
+                "Destinatario (A-Z)" => envios.OrderBy(e => e.IdNroVentaNavigation?.DniClienteNavigation?.NombreCompleto ?? ""),
+                "Destinatario (Z-A)" => envios.OrderByDescending(e => e.IdNroVentaNavigation?.DniClienteNavigation?.NombreCompleto ?? ""),
+                "Costo (menor a mayor)" => envios.OrderBy(e => e.Costo),
+                "Costo (mayor a menor)" => envios.OrderByDescending(e => e.Costo),
+                "N° Envío (menor a mayor)" => envios.OrderBy(e => e.IdEnvio),
+                "N° Envío (mayor a menor)" => envios.OrderByDescending(e => e.IdEnvio),
+                _ => envios.OrderByDescending(e => e.FechaDespacho ?? DateOnly.MinValue)
+            };
+        }
+
+        private void LimpiarFiltros()
+        {
+            EstadoFiltroActual = null;
+            // Volver a seleccionar el placeholder (si existe)
+            TransporteFiltro = Transportes?.FirstOrDefault(t => t.IdTransporte == 0);
+
+            FechaDesde = null;
+            FechaHasta = null;
+            BusquedaTexto = string.Empty;
+            OrdenamientoSeleccionado = "Fecha más reciente";
+            AplicarFiltros();
+        }
+
+
+        private void AbrirTransportes()
+        {
+            var ventana = new Transporte_form();
+            var vm = new Transportes_form_ViewModel();
+
+            
+
+            ventana.DataContext = vm;
+            ventana.ShowDialog();
+
+            // Recargar transportes después de cerrar
+            Transportes = new ObservableCollection<Transporte>(_context.Transportes.ToList());
+
+            // Re-insertar placeholder
+            var transportePlaceholder = new Transporte
+            {
+                IdTransporte = 0,
+                Nombre = "Transportes..."
+            };
+            Transportes.Insert(0, transportePlaceholder);
+            TransporteFiltro = transportePlaceholder;
+        }
+
+        private void EditarEnvio(Envio envioSeleccionado)
+        {
+            if (envioSeleccionado == null) return;
+
+            // Abrimos la ventana flotante
+            var ventana = new Editar_envio_form(envioSeleccionado)
+            {
+                DataContext = new Editar_envio_form_ViewModel(envioSeleccionado),
+
+            };
+            
+
+            ventana.ShowDialog();
+
+            //Recargar datos
+            CargarEnvios();
+            
+        }
+
 
         //crear direccion nueva
         private void NuevaDireccion()
@@ -412,8 +709,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             ventana.ShowDialog();
         }
 
-
-
+        
         //notificacion de cambio
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)

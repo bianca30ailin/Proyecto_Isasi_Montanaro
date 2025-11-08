@@ -43,8 +43,33 @@
 
             <!-- Chips a la izquierda -->
             <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left">
-                <Button Content="Activos" Style="{StaticResource ChipActivos}" Margin="0,0,10,0"/>
-                <Button Content="Inactivos" Style="{StaticResource ChipInactivos}"/>
+               
+                    <Button Content="En preparación"
+                        Style="{StaticResource ChipEnPreparacion}"
+                        Command="{Binding FiltrarPorEstadoCommand}"
+                        CommandParameter="En preparación"
+                        Margin="0,0,10,0" Width="103"/>
+
+                    <Button Content="En camino"
+                        Style="{StaticResource ChipEnCamino}"
+                        Command="{Binding FiltrarPorEstadoCommand}"
+                        CommandParameter="En camino"
+                        Margin="0,0,10,0"/>
+
+                    <Button Content="Entregado"
+                        Style="{StaticResource ChipEntregado}"
+                        Command="{Binding FiltrarPorEstadoCommand}"
+                        CommandParameter="Entregado"
+                        Margin="0,0,10,0"/>
+
+                    <Button Content="Cancelado"
+                        Style="{StaticResource ChipCancelado}"
+                        Command="{Binding FiltrarPorEstadoCommand}"
+                        CommandParameter="Cancelado"
+                        Margin="0,0,10,0"/>
+
+                
+
             </StackPanel>
 
             <!-- Botón a la derecha -->
@@ -60,47 +85,62 @@
         <Border Grid.Row="2" Style="{StaticResource FilterPanel}">
             <Grid VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
+                    <!-- Transporte -->
                     <ColumnDefinition Width="*"/>
-                    <!-- Categoría más ancha -->
+                    <!-- Ordenamiento -->
                     <ColumnDefinition Width="*"/>
                     <!-- Fecha 1 -->
                     <ColumnDefinition Width="*"/>
                     <!-- Fecha 2 -->
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
                     <!-- Botón Filtrar -->
                     <ColumnDefinition Width="Auto"/>
                     <!-- Botón Limpiar -->
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- ComboBox Categorías -->
+                <!-- ComboBox Transportes -->
                 <ComboBox Grid.Column="0"
-                  Style="{StaticResource FormCombo}"
-                  Margin="0,0,10,0"
-                  SelectedIndex="0">
-                    <ComboBoxItem IsEnabled="False" Foreground="Gray">
-                        Seleccione una categoria...
-                    </ComboBoxItem>
+                      Style="{StaticResource FormCombo}"
+                      Margin="0,0,10,0"
+                      ItemsSource="{Binding Transportes}"
+                      DisplayMemberPath="Nombre"
+                      SelectedItem="{Binding TransporteFiltro}">
+                                <ComboBox.ItemContainerStyle>
+                                    <Style TargetType="ComboBoxItem">
+                                        <Setter Property="Padding" Value="10,5"/>
+                                    </Style>
+                                </ComboBox.ItemContainerStyle>
                 </ComboBox>
 
+                <!-- ComboBox Ordenamiento -->
+                <ComboBox Grid.Column="1"
+                          Style="{StaticResource FormCombo}"
+                          Margin="0,0,10,0"
+                          ItemsSource="{Binding OpcionesOrdenamiento}"
+                          SelectedItem="{Binding OrdenamientoSeleccionado}"/>
+
                 <!-- DatePickers -->
-                <DatePicker Grid.Column="1" 
-                    Style="{StaticResource FormDate}" 
-                    Margin="0,0,10,0"
-                    SelectedDate="{Binding FechaDesde}"/>
                 <DatePicker Grid.Column="2" 
-                    Style="{StaticResource FormDate}" 
-                    Margin="0,0,16,0"
-                    SelectedDate="{Binding FechaHasta}"/>
+                            Style="{StaticResource FormDate}" 
+                            Margin="0,0,10,0"
+                            SelectedDate="{Binding FechaDesde}"
+                            ToolTip="Fecha desde (despacho)"/>
+                <DatePicker Grid.Column="3" 
+                            Style="{StaticResource FormDate}" 
+                            Margin="0,0,16,0"
+                            SelectedDate="{Binding FechaHasta}"
+                            ToolTip="Fecha hasta (despacho)"/>
 
                 <!-- Botones -->
-                <Button Grid.Column="3" 
+                <Button Grid.Column="4" 
                     Content="Filtrar" 
                     Style="{StaticResource BtnPrimary}" 
                     Margin="0,0,8,0"
                     MinWidth="100"
                     Command="{Binding FiltrarCommand}"/>
 
-                <Button Grid.Column="4" 
+                <Button Grid.Column="5" 
                     Content="Limpiar" 
                     Style="{StaticResource BtnSecondary}" 
                     Margin="0,0,0,0"
@@ -129,45 +169,97 @@
                 </StackPanel>
 
                 <!-- Buscador -->
-                <TextBox Grid.Column="1"
-                         Style="{StaticResource TableSearchBox}" 
-                         Text="{Binding BusquedaTexto, UpdateSourceTrigger=PropertyChanged}"/>
+                <Grid Grid.Column="1" VerticalAlignment="Center">
+                    <TextBox x:Name="BuscarTextBox"
+                         Style="{StaticResource TableSearchBox}"
+                         Padding="24,0,8,0"
+                         VerticalContentAlignment="Center"
+                         Text="{Binding BusquedaTexto, UpdateSourceTrigger=PropertyChanged}"
+                         ToolTip="Buscar venta, cliente o vendedor"/>
+
+                    <!-- Ícono de lupa -->
+                    <iconPacks:PackIconMaterial Kind="Magnify"
+                        Width="12" Height="12"
+                        Margin="6,0,0,0"
+                        VerticalAlignment="Center"
+                        Foreground="#888"
+                        IsHitTestVisible="False"/>
+
+                    <!-- Placeholder -->
+                    <TextBlock Text="Buscar por venta, envio, destinatario, seguimiento, destino..."
+                       Foreground="Gray"
+                       FontStyle="Italic"
+                       Opacity="0.6"
+                       Margin="28,0,0,0"
+                       VerticalAlignment="Center"
+                       IsHitTestVisible="False">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Text, ElementName=BuscarTextBox}" Value="">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Grid>
             </Grid>
         </Border>
 
         <!-- FILA 4: TABLA -->
         <DataGrid Grid.Row="4" Style="{StaticResource AppDataGrid}" Margin="0,2,0,0"
-              ItemsSource="{Binding Envios}" SelectionChanged="DataGrid_SelectionChanged">
+              ItemsSource="{Binding EnviosFiltrados}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Codigo"    Binding="{Binding IdEnvio}" Width="Auto"/>
                 <DataGridTextColumn Header="ID venta"  Binding="{Binding IdNroVenta}" Width="Auto"/>
                 <DataGridTextColumn Header="Costo" Binding="{Binding Costo, StringFormat=C}" Width="Auto"/>
                 <DataGridTextColumn Header="Destinatario"     Binding="{Binding IdNroVentaNavigation.DniClienteNavigation.NombreCompleto}" Width="*"/>
                 <DataGridTextColumn Header="Servicio"    Binding="{Binding IdTransporteNavigation.Nombre}" Width="*"/>
-                <DataGridTextColumn Header="Fecha Despacho" Binding="{Binding FechaDespacho}" Width="Auto"/>
-                <DataGridTextColumn Header="Fecha Entrega" Binding="{Binding FechaEntrega, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}" Width="Auto"/>
-                <DataGridTextColumn Header="Estado" Binding="{Binding IdEstadoNavigation.Nombre}" Width="*"/>
-                <DataGridTemplateColumn Header="Acciones" Width="Auto">
+                <!-- Fecha Despacho -->
+                <DataGridTemplateColumn Header="Despacho" Width="130">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center">
-                                <!-- Ver Orden de Envío -->
+                            <TextBlock Text="{Binding FechaDespacho, StringFormat={}{0:dd/MM/yyyy}}" 
+                           HorizontalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Fecha Entrega -->
+                <DataGridTemplateColumn Header="Entrega" Width="130">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding FechaEntrega, StringFormat={}{0:dd/MM/yyyy}}" 
+                           HorizontalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <!-- Número seguimiento -->
+                <DataGridTextColumn Header="N° Seguimiento" Binding="{Binding NumSeguimiento}" Width="150"/>
+
+                <!-- Estado -->
+                <DataGridTextColumn Header="Estado" Binding="{Binding IdEstadoNavigation.Nombre}" Width="150"/>
+
+                <!-- Acciones -->
+                <DataGridTemplateColumn Header="Acciones" Width="80">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <!-- BOTÓN EDITAR -->
                                 <Button Style="{StaticResource BtnSecondary}" 
-                                        Height="15" MinWidth="15" 
-                                        Margin="2,2,4,2"
-                                        Command="{Binding DataContext.VerOrdenEnvioCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding}"
-                                        ToolTip="Ver Orden de Envío">
-                                    <iconPacks:PackIconMaterial Kind="Eye" Width="16" Height="16" Foreground="#F5A623"/>
-                                </Button>
-                                <!-- Eliminar -->
-                                <Button Style="{StaticResource BtnSecondary}" Height="15" MinWidth="15" Margin="4,2,2,2">
-                                    <iconPacks:PackIconMaterial Kind="DeleteEmpty" Width="16" Height="16" Foreground="#D64545"/>
+                            Height="22" Width="22"
+                            Command="{Binding DataContext.EditarEnvioCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                            CommandParameter="{Binding}">
+                                    <iconPacks:PackIconMaterial Kind="Pencil" Width="16" Height="16" Foreground="#C69500"/>
                                 </Button>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
+
             </DataGrid.Columns>
         </DataGrid>
 
