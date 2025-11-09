@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Proyecto_Isasi_Montanaro.ViewModels.Informes;
+using Proyecto_Isasi_Montanaro.ViewModels;
 
 namespace Proyecto_Isasi_Montanaro.Views.Informes
 {
