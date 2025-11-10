@@ -62,6 +62,7 @@
                 <TextBox Style="{StaticResource FormTextBox}"
                          Text="{Binding ClienteActual.Nombre, Mode=TwoWay}"
                          Margin="0,30,0,10"
+                         IsReadOnly="{Binding IsEditable, Converter={StaticResource InverseBoolConverter}}"
                          Grid.Row="0" Grid.Column="0"/>
 
                 <!-- Dni -->
@@ -71,6 +72,7 @@
                 <TextBox Style="{StaticResource FormTextBox}"
                          Text="{Binding ClienteActual.DniCliente, Mode=TwoWay}"
                          Margin="0,30,0,10"
+                         IsReadOnly="True"
                          Grid.Row="0" Grid.Column="2"/>
 
                 <!-- Apellido -->
@@ -80,6 +82,7 @@
                 <TextBox Style="{StaticResource FormTextBox}" 
                          Text="{Binding ClienteActual.Apellido, Mode=TwoWay}"
                          Margin="0,30,0,10"
+                         IsReadOnly="{Binding IsEditable, Converter={StaticResource InverseBoolConverter}}"
                          Grid.Row="1" Grid.Column="0"/>
 
                 <!-- Dirección -->
@@ -117,6 +120,7 @@
                 <TextBox Style="{StaticResource FormTextBox}" 
                          Text="{Binding ClienteActual.Email, Mode=TwoWay}"
                          Margin="0,30,0,10"
+                         IsReadOnly="{Binding IsEditable, Converter={StaticResource InverseBoolConverter}}"
                          Grid.Row="2" Grid.Column="0"/>
 
                 <!-- Fecha de nacimiento -->
@@ -125,7 +129,9 @@
                            Grid.Row="2" Grid.Column="3"/>
                 <DatePicker Grid.Row="2" Grid.Column="3" 
                             Style="{StaticResource FormDate}" 
-                            Margin="0,30,0,10"/>
+                            IsEnabled="{Binding IsEditable}" 
+                            Margin="0,30,0,10"
+                            />
 
                 <!-- Telefono -->
                 <TextBlock Text="Telefono" 
@@ -134,6 +140,7 @@
                 <TextBox Style="{StaticResource FormTextBox}" 
                          Text="{Binding ClienteActual.Telefono, Mode=TwoWay}"
                          Margin="0,30,0,10"
+                         IsReadOnly="{Binding IsEditable, Converter={StaticResource InverseBoolConverter}}"
                          Grid.Row="1" Grid.Column="3"/>
 
             </Grid>
@@ -156,12 +163,14 @@
                     Content="Modificar" Width="100"
                     Margin="0,0,10,0"
                     Background="#F5A623"
+                    Command="{Binding EditarCommand}"
                     />
 
                 <!-- Guardar -->
                 <Button Style="{StaticResource BtnPrimary}" 
                     Content="Guardar" Width="100"
-                    Background="#53BA83"/>
+                    Background="#53BA83"
+                    Command="{Binding GuardarCommand}"/>
             </StackPanel>
         </Grid>
     </Border>

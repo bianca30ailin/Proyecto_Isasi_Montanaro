@@ -32,6 +32,8 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             FiltroInactivosCommand = new RelayCommand(_ => AplicarFiltroInactivos());
             AplicarOrdenCommand = new RelayCommand(_ => FiltrarPorOrdenYFechas());
             LimpiarOrdenCommand = new RelayCommand(_ => LimpiarOrdenYFechas());
+            EditarCommand = new RelayCommand(_ => IniciarEdicion());
+            GuardarCommand = new RelayCommand(_ => GuardarCambios());
             InicializarPermisos();
             CargarClientes();
         }
@@ -182,6 +184,15 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             }
         }
 
+        // --- Modo Edición ---
+        private bool _isEditable;
+        public bool IsEditable
+        {
+            get => _isEditable;
+            set { _isEditable = value; OnPropertyChanged(); }
+        }
+
+
         // --- COMANDOS ---
         public ICommand BuscarClienteCommand { get; set; }
 
@@ -191,6 +202,8 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
         public ICommand FiltroActivosCommand { get; }
         public ICommand FiltroInactivosCommand { get; }
+        public ICommand EditarCommand { get; }
+        public ICommand GuardarCommand { get; }
 
 
         public ICommand AplicarOrdenCommand { get; }
@@ -467,6 +480,63 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
             CriterioOrdenamiento = null;
 
             Clientes = new ObservableCollection<Cliente>(_todosLosClientes);
+        }
+
+        private Cliente _backupCliente;
+
+        private void IniciarEdicion()
+        {
+            // Guardamos una copia para poder deshacer si cancela
+            _backupCliente = new Cliente
+            {
+                DniCliente = ClienteActual.DniCliente,
+                Nombre = ClienteActual.Nombre,
+                Apellido = ClienteActual.Apellido,
+                Telefono = ClienteActual.Telefono,
+                Email = ClienteActual.Email,
+                FechaNacimiento = ClienteActual.FechaNacimiento
+            };
+
+            IsEditable = true;
+        }
+
+        private void GuardarCambios()
+        {
+            try
+            {
+                if (ClienteActual == null)
+                {
+                    MessageBox.Show("No hay cliente seleccionado para guardar.", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                var existente = _context.Clientes.FirstOrDefault(c => c.DniCliente == ClienteActual.DniCliente);
+                if (existente == null)
+                {
+                    MessageBox.Show("No se encontró el cliente en la base de datos.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                // Actualizamos los campos editables
+                existente.Nombre = ClienteActual.Nombre;
+                existente.Apellido = ClienteActual.Apellido;
+                existente.Telefono = ClienteActual.Telefono;
+                existente.Email = ClienteActual.Email;
+                existente.FechaNacimiento = ClienteActual.FechaNacimiento;
+
+                _context.SaveChanges();
+
+                MessageBox.Show("Los datos del cliente se actualizaron correctamente.",
+                                "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                IsEditable = false;
+                CargarClientes();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al guardar cambios: {ex.Message}",
+                                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         // Validaciones
