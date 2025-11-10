@@ -102,121 +102,113 @@
                            Margin="0,0,0,8"/>
 
                     <UniformGrid Columns="4" Rows="1" Margin="0,0,0,20">
+
+                        <!-- Ventas -->
                         <Border Style="{StaticResource InfoCard}">
-                            <StackPanel HorizontalAlignment="Center">
-                                <iconPacks:PackIconMaterial Kind="CartOutline"
+                            <Button Background="Transparent" BorderThickness="0"
+                                 Command="{Binding MostrarVentasCommand}">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <iconPacks:PackIconMaterial Kind="CartOutline"
                                         Foreground="#53BA83"
                                         Width="26" Height="26"
                                         HorizontalAlignment="Center" />
-                                <TextBlock Text="{Binding VentasDelDia}"
-                                       Foreground="Green"
-                                       FontWeight="Bold"
-                                       FontSize="16"
-                                       HorizontalAlignment="Center"/>
-                                <TextBlock Text="nuevas ventas"
-                                       FontSize="13"
-                                       Foreground="#072741"
-                                       HorizontalAlignment="Center"/>
-                            </StackPanel>
+                                    <TextBlock Text="{Binding VentasDelDia}"
+                                        Foreground="Green"
+                                        FontWeight="Bold"
+                                        FontSize="16"
+                                        HorizontalAlignment="Center"/>
+                                    <TextBlock Text="nuevas ventas"
+                                        FontSize="13"
+                                        Foreground="#072741"
+                                        HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
                         </Border>
 
+                        <!-- Envíos -->
                         <Border Style="{StaticResource InfoCard}">
-                            <StackPanel HorizontalAlignment="Center">
-                                <iconPacks:PackIconMaterial Kind="TruckDelivery"
+                            <Button Background="Transparent" BorderThickness="0"
+                                    Command="{Binding MostrarEnviosCommand}">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <iconPacks:PackIconMaterial Kind="TruckDelivery"
                                         Foreground="#4DA3FF"
                                         Width="26" Height="26"
                                         HorizontalAlignment="Center" />
-                                <TextBlock Text="{Binding EnviosDelDia}"
-                                       Foreground="Green"
-                                       FontWeight="Bold"
-                                       FontSize="16"
-                                       HorizontalAlignment="Center"/>
-                                <TextBlock Text="envíos nuevos"
-                                       FontSize="13"
-                                       Foreground="#072741"
-                                       HorizontalAlignment="Center"/>
-                            </StackPanel>
+                                    <TextBlock Text="{Binding EnviosDelDia}"
+                                        Foreground="Green"
+                                        FontWeight="Bold"
+                                        FontSize="16"
+                                        HorizontalAlignment="Center"/>
+                                    <TextBlock Text="envíos nuevos"
+                                        FontSize="13"
+                                        Foreground="#072741"
+                                        HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
                         </Border>
 
+                        <!-- Devoluciones -->
                         <Border Style="{StaticResource InfoCard}">
-                            <StackPanel HorizontalAlignment="Center">
-                                <iconPacks:PackIconMaterial Kind="UndoVariant"
+                            <Button Background="Transparent" BorderThickness="0"
+                                    Command="{Binding MostrarDevolucionesCommand}">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <iconPacks:PackIconMaterial Kind="UndoVariant"
                                         Foreground="#F5A623"
                                         Width="26" Height="26"
                                         HorizontalAlignment="Center" />
-                                <TextBlock Text="{Binding DevolucionesDelDia}"
-                                       Foreground="DarkOrange"
-                                       FontWeight="Bold"
-                                       FontSize="16"
-                                       HorizontalAlignment="Center"/>
-                                <TextBlock Text="devoluciones"
-                                       FontSize="13"
-                                       Foreground="#072741"
-                                       HorizontalAlignment="Center"/>
-                            </StackPanel>
+                                    <TextBlock Text="{Binding DevolucionesDelDia}"
+                                        Foreground="DarkOrange"
+                                        FontWeight="Bold"
+                                        FontSize="16"
+                                        HorizontalAlignment="Center"/>
+                                    <TextBlock Text="devoluciones"
+                                        FontSize="13"
+                                        Foreground="#072741"
+                                        HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
                         </Border>
 
+                        <!-- Total vendido -->
                         <Border Style="{StaticResource InfoCard}">
                             <StackPanel HorizontalAlignment="Center">
                                 <iconPacks:PackIconMaterial Kind="CashMultiple"
-                                        Foreground="#E35802"
-                                        Width="26" Height="26"
-                                        HorizontalAlignment="Center" />
+                                    Foreground="#E35802"
+                                    Width="26" Height="26"
+                                    HorizontalAlignment="Center" />
                                 <TextBlock Text="{Binding TotalVendidoDia, StringFormat='${0:N0}'}"
-                                       Foreground="#072741"
-                                       FontWeight="Bold"
-                                       FontSize="16"
-                                       HorizontalAlignment="Center"/>
+                                    Foreground="#072741"
+                                    FontWeight="Bold"
+                                    FontSize="16"
+                                    HorizontalAlignment="Center"/>
                                 <TextBlock Text="total vendido"
-                                       FontSize="13"
-                                       Foreground="#072741"
-                                       HorizontalAlignment="Center"/>
+                                    FontSize="13"
+                                    Foreground="#072741"
+                                    HorizontalAlignment="Center"/>
                             </StackPanel>
                         </Border>
+
                     </UniformGrid>
+
+                    <!-- Tabla dinámica -->
+                    <DataGrid ItemsSource="{Binding RegistrosDelDia}"
+                          AutoGenerateColumns="True"
+                          
+                          Margin="0,10,0,0"
+                          CanUserAddRows="False"
+                          CanUserDeleteRows="False"
+                          IsReadOnly="True"
+                          AlternatingRowBackground="#F3F6FA"
+                          GridLinesVisibility="None"
+                          RowHeight="28"
+                          FontSize="13" />
                 </StackPanel>
 
-                <!--  ÚLTIMOS REPORTES -->
-                <StackPanel Grid.Row="3">
-                    <TextBlock Text="Últimos reportes generados"
-                           FontWeight="SemiBold"
-                           Foreground="#072741"
-                           FontSize="14"
-                           Margin="0,0,0,8"/>
-
-                    <Border Background="White"
-                        CornerRadius="8"
-                        BorderBrush="#E5E7EB"
-                        BorderThickness="1"
-                        Padding="10"
-                        Effect="{DynamicResource CardShadow}">
-                        <ItemsControl ItemsSource="{Binding ReportesRecientes}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" Margin="0,4">
-                                        <TextBlock Text="📄"
-                                               FontSize="14"
-                                               Margin="0,0,8,0"/>
-                                        <TextBlock Text="{Binding Titulo}"
-                                               FontWeight="Bold"
-                                               Foreground="#072741"
-                                               Margin="0,0,5,0"/>
-                                        <TextBlock Text="—"
-                                               Foreground="#9CA3AF"
-                                               Margin="0,0,5,0"/>
-                                        <TextBlock Text="{Binding FechaGenerado, StringFormat='Generado el {0:dd/MM/yyyy HH:mm}'}"
-                                               Foreground="#6B7280"
-                                               FontSize="12"/>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </Border>
-                </StackPanel>
+                
             </Grid>
         </Grid>
         <ContentControl Content="{Binding ContenidoActual}"
                         Visibility="{Binding ContenidoActual, Converter={StaticResource NullToVisibilityConverter}}"
-                        />
+        />
      </Grid> 
 </UserControl>
