@@ -74,7 +74,7 @@
                              Margin="0,30,0,10"
                              Grid.Row="0" Grid.Column="0"
                              Background="#E0E0E0"
-                             Text="{Binding ProximoIdVenta}" />
+                             Text="{Binding NumeroVentaMostrar, Mode=OneWay}" />
 
                     <!-- Estado de la venta -->
                     <TextBlock Text="Estado de la venta"

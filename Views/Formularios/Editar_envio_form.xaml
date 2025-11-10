@@ -34,7 +34,20 @@
                       SelectedValue="{Binding Envio.IdEstado, Mode=TwoWay}"
                       IsEnabled="{Binding IsEditable}"
                       Style="{StaticResource FormCombo}"
-                      Margin="0 0 0 12"/>
+                      Margin="0 0 0 12">
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="ComboBoxItem">
+                            <Setter Property="IsEnabled" Value="False"/>
+                            <!-- Bloquear por defecto -->
+                            <Style.Triggers>
+                                <!-- Solo permitir seleccionar "Devuelto" -->
+                                <DataTrigger Binding="{Binding Nombre}" Value="Devuelto">
+                                    <Setter Property="IsEnabled" Value="True"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+                </ComboBox>
 
                 <!-- Número Seguimiento -->
                 <TextBlock Text="Número de Seguimiento" Style="{StaticResource FormLabel}"/>

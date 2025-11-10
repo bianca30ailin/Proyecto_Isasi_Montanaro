@@ -139,7 +139,7 @@
                                         FontWeight="Bold"
                                         FontSize="16"
                                         HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Nuevos envios"
+                                    <TextBlock Text="Envios despachados"
                                         FontSize="13"
                                         Foreground="#072741"
                                         HorizontalAlignment="Center"/>

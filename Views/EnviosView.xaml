@@ -236,7 +236,7 @@
                                     Height="22" Width="22"
                                     Command="{Binding DataContext.EditarEnvioCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                     CommandParameter="{Binding}">
-                                    <iconPacks:PackIconMaterial Kind="Pencil" Width="16" Height="16" Foreground="#C69500"/>
+                                    <iconPacks:PackIconMaterial Kind="Pencil" Width="12" Height="12" Foreground="#C69500"/>
                                 </Button>
                             </StackPanel>
                         </DataTemplate>

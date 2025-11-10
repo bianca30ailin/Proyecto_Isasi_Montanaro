@@ -129,6 +129,7 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
             // Establecer filtro por defecto al iniciar
             EstadoFiltroSeleccionado = null;
+            AplicarFiltros();
 
             AplicarFiltrosCommand = new RelayCommand(_ => AplicarFiltros());
 
@@ -406,26 +407,29 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 _context.Venta.Add(VentaActual);
                 _context.SaveChanges();
 
+                OnPropertyChanged(nameof(VentaActual));
+               
+
                 // --- Registrar envío ---
                 if (!ProcesarEnvio(VentaActual))
                 {
                     transaction.Rollback();
 
-                    // 🔹 Limpiar el ChangeTracker para evitar errores de concurrencia
+                    // Limpiar el ChangeTracker para evitar errores de concurrencia
                     _context.ChangeTracker.Clear();
 
-                    // 🔹 Desasociar los productos y reiniciar IDs del detalle
+                    // Desasociar los productos y reiniciar IDs del detalle
                     foreach (var detalle in DetalleVM.DetalleProductos)
                     {
                         detalle.IdProductoNavigation = null;
                         detalle.IdDetalle = 0; // ✅ Evita el error IDENTITY_INSERT
                     }
 
-                    // 🔹 Quitar venta fallida del contexto (por si acaso)
+                    // Quitar venta fallida del contexto (por si acaso)
                     if (_context.Entry(VentaActual).State != EntityState.Detached)
                         _context.Entry(VentaActual).State = EntityState.Detached;
 
-                    // 🔹 Crear una nueva venta limpia para reintentar
+                    // Crear una nueva venta limpia para reintentar
                     VentaActual = new Ventum
                     {
                         FechaHora = DateOnly.FromDateTime(DateTime.Now),
@@ -433,14 +437,14 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                         EstadoVentaId = 1
                     };
 
-                    // 🔹 Forzar actualización de bindings
+                    // Forzar actualización de bindings
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         var focusedElement = Keyboard.FocusedElement as FrameworkElement;
                         focusedElement?.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
                     });
 
-                    // 🔹 Recalcular totales y reactivar el envío
+                    // Recalcular totales y reactivar el envío
                     RecalcularTotales();
                     EnvioVM.EnvioHabilitado = true;
                     OnPropertyChanged(nameof(EnvioVM));
@@ -480,7 +484,9 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 GeneradorFacturaPDF.Generar(ventaCompleta);
 
                 // Refrescar vistas y limpiar formularios
+                _context.ChangeTracker.Clear();
                 CargarVentas();
+                AplicarFiltros();
                 DetalleVM.Reiniciar();
                 ClienteVM.Reiniciar();
                 EnvioVM.Reiniciar();
@@ -513,9 +519,6 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
 
             // Guardamos todas las ventas originales
             TodasLasVentas = new ObservableCollection<Ventum>(lista);
-
-            // Aplicamos filtro por defecto
-            FiltrarPorEstado(null);
         }
 
         // Filtrado
@@ -777,6 +780,23 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                 }
 
                 ventaSeleccionada.EstadoVentaId = estadoCancelado.IdEstadoVenta;
+
+                // 🔹 Buscar y actualizar envío asociado (si existe)
+                var envioRelacionado = _context.Envios
+                    .AsTracking()
+                    .FirstOrDefault(e => e.IdNroVenta == ventaSeleccionada.IdNroVenta);
+
+                if (envioRelacionado != null)
+                {
+                    var estadoEnvioCancelado = _context.Estados
+                        .FirstOrDefault(es => es.Nombre == "Cancelado");
+
+                    if (estadoEnvioCancelado != null)
+                    {
+                        envioRelacionado.IdEstado = estadoEnvioCancelado.IdEstado;
+                    }
+                }
+
                 _context.SaveChanges();
 
                 //  usamos el view model de nota de credito
@@ -790,12 +810,22 @@ namespace Proyecto_Isasi_Montanaro.ViewModels
                                 "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 GeneradorNotaCreditoPDF.Generar(nota, _context);
+
+                CargarVentas();
+                AplicarFiltros();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al cancelar la venta: {ex.Message}",
                                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        public int NumeroVentaMostrar
+        {
+            get => (VentaActual != null && VentaActual.IdNroVenta > 0)
+                   ? VentaActual.IdNroVenta
+                   : ProximoIdVenta;
         }
 
         private void VerVentaSoloLectura(Ventum venta)

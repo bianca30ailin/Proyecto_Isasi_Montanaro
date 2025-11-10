@@ -116,6 +116,28 @@ public class Editar_envio_form_ViewModel : INotifyPropertyChanged
             // Ej: if (Envio.IdEstado == 0) { MessageBox.Show("Seleccioná un estado."); return; }
 
             // _context.Envios.Update(Envio); // no hace falta si lo cargaste desde el contexto, ya está trackeado
+            // Actualizar estado automáticamente según fechas
+            if (Envio.FechaEntrega != null)
+            {
+                var estadoEntregado = _context.Estados.FirstOrDefault(e => e.Nombre == "Entregado");
+                if (estadoEntregado != null)
+                    Envio.IdEstado = estadoEntregado.IdEstado;
+
+                // Si el envío fue entregado, marcar la venta como completada
+                var venta = _context.Venta.FirstOrDefault(v => v.IdNroVenta == Envio.IdNroVenta);
+                if (venta != null)
+                {
+                    var estadoVentaCompletada = _context.EstadoVenta.FirstOrDefault(ev => ev.NombreEstado == "Completada");
+                    if (estadoVentaCompletada != null)
+                        venta.EstadoVentaId = estadoVentaCompletada.IdEstadoVenta;
+                }
+            }
+            else if (Envio.FechaDespacho != null)
+            {
+                var estadoEnCamino = _context.Estados.FirstOrDefault(e => e.Nombre == "En camino");
+                if (estadoEnCamino != null)
+                    Envio.IdEstado = estadoEnCamino.IdEstado;
+            }
             _context.SaveChanges();
 
             MessageBox.Show("Cambios guardados correctamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
