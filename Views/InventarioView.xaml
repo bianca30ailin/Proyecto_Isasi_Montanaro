@@ -159,7 +159,7 @@
                 <DataGridTextColumn Header="Categoría" Binding="{Binding IdCategoriaNavigation.Nombre}" Width="*"/>
                 <DataGridTextColumn Header="Stock"     Binding="{Binding Cantidad}" Width="Auto"/>
                 <DataGridTextColumn Header="Precio"    Binding="{Binding Precio, StringFormat=C}" Width="Auto"/>
-                <DataGridTextColumn Header="Estado"    Binding="{Binding Baja}" Width="*"/>
+                <DataGridTextColumn Header="Baja"    Binding="{Binding Baja}" Width="*"/>
                 <DataGridTextColumn Header="Creado por" 
                     Width="Auto">
                     <DataGridTextColumn.Binding>

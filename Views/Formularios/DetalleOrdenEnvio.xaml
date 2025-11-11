@@ -48,7 +48,7 @@
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel>
                     <!-- EMPRESA -->
-                    <TextBlock Text="SISIE - Gabriela Montañaro, Bianca Isasi Vitale" 
+                    <TextBlock Text="SISIE - Gabriela Montanaro, Bianca Isasi Vitale" 
                                FontSize="14" 
                                FontWeight="SemiBold"
                                Foreground="#072741"
@@ -122,15 +122,6 @@
                                    Margin="0,4,0,0"/>
                     </StackPanel>
 
-                    <StackPanel Margin="0,0,0,20">
-                        <TextBlock Text="Código Postal:" 
-                                   FontWeight="SemiBold" 
-                                   Foreground="#555"
-                                   FontSize="12"/>
-                        <TextBlock Text="{Binding Direccion.CodigoPostal}" 
-                                   FontSize="14"
-                                   Margin="0,4,0,0"/>
-                    </StackPanel>
 
                     <Separator Margin="0,0,0,20" Background="#E5E7EB"/>
 

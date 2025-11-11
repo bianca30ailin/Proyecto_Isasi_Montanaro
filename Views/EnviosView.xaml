@@ -176,9 +176,9 @@
                           Grid.ColumnSpan="2"
                           Margin="540,0,0,0"
                           Style="{StaticResource SearchBox}"
-                          Tag="Buscar envio..."
+                          Tag="Buscar por código, venta, N° seguimiento, destinatario..."
                           Text="{Binding BusquedaTexto, UpdateSourceTrigger=PropertyChanged}"
-                          ToolTip="Buscar envio..."/>
+                          ToolTip="Buscar por código, venta, N° seguimiento, destinatario..."/>
             </Grid>
         </Border>
 
@@ -197,11 +197,11 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Codigo"    Binding="{Binding IdEnvio}" Width="Auto"/>
                 <DataGridTextColumn Header="ID venta"  Binding="{Binding IdNroVenta}" Width="Auto"/>
-                <DataGridTextColumn Header="Costo" Binding="{Binding Costo, StringFormat=C}" Width="Auto"/>
-                <DataGridTextColumn Header="Destinatario"     Binding="{Binding IdNroVentaNavigation.DniClienteNavigation.NombreCompleto}" Width="Auto"/>
-                <DataGridTextColumn Header="Servicio"    Binding="{Binding IdTransporteNavigation.Nombre}" Width="Auto"/>
+                <DataGridTextColumn Header="Costo" Binding="{Binding Costo, StringFormat=C}" Width="*"/>
+                <DataGridTextColumn Header="Destinatario"     Binding="{Binding IdNroVentaNavigation.DniClienteNavigation.NombreCompleto}" Width="*"/>
+                <DataGridTextColumn Header="Servicio"    Binding="{Binding IdTransporteNavigation.Nombre}" Width="*"/>
                 <!-- Fecha Despacho -->
-                <DataGridTemplateColumn Header="Despacho" Width="Auto">
+                <DataGridTemplateColumn Header="Despacho" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding FechaDespacho, StringFormat={}{0:dd/MM/yyyy}}" 
@@ -211,7 +211,7 @@
                 </DataGridTemplateColumn>
 
                 <!-- Fecha Entrega -->
-                <DataGridTemplateColumn Header="Entrega" Width="Auto">
+                <DataGridTemplateColumn Header="Entrega" Width="*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding FechaEntrega, StringFormat={}{0:dd/MM/yyyy}}" 
@@ -221,22 +221,29 @@
                 </DataGridTemplateColumn>
 
                 <!-- Número seguimiento -->
-                <DataGridTextColumn Header="N° Seguimiento" Binding="{Binding NumSeguimiento}" Width="Auto"/>
+                <DataGridTextColumn Header="N° Seguimiento" Binding="{Binding NumSeguimiento}" Width="*"/>
 
                 <!-- Estado -->
-                <DataGridTextColumn Header="Estado" Binding="{Binding IdEstadoNavigation.Nombre}" Width="Auto"/>
+                <DataGridTextColumn Header="Estado" Binding="{Binding IdEstadoNavigation.Nombre}" Width="*"/>
 
                 <!-- Acciones -->
-                <DataGridTemplateColumn Header="Acciones" Width="Auto">
+                <DataGridTemplateColumn Header="Acciones" Width="auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                 <!-- BOTÓN EDITAR -->
                                 <Button Style="{StaticResource BtnSecondary}" 
-                                    Height="22" Width="22"
+                                    Height="15" MinWidth="15" Margin="2,2,4,2"
                                     Command="{Binding DataContext.EditarEnvioCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                     CommandParameter="{Binding}">
-                                    <iconPacks:PackIconMaterial Kind="Pencil" Width="12" Height="12" Foreground="#C69500"/>
+                                    <iconPacks:PackIconMaterial Kind="Pencil" Width="16" Height="16" Foreground="#C69500"/>
+                                </Button>
+                                <!-- VER ORDEN DE ENVIO -->
+                                <Button Style="{StaticResource BtnSecondary}" 
+                                    Height="15" MinWidth="15" Margin="4,2,2,2"
+                                    Command="{Binding DataContext.VerOrdenEnvioCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding}">
+                                    <iconPacks:PackIconMaterial Kind="eye" Width="16" Height="16"  Foreground="#C69500"/>
                                 </Button>
                             </StackPanel>
                         </DataTemplate>
